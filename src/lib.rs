@@ -116,7 +116,9 @@ impl Future for Request {
                 }
             }
 
-            CHANNEL_WAKERS[index] = Some(cx.waker().clone());
+            if CHANNEL_WAKERS[index].is_none() {
+                CHANNEL_WAKERS[index] = Some(cx.waker().clone());
+            }
         }
 
         Poll::Pending
