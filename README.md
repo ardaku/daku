@@ -202,7 +202,6 @@ length and data set to NULL.
         Arm = 2,
         Mips = 3,
         X86 = 4,
-        Unknown = u32::MAX,
     }
     ```
  1. Get CPU Reference Size `recv: u32`
@@ -213,7 +212,6 @@ length and data set to NULL.
         Ref32 = 1,
         Ref64 = 2,
         Ref128 = 3,
-        Unknown = u32::MAX,
     }
     ```
  2. Query CPU Extensions description `recv: Text`.
