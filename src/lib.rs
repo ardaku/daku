@@ -1,4 +1,5 @@
-//! Rust crate to interface with the [Daku API](https://github.com/ardaku/daku)
+//! Rust crate to interface with the [Daku API](https://github.com/ardaku/daku).
+//! This crate only works/is sound on wasm32 platforms supporting the daku api.
 //!
 //! Functions are officially stabilized as they are added to this crate.
 //!
