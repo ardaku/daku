@@ -6,6 +6,27 @@
 //! In order for the async functions to be functional, you must call `run()` in
 //! the async executor's main loop.
 
+#![doc(
+    html_logo_url = "https://ardaku.github.io/mm/logo.svg",
+    html_favicon_url = "https://ardaku.github.io/mm/icon.svg",
+    html_root_url = "https://docs.rs/daku"
+)]
+#![warn(
+    anonymous_parameters,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    nonstandard_style,
+    rust_2018_idioms,
+    single_use_lifetimes,
+    trivial_casts,
+    trivial_numeric_casts,
+    unreachable_pub,
+    unused_extern_crates,
+    unused_qualifications,
+    variant_size_differences
+)]
+
 use std::{
     future::Future,
     pin::Pin,
@@ -127,6 +148,7 @@ struct Command {
 
 /// CPU architecture list.
 #[non_exhaustive]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Arch {
     /// Web Assembly
     Wasm = 0,
