@@ -33,6 +33,10 @@ use std::{
     task::{Context, Poll, Waker},
 };
 
+pub use self::executor::block_on;
+
+mod executor;
+
 static mut COMMANDS: Vec<Command> = Vec::new();
 static mut DONE: Vec<usize> = Vec::new();
 static mut NEXT_CHANNEL: usize = 0;
@@ -83,18 +87,6 @@ impl Channel {
 impl Drop for Channel {
     fn drop(&mut self) {
         drop_channel(self.0)
-    }
-}
-
-/// Send queued commands, yield to the executor, and wake the tasks that need waking.
-pub fn run() {
-    unsafe {
-        DONE.set_len(ar(COMMANDS.len(), COMMANDS.as_ptr(), DONE.as_mut_ptr()));
-        for done in DONE.iter().cloned() {
-            if let Some(waker) = CHANNEL_WAKERS[done].take() {
-                waker.wake();
-            }
-        }
     }
 }
 
