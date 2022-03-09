@@ -1,3 +1,5 @@
+//! API for running Rust futures, yielding via the Daku event queue.
+
 use std::{
     future::Future,
     sync::Arc,

@@ -2,9 +2,6 @@
 //! This crate only works/is sound on wasm32 platforms supporting the daku api.
 //!
 //! Functions are officially stabilized as they are added to this crate.
-//!
-//! In order for the async functions to be functional, you must call `run()` in
-//! the async executor's main loop.
 
 #![doc(
     html_logo_url = "https://ardaku.github.io/mm/logo.svg",
@@ -33,9 +30,7 @@ use std::{
     task::{Context, Poll, Waker},
 };
 
-pub use self::executor::block_on;
-
-mod executor;
+pub mod executor;
 
 static mut COMMANDS: Vec<Command> = Vec::new();
 static mut DONE: Vec<usize> = Vec::new();
