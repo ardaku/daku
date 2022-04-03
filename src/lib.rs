@@ -5,6 +5,13 @@
 //!
 //! Each module gives access to a safe portal API, so there is a module for each
 //! portal.
+//!
+//! This crate supports joining syscalls together using the Daku command queue.
+//! If you use `join!()` on two futures from this crate, it will combine the
+//! two syscalls into one.  Some futures have a second syscall (for instance, if
+//! they require allocation).  They also work with joining, so any number of
+//! them joined together will result in two syscalls, so long as they become
+//! ready at the same time.
 
 #![doc(
     html_logo_url = "https://ardaku.github.io/mm/logo.svg",
