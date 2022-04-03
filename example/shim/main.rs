@@ -14,5 +14,5 @@ mod main {
 }
 
 fn main() {
-    daku::executor::block_on(self::main::main::main());
+    daku::block_on(self::main::main::main());
 }

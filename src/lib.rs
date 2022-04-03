@@ -2,6 +2,9 @@
 //! This crate only works/is sound on wasm32 platforms supporting the daku api.
 //!
 //! Functions are officially stabilized as they are added to this crate.
+//!
+//! Each module gives access to a safe portal API, so there is a module for each
+//! portal.
 
 #![doc(
     html_logo_url = "https://ardaku.github.io/mm/logo.svg",
@@ -24,150 +27,21 @@
     variant_size_differences
 )]
 
-use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll, Waker},
-};
+#[cfg(not(all(
+    target_arch = "wasm32",
+    target_endian = "little",
+    target_env = "",
+    target_family = "wasm",
+    target_os = "daku",
+    target_pointer_width = "32",
+    target_vendor = "unknown",
+)))]
+compile_error!("Target is not wasm32-daku");
 
-pub mod executor;
+mod ffi;
+mod types;
 
-static mut COMMANDS: Vec<Command> = Vec::new();
-static mut DONE: Vec<usize> = Vec::new();
-static mut NEXT_CHANNEL: usize = 0;
-static mut NEXT_CHANNEL_TRASH: Vec<usize> = Vec::new();
-static mut CHANNEL_WAKERS: Vec<Option<Waker>> = Vec::new();
+pub mod cpu_info;
+pub mod log;
 
-// Daku async request ffi
-#[link(wasm_import_module = "daku")]
-extern "C" {
-    fn ar(size: usize, data: *const Command, done: *mut usize) -> usize;
-}
-
-fn next_channel() -> usize {
-    unsafe {
-        if let Some(chan) = NEXT_CHANNEL_TRASH.pop() {
-            chan
-        } else {
-            let chan = NEXT_CHANNEL;
-            if NEXT_CHANNEL > DONE.capacity() {
-                DONE.reserve(1);
-            }
-            NEXT_CHANNEL += 1;
-            chan
-        }
-    }
-}
-
-fn drop_channel(chan: usize) {
-    unsafe {
-        NEXT_CHANNEL_TRASH.push(chan);
-        COMMANDS.push(Command {
-            channel: chan,
-            new: 0,
-            which: 0,
-            data: &mut (),
-        });
-    }
-}
-
-struct Channel(usize);
-
-impl Channel {
-    fn new() -> Self {
-        Self(next_channel())
-    }
-}
-
-impl Drop for Channel {
-    fn drop(&mut self) {
-        drop_channel(self.0)
-    }
-}
-
-struct Request(usize);
-
-impl Future for Request {
-    type Output = ();
-
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let index = self.0;
-
-        unsafe {
-            CHANNEL_WAKERS.resize((index + 1).max(CHANNEL_WAKERS.len()), None);
-
-            for (i, done) in DONE.iter().enumerate() {
-                if *done == index {
-                    DONE.swap_remove(i);
-                    return Poll::Ready(());
-                }
-            }
-
-            if CHANNEL_WAKERS[index].is_none() {
-                CHANNEL_WAKERS[index] = Some(cx.waker().clone());
-            }
-        }
-
-        Poll::Pending
-    }
-}
-
-async fn request(command: Command) {
-    let channel_id = command.new;
-    unsafe {
-        COMMANDS.push(command);
-    }
-    Request(channel_id).await;
-}
-
-#[repr(C, packed)]
-struct Command {
-    /// Channel to send a message on, 0 to open channel
-    channel: usize,
-    /// The new channel id
-    ///  - Nop: Keep same as `channel`
-    ///  - Modify: Non-Zero ID ≠ `channel`
-    ///  - Discard: Zero (when `channel` is 0, exit)
-    new: usize,
-    /// Which command to run
-    which: u32,
-    /// Data to send and/or receive over channel
-    data: *mut (),
-}
-
-/// CPU architecture list.
-#[non_exhaustive]
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum Arch {
-    /// Web Assembly
-    Wasm = 0,
-    /// RISC-V
-    RiscV = 1,
-    /// ARM
-    Arm = 2,
-    /// MIPS
-    Mips = 3,
-    /// X86 AMD/Intel
-    X86 = 4,
-}
-
-/// Get the CPU architecture of the underlying system.
-pub async fn arch() -> Arch {
-    let channel = Channel::new();
-    let mut out = 0u32;
-    request(Command {
-        channel: 0,
-        new: channel.0,
-        which: 0,
-        data: <*mut _>::cast(&mut out),
-    })
-    .await;
-    match out {
-        0 => Arch::Wasm,
-        1 => Arch::RiscV,
-        2 => Arch::Arm,
-        3 => Arch::Mips,
-        4 => Arch::X86,
-        _ => Arch::Wasm,
-    }
-}
+pub use ffi::block_on;

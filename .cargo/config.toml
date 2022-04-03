@@ -1,0 +1,5 @@
+[build]
+target = "wasm32-unknown-unknown"
+# Add additonal config for setting target_os to daku
+rustflags = ['--cfg', 'target_os="daku"']
+rustdocflags = ['--cfg', 'target_os="daku"']
