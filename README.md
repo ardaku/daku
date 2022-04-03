@@ -1,4 +1,4 @@
-# Daku v1.0.0-alpha.0
+# Daku v1.0.0-alpha.1
 Daku is a system interface API similar to WASI with different goals.
 
 Since it's currently alpha, things may change but changes are somewhat unlikely.
