@@ -20,36 +20,56 @@ The daku api exports a single function `ar()`:
 
 ```wat
 (import "daku" "ar" (func $event
-    (param $size i32)   ;; List[Command].size
-    (param $data i32)   ;; List[Command].reference
-    (param $done i32)   ;; List[Ready].reference (capacity=open channel count)
-    (result i32)        ;; List[Ready].size (size truncated at 16384)
+    (param $cmd_size i32)   ;; List[Command].size
+    (param $cmd_data i32)   ;; List[Command].reference
+    (param $ready_size i32) ;; List[Uint32].capacity
+    (param $ready_data i32) ;; List[Uint32].reference (modified)
+    (result i32)            ;; List[Uint32].size 
 ))
 ```
 
 The function queues a number of asynchronous tasks, passed as a list (first two
-parameters).  When any asynchronous task completes, the function returns the
-new size of `$done` and it's contents are overwritten.
+parameters).  When any asynchronous task completes, the function returns with
+the number of tasks that completed and overwrites the ready list.
 
 ## `Command`
 ```rust
 #[repr(C, packed)]
 struct Command {
-    /// Channel to send a message on, 0 to open channel
-    channel: u32,
-    /// The new channel id
-    ///  - Nop: Keep same as `channel`
-    ///  - Modify: Non-Zero ID ≠ `channel`
-    ///  - Discard: Zero (when `channel` is 0, exit)
-    new: u32,
-    /// Which command to run
-    which: u32,
-    /// Data to send and/or receive over channel
-    data: *mut (), 
+    /// Which portal to use
+    portal: u32,
+    /// Ready index for when command completes
+    ready: u32,
+    /// Command ID
+    command: u32,
+    /// Data buffer to memory-map
+    data: *mut (),
 }
 ```
 
+See [portals](PORTALS.md) for portal command APIs.
+
 ## Types
+
+### Timestamp
+```rust
+#[repr(transparent)]
+struct Timestamp {
+    /// The number of TAI microseconds since Jan 1 00:00:00.000_000, year 0 in
+    /// [ISO 8601:2004](https://en.wikipedia.org/wiki/ISO_8601)
+    ///
+    /// This gives about a range of ±292_470 years since year 0.
+    ///
+    /// This differs from Unix time in 3 ways:
+    ///  - Epoch is 0000-01-01T00:00:00.000_000 TAI instead of
+    ///    1970-01-01T00:00:00.000_000 UTC
+    ///  - Precision is microseconds instead of seconds
+    ///  - TAI not UTC, meaning that a leap second gets representation, rather
+    ///    than being represented as repeat of previous second as it would be in
+    ///    unix time.
+    micros: i64,
+}
+```
 
 ### Time
 ```rust
@@ -106,13 +126,6 @@ struct Text {
 }
 ```
 
-### Overclock
-```rust
-#[repr(C, packed)]
-enum Overclock {
-    Off = 0,
-}
-```
 
 ### TimeZone
 ```rust
@@ -179,269 +192,3 @@ struct Lang {
     list: List<Language>,
 }
 ```
-
-## Commands
-Commands can be added in new versions of the Daku spec, and can be deprecated,
-but never removed.  Because of strict backwards-compatibility their spec should
-aim to be as mathematical as possible rather than engineered.  Command ids are
-always allocated starting from 0, then incrementing by 1.
-
-When you open a channel, you will receive data whenever it's ready.  Some data
-doesn't change, so you can close the channel after the first receive.
-
-Receiving commands must send a capacity in a `size` field for variable length
-items, and if the capacity is not met, the `size` field gets set to the required
-length and data set to NULL.
-
- 0. Get CPU Architecture `recv: u32`
-    ```rust
-    #[repr(C, u32)]
-    enum Arch {
-        Wasm = 0,
-        RiscV = 1,
-        Arm = 2,
-        Mips = 3,
-        X86 = 4,
-    }
-    ```
- 1. Get CPU Reference Size `recv: u32`
-    ```rust
-    #[repr(C, u32)]
-    enum RefSize {
-        Ref16 = 0,
-        Ref32 = 1,
-        Ref64 = 2,
-        Ref128 = 3,
-    }
-    ```
- 2. Query CPU Extensions description `recv: Text`.
-    Results should never be relied on for app features.
- 3. Get overclocking setting `recv: Overclock`
- 4. Set overclocking setting `send: Overclock`
- 5. Get current UTC DateTime `recv: DateTime`
- 6. Get current Time Zone `recv: TimeZone`
- 7. Get Kernel Type `recv: Platform`
-    ```rust
-    #[repr(C, u32)]
-    enum Platform {
-        Linux = 0,
-        Bsd = 1,
-        Windows = 2,
-        MacOS = 3,
-        Ios = 4,
-        Android = 5,
-        Nintendo = 6,
-        Xbox = 7,
-        PlayStation = 8,
-        Fuchsia = 9,
-        Redox = 10,
-        Novusk = 11,
-        Unknown = u32::MAX,
-    }
-    ```
- 8. Get OS Name `recv: Text`
- 9. Get (Desktop) Environment `recv: Environment`
-    ```rust
-    #[repr(C, u32)]
-    enum Environment {
-        Gnome = 0,
-        Windows = 1,
-        Lxde = 2,
-        Openbox = 3,
-        Mate = 4,
-        Xfce = 5,
-        Kde = 6,
-        Cinnamon = 7,
-        I3 = 8,
-        Aqua = 9,
-        Ios = 10,
-        Android = 11,
-        WebBrowser = 12,
-        Console = 13,
-        Ubuntu = 14,
-        Ermine = 15,
-        Orbital = 16,
-       _quantii_env = 17,
-        Unknown = u32::MAX,
-    }
-    ```
- 10. Get Wasm Runtime `recv: Runtime`
-     ```rust
-     #[repr(C, u32)]
-     enum Runtime {
-         Wasmtime = 0,
-         Wasmer = 1,
-         Wasmi = 2,
-         Wari = 3,
-         Unknown = u32::MAX,
-     }
-     ```
- 11. Get User:Username `recv: Text`
- 12. Get User:FullName `recv: Text`
- 13. Get User:Language `recv: Lang`
- 14. Set User:Username `send: Text`
- 15. Set User:FullName `send: Text`
- 16. Set User:Language `send: Lang`
- 17. Spawn child process / task `send: Task`.
-     Becomes "ready" when task sends a message, and shared_memory is written
-     then sent back on next call to `ar()`.  If another task is sent, replaces
-     the child task.  Close the channel to stop the child task.
-     ```rust
-     #[repr(C, packed)]
-     struct Task {
-         /// A WebAssembly file
-         spawn_wasm_len: u32,
-         spawn_wasm_data: *mut u8,
-         /// Share memory with child task (mmap-like)
-         shared_memory_size: u32,
-         shared_memory_data: *mut u8,
-     }
-     ```
- 18. Connect to parent channel `send: Message`
-     ```rust
-     #[repr(C, packed)]
-     struct Message {
-         /// Share memory with parent task (mmap-like)
-         shared_memory_size: u32,
-         shared_memory_data: *mut u8,
-     }
-     ```
-     Once connected, send an empty (null) command to wake parent task and
-     transfer message.
- 19. Log `send: Log`
-     ```rust
-     #[repr(C, packed)]
-     struct Print {
-         /// Log index (which log to print to)
-         which: u16,
-         /// Which levels to print to (bit flags):
-         ///  - 0 DEBUG
-         ///  - 1 INFO
-         ///  - 2 WARNING
-         ///  - 3 ERROR
-         /// Which levels are enabled
-         ///  - 4 DEBUG
-         ///  - 5 INFO
-         ///  - 6 WARNING
-         ///  - 7 ERROR
-         level: u8,
-         /// Set name for this log index instead of printing
-         set_name: bool,
-         /// Text to print (on it's own line)
-         text: Text,
-     }
-     ```
- 20. Debug: `recv: Text`
- 21. Set window actions "toolbar" `send: WindowActions, recv: WindowActionEvent`
-     ```rust
-     #[repr(C, packed)]
-     struct WindowActions {
-         /// Number of actions (between 0 and 3)
-         len: u32,
-         /// List of icons for window actions
-         [Icon; 3],
-     }
-     ```
-
-     ```rust
-     #[repr(C, packed)]
-     struct WindowActionEvent {
-         /// Action number (0, 1 or 2)
-         action: u32,
-         _reserved_a: u32,
-         _reserved_b: u64,
-     }
-     ```
- 22. Set tab navigation "toolbar" `send: NavigationActions, recv: NavigationActionEvent`
-     ```rust
-     #[repr(C, packed)]
-     struct NavigationActions {
-         /// Number of actions (between 0 and 3)
-         len: u32,
-         /// List of icons for window actions
-         [Icon; 3],
-     }
-     ```
-
-     ```rust
-     #[repr(C, packed)]
-     struct WindowActionEvent {
-         /// Action number (0, 1 or 2)
-         action: u32,
-         _reserved_a: u32,
-         _reserved_b: u64,
-     }
-     ```
- 23. Set HUD menu / keyboard shortcuts, and receive events `send: Menu, recv: u32`
-     ```rust
-     #[repr(C, packed)]
-     struct Menu {
-	 options: List<Action>,
-     }
-
-     #[repr(C, packed)]
-     struct Action {
-         /// "Copy", "Select All", etc.
-         name: Text,
-         /// "Copy Selection To The Clipboard", etc.
-         description: Text,
-         /// Additional keywords for searching ["Clone", "Edit"]
-         search_tags: List<Text>,
-         /// Shortcut Modifier (255 for none)
-         modifier: u8,
-         /// Shortcut Key (255 for none)
-         key: u8,
-         /// True for on press, false for on release
-         pressed: bool,
-         /// Option should be disabled?
-         disabled: bool,
-         /// Only display when mode is equal (default mode is 0)
-         mode: u32,
-     }
-     ```
- 24. Set vertical tabs hamburger menu
- 25. Set search enabled/disabled for each mode
- 26. Get keycode input
- 27. Get text input
- 28. Get cursor input
- 29. Get controller input
- 30. Set GPIO Interrupts
- 31. Set GPIO State
- 32. Record audio (microphone)
- 33. Play audio (speakers)
- 34. Record video (webcam)
- 35. Play video (framebuffer)
- 36. Serve over HTTP
- 37. Connect over HTTP
- 38. Bluetooth device
- 39. Bluetooth connect
- 40. Persistent Storage Open File
- 41. Persistent Storage Share File
- 42. GPU Compute
- 43. GPU Command `send: GpuCommand, recv: u32`
-     ```rust
-     #[repr(C, packed)]
-     enum GpuCommandId {
-         /// () => (count: u32)
-         GetNumberOfDisplays = 0u32,
-         /// (index: u32) => (width: u16, height: u16)
-         GetDisplaySize = 1,
-         /// (width: u16, height: u16) => (framebuffer: u32)
-         AllocateFramebuffer = 2,
-         /// (size: u32) => (buffer: u32)
-         AllocateBufferF32 = 3,
-         /// (width: u16, height: u16) => (framebuffer: u32)
-         AllocateTexture = 4,
-         /// (size: u32) => (buffer: u32)
-         AllocateBufferI32 = 5,
-     }
-
-     #[repr(C, packed)]
-     struct GpuCommand {
-         id: GpuCommandId,
-         value: u32,
-         map_size: u32,
-         map_data: *mut (),
-     }
-     ```
- 44. Switch Mode `send: u32`
