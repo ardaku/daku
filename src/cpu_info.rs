@@ -2,8 +2,7 @@
 
 use std::mem::MaybeUninit;
 
-use crate::ffi;
-use crate::types::TextMut;
+use crate::{ffi, types::TextMut};
 
 /// CPU architecture list.
 #[non_exhaustive]
@@ -84,7 +83,10 @@ pub async fn width() -> Width {
 pub async fn extensions() -> String {
     // Get required length
     let ready = ffi::allocate();
-    let mut out = TextMut { size: 0, data: std::ptr::null_mut() };
+    let mut out = TextMut {
+        size: 0,
+        data: std::ptr::null_mut(),
+    };
     let future = unsafe {
         ffi::request_future(ffi::Command {
             portal: ffi::Portal::CpuInfo,
@@ -97,7 +99,10 @@ pub async fn extensions() -> String {
     // Get the string
     let ready = ffi::allocate();
     let mut string = String::with_capacity(out.size);
-    let mut out = TextMut { size: string.capacity(), data: string.as_mut_ptr() };
+    let mut out = TextMut {
+        size: string.capacity(),
+        data: string.as_mut_ptr(),
+    };
     let future = unsafe {
         ffi::request_future(ffi::Command {
             portal: ffi::Portal::CpuInfo,
