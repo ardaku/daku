@@ -47,7 +47,8 @@ struct Command {
 }
 ```
 
-See [portals](PORTALS.md) for portal command APIs.
+See [portals](https://github.com/ardaku/daku/blob/stable/PORTALS.md) for portal
+command APIs.
 
 ## Types
 
