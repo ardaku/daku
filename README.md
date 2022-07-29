@@ -1,4 +1,4 @@
-# Daku v1.0.0-alpha.1
+# Daku v1.0.0-alpha.2
 Daku is a system interface API similar to WASI with different goals.
 
 Since it's currently alpha, things may change but changes are somewhat unlikely.
@@ -22,28 +22,44 @@ The daku api exports a single function `ar()`:
 (import "daku" "ar" (func $event
     (param $cmd_size i32)   ;; List[Command].size
     (param $cmd_data i32)   ;; List[Command].reference
-    (param $ready_size i32) ;; List[Uint32].capacity
-    (param $ready_data i32) ;; List[Uint32].reference (modified)
     (result i32)            ;; List[Uint32].size 
 ))
 ```
 
 The function queues a number of asynchronous tasks, passed as a list (first two
-parameters).  When any asynchronous task completes, the function returns with
-the number of tasks that completed and overwrites the ready list.
+parameters).  When any asynchronous task completes, it gets pushed to the ready
+list and the function returns with the number of tasks that completed.  Each
+call to `ar()` clears the ready list.
 
 ## `Command`
 ```rust
 #[repr(C, packed)]
 struct Command {
-    /// Which portal to use
-    portal: u32,
     /// Ready index for when command completes
     ready: u32,
-    /// Command ID
-    command: u32,
-    /// Data buffer to memory-map
-    data: *mut (),
+    /// Channel id to use
+    channel: u32,
+    /// Data buffer size
+    size: u32,
+    /// Data buffer reference
+    data: *const (),
+}
+```
+
+## Channels
+Channel 0 is special, and lets you connect to portals.
+
+```rust
+#[repr(C, packed)]
+struct Connect {
+    /// The capacity of the ready list
+    ready_capacity: u32,
+    /// Reference to uninitialized ready list
+    ready_data: *mut u32,
+    /// The number of new portals
+    portals_size: u32,
+    /// in: List of new portal IDs - out: List of new portal channel IDs
+    portals_data: *mut u32,
 }
 ```
 
