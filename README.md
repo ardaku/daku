@@ -137,7 +137,7 @@ struct List<T> {
 #[repr(C, packed)]
 struct Text {
     /// Number of bytes
-    size: u32,
+    size: usize,
     /// UTF-8 String
     data: *mut u8,
 }

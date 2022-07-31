@@ -1,18 +1,14 @@
 //! Rust crate to interface with the [Daku API](https://github.com/ardaku/daku).
-//! This crate only works/is sound on wasm32 platforms supporting the daku api.
+//! This crate only works on wasm32 platforms supporting the daku api.
 //!
-//! Functions are officially stabilized as they are added to this crate.
-//!
-//! Each module gives access to a safe portal API, so there is a module for each
-//! portal.
-//!
-//! This crate supports joining syscalls together using the Daku command queue.
-//! If you use `join!()` on two futures from this crate, it will combine the
-//! two syscalls into one.  Some futures have a second syscall (for instance, if
-//! they require allocation).  They also work with joining, so any number of
-//! them joined together will result in two syscalls, so long as they become
-//! ready at the same time.
+//! # Concurrency model of Daku
+//! Daku doesn't use the concept of threads or shared memory.  You can spawn
+//! isolated tasks with the API, which can then communicate exclusively over
+//! channels.  If a task becomes unresponsive (too long between calls to
+//! [`sys::ar()`]), then it will be killed.  For CPU intensive tasks, use
+//! `spawn_blocking` (FIXME).
 
+#![no_std]
 #![doc(
     html_logo_url = "https://ardaku.github.io/mm/logo.svg",
     html_favicon_url = "https://ardaku.github.io/mm/icon.svg",
@@ -34,6 +30,7 @@
     variant_size_differences
 )]
 
+// FIXME Don't require target os
 #[cfg(not(all(
     target_arch = "wasm32",
     target_endian = "little",
@@ -45,10 +42,16 @@
 )))]
 compile_error!("Target is not wasm32-daku");
 
-mod ffi;
-mod types;
+extern crate alloc;
 
-pub mod cpu_info;
-pub mod log;
+// mod ffi;
+// mod types;
 
-pub use ffi::block_on;
+pub mod cmd;
+pub mod sys;
+pub mod api;
+pub mod run;
+
+// FIXME: Remove
+// pub mod cpu_info;
+// pub mod log;

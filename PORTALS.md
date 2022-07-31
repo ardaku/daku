@@ -3,11 +3,16 @@ Portals are consecutively numbered, and can be used to open channels.  Any
 number of channels can be opened on the same portal.  Each portal matches an
 app permission.
 
+ 0. [Spawn tasks](portals/0.md)
+ 1. [Wake tasks](portals/1.md)
+ 2. [Write logs](portals/2.md)
+
+
+
  0. [CPU Info](portals/0.md)
  1. [CPU Settings](portals/1.md)
  2. [Environment Info](portals/2.md)
  3. [Environment Settings](portals/3.md)
- 4. [Write logs](portals/4.md)
  5. [Read serial commands](portals/5.md)
  6. [Spawn sandboxed child tasks](portals/6.md)
  7. [Install apps](portals/7.md)
