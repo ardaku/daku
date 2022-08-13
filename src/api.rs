@@ -6,5 +6,5 @@
 #[cfg(feature = "log")]
 pub mod log;
 
-#[cfg(feature = "dev")]
-pub mod dev;
+#[cfg(feature = "prompt")]
+pub mod prompt;

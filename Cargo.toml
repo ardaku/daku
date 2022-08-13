@@ -35,4 +35,4 @@ default-features = false
 
 [features]
 log = ["dep:log"]
-dev = []
+prompt = []
