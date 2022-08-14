@@ -44,6 +44,7 @@ pub struct Command {
     pub data: *const (),
 }
 
+#[link(wasm_import_module = "daku")]
 extern "C" {
     /// Unsafe asynchronous request FFI call
     pub fn ar(size: usize, data: *const Command) -> usize;
