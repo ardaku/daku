@@ -11,7 +11,7 @@ pub enum Portal {
     /// Logging API (stdout/printf)
     Log = 2,
     /// Developer command API (stdin/scanf)
-    Dev = 3,
+    Prompt = 3,
     /// MPMC Channel API
     Channel = 4,
 }
@@ -110,10 +110,10 @@ pub struct Text {
     pub data: *mut u8,
 }
 
-/// Developer command
+/// Developer console prompt
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
-pub struct Dev {
+pub struct Prompt {
     /// Text (in/out)
     pub text: *mut Text,
     /// Capacity (in/out)

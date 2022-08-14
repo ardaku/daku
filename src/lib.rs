@@ -44,6 +44,7 @@ compile_error!("Target is not wasm32-daku");
 
 extern crate alloc;
 
+// FIXME: Remove
 // mod ffi;
 // mod types;
 
@@ -52,6 +53,7 @@ pub mod sys;
 pub mod api;
 pub mod run;
 
+mod portal;
+
 // FIXME: Remove
 // pub mod cpu_info;
-// pub mod log;

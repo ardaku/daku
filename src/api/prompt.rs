@@ -2,7 +2,7 @@
 
 use alloc::string::String;
 use core::mem;
-use crate::sys::{Dev, Text};
+use crate::{cmd, sys::{Prompt, Text}, portal};
 
 /// Read a line, appending it to the provided buffer (not including the newline
 /// character).
@@ -11,6 +11,8 @@ use crate::sys::{Dev, Text};
 /// syscall, but if it's not it will require two.  Commands can never be more
 /// than 65_536 bytes (size of one WebAssembly page).
 pub async fn read_line(buf: &mut String) {
+    let channel = portal::prompt().await;
+
     let mut buffer = String::new();
     mem::swap(&mut buffer, buf);
 
@@ -23,12 +25,13 @@ pub async fn read_line(buf: &mut String) {
     // Build a Text type
     let mut text = Text { size, data };
     let mut new_capacity = capacity;
-    let dev = Dev {
+    let prompt = Prompt {
         text: &mut text,
         capacity: &mut new_capacity,
     };
 
-    // Run command FIXME
+    // Run command
+    unsafe { cmd::execute(channel, &prompt).await };
 
     if capacity != new_capacity {
         // Not enough space!
@@ -43,12 +46,15 @@ pub async fn read_line(buf: &mut String) {
         text.size = size;
         text.data = data;
         new_capacity = capacity;
-        let dev = Dev {
+        let prompt = Prompt {
             text: &mut text,
             capacity: &mut new_capacity,
         };
 
         // Re-run command FIXME
+        unsafe {
+            cmd::execute(channel, &prompt).await
+        };
 
         assert_eq!(capacity, new_capacity);
     }

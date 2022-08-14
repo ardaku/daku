@@ -19,12 +19,13 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use crate::{cmd, sys::{Log, Level, Command}};
-use core::{mem, sync::atomic::{AtomicBool, Ordering::Relaxed}, fmt::Write};
+use crate::{cmd, sys::{Log, Level, Command}, portal};
+use core::{mem, fmt::Write};
 use alloc::{string::String, format, borrow::Cow};
 use log::LevelFilter;
 
-static ONCE: AtomicBool = AtomicBool::new(true);
+static mut INIT: bool = false;
+static mut CHANNEL: u32 = u32::MAX;
 
 struct Logger;
 
@@ -53,7 +54,7 @@ impl log::Log for Logger {
         let message: Cow<'_, str> = if let Some(message) = args.as_str() {
             message.into()
         } else {
-            format!("{}", args).into()
+            format!("{args}").into()
         };
         let length = message.len();
 
@@ -77,14 +78,13 @@ impl log::Log for Logger {
         unsafe { 
             cmd::queue([Command {
                 ready: usize::MAX, // ignored because always immediately ready
-                channel: 0, // FIXME: Get global log channel
+                channel: CHANNEL,
                 size: log.len(),
                 data: log.as_ptr().cast(),
             }]);
         }
     }
 
-    // Data is never buffered
     fn flush(&self) {
         cmd::flush();
     }
@@ -103,8 +103,12 @@ impl log::Log for Logger {
 /// log::init(Level::Trace); // Log everything
 /// ```
 pub async fn init(level: impl Into<Option<log::Level>>) {
-    if ONCE.swap(false, Relaxed) {
-        log::set_max_level(level.into().map(|level| level.to_level_filter()).unwrap_or(LevelFilter::Off));
-        unsafe { log::set_logger_racy(&Logger).unwrap() };
+    unsafe { 
+        if !INIT {
+            INIT = true;
+            CHANNEL = portal::log().await;
+            log::set_max_level(level.into().map(|level| level.to_level_filter()).unwrap_or(LevelFilter::Off));
+            log::set_logger_racy(&Logger).unwrap();
+        }
     }
 }
