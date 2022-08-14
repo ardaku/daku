@@ -36,21 +36,20 @@ async fn init() {
         portals.push(Portal::Prompt as u32);
     }
 
-    let connects = [
-        Connect {
-            ready_capacity: READY_LIST_CAPACITY,
-            ready_data: unsafe { READY_LIST.as_mut_ptr() },
-            portals_size: portals.len(),
-            portals_data: portals.as_mut_ptr(),
-        },
-    ];
+    let connect = &Connect {
+        ready_capacity: READY_LIST_CAPACITY,
+        ready_data: unsafe { READY_LIST.as_mut_ptr() },
+        portals_size: portals.len(),
+        portals_data: portals.as_mut_ptr(),
+    };
+    let connect: *const _ = connect;
 
     let commands = [
         Command {
             ready: usize::MAX,
             channel: 0,
-            size: connects.len(),
-            data: connects.as_ptr().cast(),
+            size: core::mem::size_of::<Connect>(),
+            data: connect.cast(),
         },
     ];
 
