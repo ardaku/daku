@@ -19,10 +19,15 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use crate::{cmd, sys::{Log, Level, Command}, portal};
-use core::{mem, fmt::Write};
-use alloc::{string::String, format, borrow::Cow};
+use alloc::{borrow::Cow, format, string::String};
+use core::{fmt::Write, mem};
+
 use log::LevelFilter;
+
+use crate::{
+    cmd, portal,
+    sys::{Command, Level, Log},
+};
 
 static mut INIT: bool = false;
 static mut CHANNEL: u32 = u32::MAX;
@@ -66,16 +71,18 @@ impl log::Log for Logger {
             level: level.into(),
             target: (),
         };
+
         let send: *const Log = &send;
-        let send: &[u8] = unsafe { core::slice::from_raw_parts(send.cast(), logsize) };
+        let send: &[u8] =
+            unsafe { core::slice::from_raw_parts(send.cast(), logsize) };
         log.extend(['\0'; mem::size_of::<Log>()]);
         write!(&mut log, "{target}").ok();
         let mut log = log.into_bytes();
         for (l, s) in log.iter_mut().zip(send.into_iter().cloned()) {
             *l = s;
         }
-        
-        unsafe { 
+
+        unsafe {
             cmd::queue([Command {
                 ready: usize::MAX, // ignored because always immediately ready
                 channel: CHANNEL,
@@ -83,6 +90,8 @@ impl log::Log for Logger {
                 data: log.as_ptr().cast(),
             }]);
         }
+        // Defer dropping of command data until flush
+        cmd::defer([log]);
     }
 
     fn flush(&self) {
@@ -103,11 +112,16 @@ impl log::Log for Logger {
 /// log::init(Level::Trace); // Log everything
 /// ```
 pub async fn init(level: impl Into<Option<log::Level>>) {
-    unsafe { 
+    unsafe {
         if !INIT {
             INIT = true;
             CHANNEL = portal::log().await;
-            log::set_max_level(level.into().map(|level| level.to_level_filter()).unwrap_or(LevelFilter::Off));
+            log::set_max_level(
+                level
+                    .into()
+                    .map(|level| level.to_level_filter())
+                    .unwrap_or(LevelFilter::Off),
+            );
             log::set_logger_racy(&Logger).unwrap();
         }
     }

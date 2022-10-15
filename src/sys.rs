@@ -48,6 +48,8 @@ pub struct Command {
 extern "C" {
     /// Unsafe asynchronous request FFI call
     pub fn ar(size: usize, data: *const Command) -> usize;
+    /// Unstable debug call
+    pub fn dbg(size: usize, text: *const u8);
 }
 
 /// Log level, pretty much copied from

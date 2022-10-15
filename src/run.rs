@@ -1,8 +1,11 @@
 //! Safe API for spawning asynchronous tasks
 
-use alloc::{sync::Arc, boxed::Box, task::Wake};
-use core::task::{Context, Waker};
-use core::future::Future;
+use alloc::{boxed::Box, sync::Arc, task::Wake};
+use core::{
+    future::Future,
+    task::{Context, Waker},
+};
+
 use crate::cmd;
 
 static mut ASLEEP: bool = false;

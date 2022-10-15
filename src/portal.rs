@@ -1,11 +1,13 @@
-use crate::sys::{self, Command, Portal, Connect};
-use alloc::vec::{Vec};
+use alloc::vec::Vec;
+
+use crate::sys::{self, Command, Connect, Portal};
 
 #[cfg(feature = "log")]
 static mut LOG: core::mem::MaybeUninit<u32> = core::mem::MaybeUninit::uninit();
 
 #[cfg(feature = "prompt")]
-static mut PROMPT: core::mem::MaybeUninit<u32> = core::mem::MaybeUninit::uninit();
+static mut PROMPT: core::mem::MaybeUninit<u32> =
+    core::mem::MaybeUninit::uninit();
 
 // 1kB list of up to 256 ready channels
 const READY_LIST_CAPACITY: usize = 256;
@@ -20,12 +22,14 @@ pub(crate) unsafe fn ready_list(size: usize) -> &'static [usize] {
 }
 
 async fn init() {
-    if unsafe { INIT } { return };
+    if unsafe { INIT } {
+        return;
+    };
 
     unsafe {
         INIT = true;
         READY_LIST.reserve_exact(READY_LIST_CAPACITY);
-    } 
+    }
 
     let mut portals: Vec<u32> = Vec::new();
 
@@ -44,23 +48,25 @@ async fn init() {
     };
     let connect: *const _ = connect;
 
-    let commands = [
-        Command {
-            ready: usize::MAX,
-            channel: 0,
-            size: core::mem::size_of::<Connect>(),
-            data: connect.cast(),
-        },
-    ];
+    let commands = [Command {
+        ready: usize::MAX,
+        channel: 0,
+        size: core::mem::size_of::<Connect>(),
+        data: connect.cast(),
+    }];
 
     unsafe {
         sys::ar(commands.len(), commands.as_ptr());
     }
 
     #[cfg(feature = "prompt")]
-    unsafe { PROMPT = core::mem::MaybeUninit::new(portals.pop().unwrap()) };
+    unsafe {
+        PROMPT = core::mem::MaybeUninit::new(portals.pop().unwrap())
+    };
     #[cfg(feature = "log")]
-    unsafe { LOG = core::mem::MaybeUninit::new(portals.pop().unwrap()) };
+    unsafe {
+        LOG = core::mem::MaybeUninit::new(portals.pop().unwrap())
+    };
 }
 
 /// Get the log channel

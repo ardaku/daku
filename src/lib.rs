@@ -48,10 +48,10 @@ extern crate alloc;
 // mod ffi;
 // mod types;
 
-pub mod cmd;
-pub mod sys;
 pub mod api;
+pub mod cmd;
 pub mod run;
+pub mod sys;
 
 mod portal;
 

@@ -2,7 +2,11 @@
 
 use alloc::string::String;
 use core::mem;
-use crate::{cmd, sys::{Prompt, Text}, portal};
+
+use crate::{
+    cmd, portal,
+    sys::{Prompt, Text},
+};
 
 /// Read a line, appending it to the provided buffer (not including the newline
 /// character).
@@ -13,10 +17,11 @@ use crate::{cmd, sys::{Prompt, Text}, portal};
 pub async fn read_line(buf: &mut String) {
     let channel = portal::prompt().await;
 
+    // Get ownership
     let mut buffer = String::new();
     mem::swap(&mut buffer, buf);
 
-    // Get raw parts and forget in order to leak memory
+    // Get raw parts and forget in order to leak memory temporarily
     let mut capacity = buffer.capacity();
     let mut size = buffer.len();
     let mut data = buffer.as_mut_ptr();
@@ -35,9 +40,8 @@ pub async fn read_line(buf: &mut String) {
 
     if capacity != new_capacity {
         // Not enough space!
-        let mut buffer = unsafe {
-            String::from_raw_parts(text.data, text.size, capacity)
-        };
+        let mut buffer =
+            unsafe { String::from_raw_parts(text.data, text.size, capacity) };
         buffer.reserve(new_capacity - capacity);
         capacity = buffer.capacity();
         size = buffer.len();
@@ -52,14 +56,10 @@ pub async fn read_line(buf: &mut String) {
         };
 
         // Re-run command FIXME
-        unsafe {
-            cmd::execute(channel, &prompt).await
-        };
+        unsafe { cmd::execute(channel, &prompt).await };
 
         assert_eq!(capacity, new_capacity);
     }
-        
-    *buf = unsafe {
-        String::from_raw_parts(text.data, text.size, capacity)
-    };
+
+    *buf = unsafe { String::from_raw_parts(text.data, text.size, capacity) };
 }
