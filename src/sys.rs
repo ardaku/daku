@@ -4,16 +4,30 @@
 #[repr(u32)]
 #[derive(Debug, Copy, Clone)]
 pub enum Portal {
-    /// Task spawning API
-    Spawn = 0,
-    /// Blocking task spawning API
-    SpawnBlocking = 1,
     /// Logging API (stdout/printf)
-    Log = 2,
+    Log = 0,
     /// Developer command API (stdin/scanf)
-    Prompt = 3,
+    Prompt = 1,
+    /// Set user information API (username, display name)
+    Account = 2,
+    /// Get user information API (username, display name)
+    User = 3,
+    /// Set system information API (system nickname, hostname)
+    System = 4,
+    /// Get system information API (system nickname, hostname)
+    Host = 5,
+    /// Set hardware features API (overclock, hardware time)
+    Hardware = 6,
+    /// Get hardware features API (cpu / gpu specs)
+    Platform = 7,
+    /// Task spawning API
+    Spawn = 8,
+    /// Blocking task spawning API
+    SpawnBlocking = 9,
     /// MPMC Channel API
-    Channel = 4,
+    Channel = 10,
+    /// Account API (create / delete users)
+    Admin = 11,
 }
 
 /// Channel Zero Command

@@ -15,7 +15,7 @@ use core::{
 
 use crate::{
     portal,
-    sys::{self, Command},
+    sys::{self, Command, dbg},
 };
 
 // Task local command queue
@@ -111,7 +111,17 @@ impl Future for Request {
     type Output = ();
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        unsafe {
+            let text = "Poll Start";
+            dbg(text.len(), text.as_ptr());
+        }
+        
         let waker = unsafe { &mut PENDING[self.0] };
+
+        unsafe {
+            let text = "Poll IND";
+            dbg(text.len(), text.as_ptr());
+        }
 
         if let Some(ref mut waker) = waker {
             *waker = cx.waker().clone();

@@ -5,7 +5,7 @@ use core::mem;
 
 use crate::{
     cmd, portal,
-    sys::{Prompt, Text},
+    sys::{Prompt, Text, dbg},
 };
 
 /// Read a line, appending it to the provided buffer (not including the newline
@@ -35,10 +35,24 @@ pub async fn read_line(buf: &mut String) {
         capacity: &mut new_capacity,
     };
 
+    unsafe {
+        let text = "Test";
+        dbg(text.len(), text.as_ptr());
+    }
+
     // Run command
     unsafe { cmd::execute(channel, &prompt).await };
+        
+    unsafe {
+        let text = "Ran command";
+        dbg(text.len(), text.as_ptr());
+    }
 
     if capacity != new_capacity {
+        unsafe {
+            let text = "Not enough space";
+            dbg(text.len(), text.as_ptr());
+        }
         // Not enough space!
         let mut buffer =
             unsafe { String::from_raw_parts(text.data, text.size, capacity) };
@@ -59,6 +73,11 @@ pub async fn read_line(buf: &mut String) {
         unsafe { cmd::execute(channel, &prompt).await };
 
         assert_eq!(capacity, new_capacity);
+    }
+        
+    unsafe {
+        let text = "Got-it";
+        dbg(text.len(), text.as_ptr());
     }
 
     *buf = unsafe { String::from_raw_parts(text.data, text.size, capacity) };
