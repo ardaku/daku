@@ -1,3 +1,5 @@
+#![allow(unused)] // For when no portals are enabled via feature flags
+
 use alloc::vec::Vec;
 
 use crate::sys::{self, Command, Connect, Portal};

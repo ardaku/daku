@@ -10,7 +10,7 @@
 
 [package]
 name = "daku"
-version = "0.2.0"
+version = "0.3.0"
 license = "Apache-2.0 OR MIT OR BSL-1.0"
 description = "Interface to the Daku API"
 repository = "https://github.com/ardaku/daku"
