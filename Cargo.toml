@@ -10,7 +10,7 @@
 
 [package]
 name = "daku"
-version = "0.3.0"
+version = "0.3.1"
 license = "Apache-2.0 OR MIT OR BSL-1.0"
 description = "Interface to the Daku API"
 repository = "https://github.com/ardaku/daku"
@@ -36,3 +36,9 @@ default-features = false
 [features]
 log = ["dep:log"]
 prompt = []
+
+[package.metadata.docs.rs]
+all-features = true
+default-target = "wasm32-unknown-unknown"
+targets = []
+cargo-args = ["--cfg", 'target_os="daku"']
