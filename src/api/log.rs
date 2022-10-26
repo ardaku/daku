@@ -78,7 +78,7 @@ impl log::Log for Logger {
         log.extend(['\0'; mem::size_of::<Log>()]);
         write!(&mut log, "{target}").ok();
         let mut log = log.into_bytes();
-        for (l, s) in log.iter_mut().zip(send.into_iter().cloned()) {
+        for (l, s) in log.iter_mut().zip(send.iter().cloned()) {
             *l = s;
         }
 

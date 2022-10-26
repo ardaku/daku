@@ -31,14 +31,6 @@ async fn init() {
         READY_LIST.reserve_exact(READY_LIST_CAPACITY);
     }
 
-    unsafe {
-        let ptr = READY_LIST.as_ptr();
-        let len = READY_LIST.len();
-        let cap = READY_LIST.capacity();
-        let text = alloc::format!("Ready List: {ptr:p}, {len}/{cap}");
-        sys::dbg(text.len(), text.as_ptr());
-    }
-
     let mut portals: Vec<u32> = Vec::new();
 
     if cfg!(feature = "log") {

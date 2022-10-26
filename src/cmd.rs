@@ -15,7 +15,7 @@ use core::{
 
 use crate::{
     portal,
-    sys::{self, dbg, Command},
+    sys::{self, Command},
 };
 
 // Task local command queue
@@ -60,6 +60,10 @@ pub fn defer<T: 'static, const N: usize>(items: [T; N]) {
 }
 
 /// Queue a command
+///
+/// # Safety
+/// Commands must be valid according to the Daku spec.  Failure to pass in valid
+/// `Command` struct may cause undefined behavior.
 pub unsafe fn queue<const N: usize>(commands: [Command; N]) {
     let queue = &mut QUEUE;
     queue.extend(commands);
@@ -85,12 +89,20 @@ pub fn flush() {
 }
 
 /// Queue and flush
+///
+/// # Safety
+/// Commands must be valid according to the Daku spec.  Failure to pass in valid
+/// `Command` struct may cause undefined behavior.
 pub unsafe fn until<const N: usize>(commands: [Command; N]) {
     queue(commands);
     flush();
 }
 
 /// Send a command on a channel
+///
+/// # Safety
+/// `data` must be valid according to the Daku spec.  Failure to pass in valid
+/// `data` may cause undefined behavior.
 pub async unsafe fn execute<T>(channel: u32, data: &T) {
     // Data can't move since it's borrowed
     let data: *const T = data;
@@ -115,17 +127,7 @@ impl Future for Request {
     type Output = ();
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        unsafe {
-            let text = "Poll Start";
-            dbg(text.len(), text.as_ptr());
-        }
-
         let waker = unsafe { &mut PENDING[self.0] };
-
-        unsafe {
-            let text = "Poll IND";
-            dbg(text.len(), text.as_ptr());
-        }
 
         if let Some(ref mut waker) = waker {
             *waker = cx.waker().clone();
