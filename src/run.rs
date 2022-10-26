@@ -45,7 +45,17 @@ pub fn block_on<F: Future<Output = ()>>(future: F) {
     let mut cx = Context::from_waker(&waker);
 
     while future.as_mut().poll(&mut cx).is_pending() {
+        unsafe {
+            let text = "Sleep enter";
+            crate::sys::dbg(text.len(), text.as_ptr());
+        }
+
         sleep();
+
+        unsafe {
+            let text = "Sleep Leave";
+            crate::sys::dbg(text.len(), text.as_ptr());
+        }
     }
     cmd::flush();
 }

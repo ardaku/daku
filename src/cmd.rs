@@ -15,7 +15,7 @@ use core::{
 
 use crate::{
     portal,
-    sys::{self, Command, dbg},
+    sys::{self, dbg, Command},
 };
 
 // Task local command queue
@@ -71,6 +71,10 @@ pub fn flush() {
     let drops = unsafe { &mut DROPS };
     unsafe {
         for ready in portal::ready_list(sys::ar(queue.len(), queue.as_ptr())) {
+            if *ready == usize::MAX {
+                // Special value to ignore
+                continue;
+            }
             if let Some(waker) = PENDING[*ready].take() {
                 waker.wake();
             }
@@ -115,7 +119,7 @@ impl Future for Request {
             let text = "Poll Start";
             dbg(text.len(), text.as_ptr());
         }
-        
+
         let waker = unsafe { &mut PENDING[self.0] };
 
         unsafe {

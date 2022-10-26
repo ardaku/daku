@@ -92,6 +92,7 @@ impl log::Log for Logger {
         }
         // Defer dropping of command data until flush
         cmd::defer([log]);
+        cmd::defer([message]);
     }
 
     fn flush(&self) {
