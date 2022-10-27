@@ -5,16 +5,15 @@ use core::{
     any::Any,
     future::Future,
     pin::Pin,
-    ptr,
     task::{
         Context,
         Poll::{self, Pending, Ready},
-        RawWaker, RawWakerVTable, Waker,
+        Waker,
     },
 };
 
 use crate::{
-    portal,
+    portal, run,
     sys::{self, Command},
     tls::Local,
 };
@@ -34,19 +33,10 @@ static STATE: Local<State> = Local::new(State {
     drops: Vec::new(),
 });
 
-const FAKE_RAW_WAKER_VTABLE: RawWakerVTable =
-    RawWakerVTable::new(fake_raw_waker, dont, dont, dont);
-
-const unsafe fn dont(_: *const ()) {}
-
-const unsafe fn fake_raw_waker(ptr: *const ()) -> RawWaker {
-    RawWaker::new(ptr, &FAKE_RAW_WAKER_VTABLE)
-}
-
 /// Add a mock waker to be replaced
 fn add_waker() -> usize {
     STATE.with(|state| {
-        let waker = unsafe { Waker::from_raw(fake_raw_waker(ptr::null())) };
+        let waker = run::new_waker();
 
         if let Some(index) = state.pending.iter().position(|w| w.is_none()) {
             state.pending[index] = Some(waker);

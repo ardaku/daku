@@ -42,10 +42,15 @@ unsafe fn wake_any(_: *const ()) {
 
 unsafe fn drop(_: *const ()) {}
 
+#[inline(always)]
+pub(crate) fn new_waker() -> Waker {
+    unsafe { Waker::from_raw(clone(ptr::null())) }
+}
+
 /// Execute a future
 #[inline(always)]
 pub fn block_on<F: Future<Output = ()>>(future: F) {
-    let waker = unsafe { Waker::from_raw(clone(ptr::null())) };
+    let waker = new_waker();
     let mut future = future;
     let mut future = unsafe { Pin::new_unchecked(&mut future) };
     let mut cx = Context::from_waker(&waker);
