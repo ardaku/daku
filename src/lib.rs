@@ -52,6 +52,7 @@ pub mod api;
 pub mod cmd;
 pub mod run;
 pub mod sys;
+pub mod tls;
 
 mod portal;
 
