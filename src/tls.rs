@@ -22,7 +22,7 @@ impl<T> Local<T> {
     /// Similar to
     /// [`LocalKey::with_borrow_mut()`](https://doc.rust-lang.org/std/thread/struct.LocalKey.html#method.with_borrow_mut)
     #[inline(always)]
-    pub fn with<R>(&'static self, f: impl Fn(&mut T) -> R) -> R {
+    pub fn with<R>(&'static self, f: impl FnOnce(&mut T) -> R) -> R {
         let data = unsafe { &mut *self.data.get() };
 
         f(data)

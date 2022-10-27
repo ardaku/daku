@@ -16,14 +16,23 @@ use core::{
 use crate::{
     portal,
     sys::{self, Command},
+    tls::Local,
 };
 
-// Task local command queue
-static mut QUEUE: Vec<Command> = Vec::new();
-// Pending wakers
-static mut PENDING: Vec<Option<Waker>> = Vec::new();
-// Pending drops
-static mut DROPS: Vec<Box<dyn Any>> = Vec::new();
+struct State {
+    // Task local command queue
+    queue: Vec<Command>,
+    // Pending wakers
+    pending: Vec<Option<Waker>>,
+    // Pending drops
+    drops: Vec<Box<dyn Any>>,
+}
+
+static STATE: Local<State> = Local::new(State {
+    queue: Vec::new(),
+    pending: Vec::new(),
+    drops: Vec::new(),
+});
 
 const FAKE_RAW_WAKER_VTABLE: RawWakerVTable =
     RawWakerVTable::new(fake_raw_waker, dont, dont, dont);
@@ -36,27 +45,27 @@ const unsafe fn fake_raw_waker(ptr: *const ()) -> RawWaker {
 
 /// Add a mock waker to be replaced
 fn add_waker() -> usize {
-    unsafe {
-        let waker = Waker::from_raw(fake_raw_waker(ptr::null()));
+    STATE.with(|state| {
+        let waker = unsafe { Waker::from_raw(fake_raw_waker(ptr::null())) };
 
-        if let Some(index) = PENDING.iter().position(|w| w.is_none()) {
-            PENDING[index] = Some(waker);
+        if let Some(index) = state.pending.iter().position(|w| w.is_none()) {
+            state.pending[index] = Some(waker);
             index
         } else {
-            let index = PENDING.len();
-            PENDING.push(Some(waker));
+            let index = state.pending.len();
+            state.pending.push(Some(waker));
             index
         }
-    }
+    })
 }
 
 /// Defer drop(s) until next flush
 pub fn defer<T: 'static, const N: usize>(items: [T; N]) {
-    unsafe {
-        let drops = &mut DROPS;
-        drops
+    STATE.with(|state| {
+        state
+            .drops
             .extend(items.into_iter().map(|x| -> Box<dyn Any> { Box::new(x) }));
-    }
+    })
 }
 
 /// Queue a command
@@ -65,27 +74,26 @@ pub fn defer<T: 'static, const N: usize>(items: [T; N]) {
 /// Commands must be valid according to the Daku spec.  Failure to pass in valid
 /// `Command` struct may cause undefined behavior.
 pub unsafe fn queue<const N: usize>(commands: [Command; N]) {
-    let queue = &mut QUEUE;
-    queue.extend(commands);
+    STATE.with(|state| state.queue.extend(commands));
 }
 
 /// Flush commands
 pub fn flush() {
-    let queue = unsafe { &mut QUEUE };
-    let drops = unsafe { &mut DROPS };
-    unsafe {
-        for ready in portal::ready_list(sys::ar(queue.len(), queue.as_ptr())) {
+    STATE.with(|state| {
+        for ready in unsafe {
+            portal::ready_list(sys::ar(state.queue.len(), state.queue.as_ptr()))
+        } {
             if *ready == usize::MAX {
                 // Special value to ignore
                 continue;
             }
-            if let Some(waker) = PENDING[*ready].take() {
+            if let Some(waker) = state.pending[*ready].take() {
                 waker.wake();
             }
         }
-    }
-    queue.clear();
-    drops.clear();
+        state.queue.clear();
+        state.drops.clear();
+    });
 }
 
 /// Queue and flush
@@ -127,13 +135,13 @@ impl Future for Request {
     type Output = ();
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let waker = unsafe { &mut PENDING[self.0] };
-
-        if let Some(ref mut waker) = waker {
-            *waker = cx.waker().clone();
-            Pending
-        } else {
-            Ready(())
-        }
+        STATE.with(|state| {
+            if let Some(ref mut waker) = state.pending[self.0] {
+                *waker = cx.waker().clone();
+                Pending
+            } else {
+                Ready(())
+            }
+        })
     }
 }
