@@ -34,6 +34,7 @@ static STATE: Local<State> = Local::new(State {
 });
 
 /// Add a mock waker to be replaced
+#[inline(always)]
 fn add_waker() -> usize {
     STATE.with(|state| {
         let waker = run::new_waker();
@@ -50,6 +51,7 @@ fn add_waker() -> usize {
 }
 
 /// Defer drop(s) until next flush
+#[inline(always)]
 pub fn defer<T: 'static, const N: usize>(items: [T; N]) {
     STATE.with(|state| {
         state
@@ -68,6 +70,7 @@ pub unsafe fn queue<const N: usize>(commands: [Command; N]) {
 }
 
 /// Flush commands
+#[inline(never)]
 pub fn flush() {
     STATE.with(|state| {
         for ready in unsafe {
@@ -101,12 +104,19 @@ pub unsafe fn until<const N: usize>(commands: [Command; N]) {
 /// # Safety
 /// `data` must be valid according to the Daku spec.  Failure to pass in valid
 /// `data` may cause undefined behavior.
-pub async unsafe fn execute<T>(channel: u32, data: &T) {
+#[inline(always)]
+pub unsafe fn execute<T>(channel: u32, data: &T) -> impl Future<Output = ()> {
     // Data can't move since it's borrowed
     let data: *const T = data;
     let data = data.cast();
-    let ready = add_waker();
     let size = core::mem::size_of::<T>();
+
+    execute_erased(channel, size, data)
+}
+
+#[inline(never)]
+unsafe fn execute_erased(channel: u32, size: usize, data: *const ()) -> impl Future<Output = ()> {
+    let ready = add_waker();
     // Queue command and flush
     until([Command {
         ready,
@@ -114,8 +124,9 @@ pub async unsafe fn execute<T>(channel: u32, data: &T) {
         size,
         data,
     }]);
+
     // Wait until ready
-    Request(ready).await
+    Request(ready)
 }
 
 // An asynchronous request
@@ -124,6 +135,7 @@ struct Request(usize);
 impl Future for Request {
     type Output = ();
 
+    #[inline(never)]
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         STATE.with(|state| {
             if let Some(ref mut waker) = state.pending[self.0] {

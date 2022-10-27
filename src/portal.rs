@@ -23,6 +23,7 @@ pub(crate) unsafe fn ready_list(size: usize) -> &'static [usize] {
     READY_LIST.as_slice()
 }
 
+#[inline(always)]
 async fn init() {
     if unsafe { INIT } {
         return;

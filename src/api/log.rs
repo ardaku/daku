@@ -35,6 +35,7 @@ static mut CHANNEL: u32 = u32::MAX;
 struct Logger;
 
 impl From<log::Level> for Level {
+    #[inline(always)]
     fn from(level: log::Level) -> Self {
         match level {
             log::Level::Trace => Level::Trace,
@@ -47,10 +48,12 @@ impl From<log::Level> for Level {
 }
 
 impl log::Log for Logger {
+    #[inline(always)]
     fn enabled(&self, _metadata: &log::Metadata<'_>) -> bool {
         true
     }
 
+    #[inline(never)]
     fn log(&self, record: &log::Record<'_>) {
         let level = record.level();
         let target = record.target();
@@ -95,6 +98,7 @@ impl log::Log for Logger {
         cmd::defer([message]);
     }
 
+    #[inline(always)]
     fn flush(&self) {
         cmd::flush();
     }
@@ -112,6 +116,7 @@ impl log::Log for Logger {
 /// log::init(Level::Debug); // Log everything except trace logs
 /// log::init(Level::Trace); // Log everything
 /// ```
+#[inline(always)]
 pub async fn init(level: impl Into<Option<log::Level>>) {
     unsafe {
         if !INIT {
