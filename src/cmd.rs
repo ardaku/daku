@@ -73,19 +73,24 @@ pub unsafe fn queue<const N: usize>(commands: [Command; N]) {
 #[inline(never)]
 pub fn flush() {
     STATE.with(|state| {
-        for ready in unsafe {
-            portal::ready_list(sys::ar(state.queue.len(), state.queue.as_ptr()))
-        } {
-            if *ready == usize::MAX {
-                // Special value to ignore
-                continue;
-            }
-            if let Some(waker) = state.pending[*ready].take() {
-                waker.wake();
-            }
+        unsafe {
+            portal::ready_list(
+                sys::ar(state.queue.len(), state.queue.as_ptr()),
+                |ready_list| {
+                    for ready in ready_list {
+                        if *ready == usize::MAX {
+                            // Special value to ignore
+                            continue;
+                        }
+                        if let Some(waker) = state.pending[*ready].take() {
+                            waker.wake();
+                        }
+                    }
+                    state.queue.clear();
+                    state.drops.clear();
+                },
+            )
         }
-        state.queue.clear();
-        state.drops.clear();
     });
 }
 
@@ -115,7 +120,11 @@ pub unsafe fn execute<T>(channel: u32, data: &T) -> impl Future<Output = ()> {
 }
 
 #[inline(never)]
-unsafe fn execute_erased(channel: u32, size: usize, data: *const ()) -> impl Future<Output = ()> {
+unsafe fn execute_erased(
+    channel: u32,
+    size: usize,
+    data: *const (),
+) -> impl Future<Output = ()> {
     let ready = add_waker();
     // Queue command and flush
     until([Command {

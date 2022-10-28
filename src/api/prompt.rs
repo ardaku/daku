@@ -1,7 +1,6 @@
 //! Read lines from developer console
 
 use alloc::string::String;
-use core::mem;
 
 use crate::{
     cmd, portal,
@@ -16,50 +15,29 @@ use crate::{
 /// than 65_536 bytes (size of one WebAssembly page).
 #[inline(never)]
 pub async fn read_line(buf: &mut String) {
-    let channel = portal::prompt().await;
-
-    // Get ownership
-    let mut buffer = String::new();
-    mem::swap(&mut buffer, buf);
-
-    // Get raw parts and forget in order to leak memory temporarily
-    let mut capacity = buffer.capacity();
-    let mut size = buffer.len();
-    let mut data = buffer.as_mut_ptr();
-    mem::forget(buffer);
-
-    // Build a Text type
-    let mut text = Text { size, data };
-    let mut new_capacity = capacity;
-    let prompt = Prompt {
-        text: &mut text,
-        capacity: &mut new_capacity,
-    };
+    let channel = portal::prompt();
 
     // Run command
+    let mut capacity = buf.capacity();
+    let mut text = Text {
+        size: buf.len(),
+        data: buf.as_mut_ptr(),
+    };
+    let prompt = Prompt {
+        text: &mut text,
+        capacity: &mut capacity,
+    };
     unsafe { cmd::execute(channel, &prompt).await };
 
-    if capacity != new_capacity {
-        // Not enough space!
-        let mut buffer =
-            unsafe { String::from_raw_parts(text.data, text.size, capacity) };
-        buffer.reserve(new_capacity - capacity);
-        capacity = buffer.capacity();
-        size = buffer.len();
-        data = buffer.as_mut_ptr();
-        mem::forget(buffer);
-        (text.size, text.data) = (size, data);
-        new_capacity = capacity;
-        let prompt = Prompt {
-            text: &mut text,
-            capacity: &mut new_capacity,
+    let additional = capacity.saturating_sub(buf.capacity());
+    if additional != 0 {
+        buf.reserve(additional);
+        // Re-run command with new values
+        unsafe {
+            text.data = buf.as_mut_ptr();
+            cmd::execute(channel, &prompt).await
         };
-
-        // Re-run command FIXME
-        unsafe { cmd::execute(channel, &prompt).await };
-
-        assert_eq!(capacity, new_capacity);
     }
 
-    *buf = unsafe { String::from_raw_parts(text.data, text.size, capacity) };
+    unsafe { buf.as_mut_vec().set_len(text.size) }
 }

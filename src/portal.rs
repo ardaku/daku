@@ -1,91 +1,98 @@
-#![allow(unused)] // For when no portals are enabled via feature flags
-
 use alloc::vec::Vec;
+use core::mem;
 
-use crate::sys::{self, Command, Connect, Portal};
-
-#[cfg(feature = "log")]
-static mut LOG: core::mem::MaybeUninit<u32> = core::mem::MaybeUninit::uninit();
-
-#[cfg(feature = "prompt")]
-static mut PROMPT: core::mem::MaybeUninit<u32> =
-    core::mem::MaybeUninit::uninit();
+use crate::{
+    sys::{self, Command, Connect, Portal},
+    tls::Local,
+};
 
 // 1kB list of up to 256 ready channels
+#[allow(unused)] // For when no portals are enabled via feature flags
 const READY_LIST_CAPACITY: usize = 256;
 
-static mut READY_LIST: Vec<usize> = Vec::new();
+#[cfg(feature = "log")]
+static LOG: Local<mem::MaybeUninit<u32>> =
+    Local::new(mem::MaybeUninit::uninit());
 
-static mut INIT: bool = false;
+#[cfg(feature = "prompt")]
+static PROMPT: Local<mem::MaybeUninit<u32>> =
+    Local::new(mem::MaybeUninit::uninit());
 
-pub(crate) unsafe fn ready_list(size: usize) -> &'static [usize] {
-    READY_LIST.set_len(size);
-    READY_LIST.as_slice()
-}
+static READY_LIST: Local<Option<Vec<usize>>> = Local::new(None);
 
 #[inline(always)]
-async fn init() {
-    if unsafe { INIT } {
-        return;
-    };
+pub(crate) unsafe fn ready_list<R>(
+    size: usize,
+    f: impl FnOnce(&[usize]) -> R,
+) -> R {
+    READY_LIST.with(|ready_list| {
+        let ready_list = ready_list.as_mut().unwrap_unchecked();
 
-    unsafe {
-        INIT = true;
-        READY_LIST.reserve_exact(READY_LIST_CAPACITY);
-    }
+        ready_list.set_len(size);
+        f(ready_list.as_slice())
+    })
+}
 
-    let mut portals: Vec<u32> = Vec::new();
+#[inline(never)]
+#[allow(dead_code)] // For when no portals are enabled via feature flags
+fn init() {
+    READY_LIST.with(|state| {
+        if state.is_some() {
+            return;
+        };
 
-    if cfg!(feature = "log") {
-        portals.push(Portal::Log as u32);
-    }
-    if cfg!(feature = "prompt") {
-        portals.push(Portal::Prompt as u32);
-    }
+        let mut ready_list = Vec::with_capacity(READY_LIST_CAPACITY);
+        let mut portals: Vec<u32> = Vec::new();
 
-    let connect = &Connect {
-        ready_capacity: READY_LIST_CAPACITY,
-        ready_data: unsafe { READY_LIST.as_mut_ptr() },
-        portals_size: portals.len(),
-        portals_data: portals.as_mut_ptr(),
-    };
-    let connect: *const _ = connect;
+        if cfg!(feature = "log") {
+            portals.push(Portal::Log as u32);
+        }
+        if cfg!(feature = "prompt") {
+            portals.push(Portal::Prompt as u32);
+        }
 
-    let commands = [Command {
-        ready: usize::MAX,
-        channel: 0,
-        size: core::mem::size_of::<Connect>(),
-        data: connect.cast(),
-    }];
+        let connect = &Connect {
+            ready_capacity: READY_LIST_CAPACITY,
+            ready_data: ready_list.as_mut_ptr(),
+            portals_size: portals.len(),
+            portals_data: portals.as_mut_ptr(),
+        };
+        let connect: *const _ = connect;
 
-    unsafe {
-        sys::ar(commands.len(), commands.as_ptr());
-    }
+        let commands = [Command {
+            ready: usize::MAX,
+            channel: 0,
+            size: mem::size_of::<Connect>(),
+            data: connect.cast(),
+        }];
 
-    #[cfg(feature = "prompt")]
-    unsafe {
-        PROMPT = core::mem::MaybeUninit::new(portals.pop().unwrap())
-    };
-    #[cfg(feature = "log")]
-    unsafe {
-        LOG = core::mem::MaybeUninit::new(portals.pop().unwrap())
-    };
+        unsafe {
+            sys::ar(commands.len(), commands.as_ptr());
+        }
+
+        *state = Some(ready_list);
+
+        #[cfg(feature = "prompt")]
+        PROMPT.with(|prompt| {
+            *prompt = mem::MaybeUninit::new(portals.pop().unwrap())
+        });
+        #[cfg(feature = "log")]
+        LOG.with(|log| *log = mem::MaybeUninit::new(portals.pop().unwrap()));
+    });
 }
 
 /// Get the log channel
 #[cfg(feature = "log")]
-pub(crate) async fn log() -> u32 {
-    unsafe {
-        init().await;
-        *LOG.assume_init_ref()
-    }
+#[inline(always)]
+pub(crate) fn log() -> u32 {
+    init();
+    LOG.with(|log| unsafe { log.assume_init() })
 }
 
 /// Get the prompt channel
 #[cfg(feature = "prompt")]
-pub(crate) async fn prompt() -> u32 {
-    unsafe {
-        init().await;
-        *PROMPT.assume_init_ref()
-    }
+#[inline(always)]
+pub(crate) fn prompt() -> u32 {
+    init();
+    PROMPT.with(|prompt| unsafe { prompt.assume_init() })
 }

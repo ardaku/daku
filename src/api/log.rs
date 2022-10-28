@@ -19,18 +19,18 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use alloc::{borrow::Cow, format, string::String};
-use core::{fmt::Write, mem};
+use alloc::{borrow::Cow, string::ToString, vec::Vec};
+use core::{mem, slice};
 
 use log::LevelFilter;
 
 use crate::{
     cmd, portal,
     sys::{Command, Level, Log},
+    tls::Local,
 };
 
-static mut INIT: bool = false;
-static mut CHANNEL: u32 = u32::MAX;
+static CHANNEL: Local<u32> = Local::new(u32::MAX);
 
 struct Logger;
 
@@ -53,46 +53,41 @@ impl log::Log for Logger {
         true
     }
 
-    #[inline(never)]
     fn log(&self, record: &log::Record<'_>) {
-        let level = record.level();
-        let target = record.target();
-        let args = record.args();
+        const LOGSIZE: usize = mem::size_of::<Log>();
 
+        let target = record.target().as_bytes();
+        let mut log: Vec<u8> = Vec::with_capacity(LOGSIZE + target.len());
+        let args = record.args();
         let message: Cow<'_, str> = if let Some(message) = args.as_str() {
             message.into()
         } else {
-            format!("{args}").into()
+            args.to_string().into()
         };
-        let length = message.len();
-
-        let logsize = mem::size_of::<Log>();
-        let mut log = String::with_capacity(logsize + target.len());
         let send = Log {
-            size: length,
+            size: message.len(),
             data: message.as_ptr(),
-            level: level.into(),
+            level: record.level().into(),
             target: (),
         };
-
         let send: *const Log = &send;
         let send: &[u8] =
-            unsafe { core::slice::from_raw_parts(send.cast(), logsize) };
-        log.extend(['\0'; mem::size_of::<Log>()]);
-        write!(&mut log, "{target}").ok();
-        let mut log = log.into_bytes();
-        for (l, s) in log.iter_mut().zip(send.iter().cloned()) {
-            *l = s;
-        }
+            unsafe { slice::from_raw_parts(send.cast(), LOGSIZE) };
+
+        log.extend(send);
+        log.extend(target);
+
+        let cmd = Command {
+            ready: usize::MAX, // ignored because always immediately ready
+            channel: CHANNEL.with(|channel| *channel),
+            size: log.len(),
+            data: log.as_ptr().cast(),
+        };
 
         unsafe {
-            cmd::queue([Command {
-                ready: usize::MAX, // ignored because always immediately ready
-                channel: CHANNEL,
-                size: log.len(),
-                data: log.as_ptr().cast(),
-            }]);
+            cmd::queue([cmd]);
         }
+
         // Defer dropping of command data until flush
         cmd::defer([log]);
         cmd::defer([message]);
@@ -104,7 +99,10 @@ impl log::Log for Logger {
     }
 }
 
-/// Set logger to Daku.  Doesn't do anything if logger already set.
+/// Set logger to Daku.
+///
+/// # Panics
+/// If logger is already set.
 ///
 /// ```rust
 /// use daku::api::log::{self, Level};
@@ -117,18 +115,15 @@ impl log::Log for Logger {
 /// log::init(Level::Trace); // Log everything
 /// ```
 #[inline(always)]
-pub async fn init(level: impl Into<Option<log::Level>>) {
-    unsafe {
-        if !INIT {
-            INIT = true;
-            CHANNEL = portal::log().await;
-            log::set_max_level(
-                level
-                    .into()
-                    .map(|level| level.to_level_filter())
-                    .unwrap_or(LevelFilter::Off),
-            );
-            log::set_logger_racy(&Logger).unwrap();
-        }
-    }
+pub fn init(level: impl Into<Option<log::Level>>) {
+    CHANNEL.with(|channel| {
+        *channel = portal::log();
+        log::set_max_level(
+            level
+                .into()
+                .map(|level| level.to_level_filter())
+                .unwrap_or(LevelFilter::Off),
+        );
+        unsafe { log::set_logger_racy(&Logger).unwrap() }
+    })
 }
