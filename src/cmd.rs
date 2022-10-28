@@ -50,14 +50,12 @@ fn add_waker() -> usize {
     })
 }
 
-/// Defer drop(s) until next flush
-#[inline(always)]
-pub fn defer<T: 'static, const N: usize>(items: [T; N]) {
-    STATE.with(|state| {
-        state
-            .drops
-            .extend(items.into_iter().map(|x| -> Box<dyn Any> { Box::new(x) }));
-    })
+/// Defer drop until next flush
+#[inline(never)]
+pub fn defer(mut item: Box<dyn Any>) -> *mut () {
+    let ptr: *mut _ = &mut *item;
+    STATE.with(|state| state.drops.push(item));
+    ptr.cast()
 }
 
 /// Queue a command

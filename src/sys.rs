@@ -68,29 +68,35 @@ extern "C" {
 
 /// Log level, pretty much copied from
 /// [`log::Level`](https://docs.rs/log/0.4.17/log/enum.Level.html).
-#[repr(u8)]
+#[repr(usize)]
 #[derive(Debug, Copy, Clone)]
 pub enum Level {
     /// The “trace” level.
     ///
     /// Designates very low priority, often extremely verbose, information.
-    Trace = 0,
+    Trace = 0b0000_0000_0000_0000_0000_0000_0000_0000,
     /// The “debug” level.
     ///
     /// Designates lower priority information.
-    Debug = 1,
+    Debug = 0b0010_0000_0000_0000_0000_0000_0000_0000,
     /// The “info” level.
     ///
     /// Designates useful information.
-    Info = 2,
+    Info = 0b0100_0000_0000_0000_0000_0000_0000_0000,
     /// The “warn” level.
     ///
     /// Designates hazardous situations.
-    Warn = 3,
+    Warn = 0b0110_0000_0000_0000_0000_0000_0000_0000,
     /// The “error” level.
     ///
     /// Designates very serious errors.
-    Error = 4,
+    Error = 0b1000_0000_0000_0000_0000_0000_0000_0000,
+    /// The “trap” level.
+    ///
+    /// Trigger a trap without panicking.
+    Trap = 0b1010_0000_0000_0000_0000_0000_0000_0000,
+    /// Bit Mask.
+    Mask = 0b1110_0000_0000_0000_0000_0000_0000_0000,
 }
 
 /// Spawn a task with state
@@ -107,14 +113,14 @@ pub struct Spawn {
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Log {
-    /// Text size
-    pub size: usize,
-    /// Text bytes
-    pub data: *const u8,
-    /// Log level
-    pub level: Level,
+    /// Target size / log level
+    pub target_size: usize,
     /// Target bytes
-    pub target: (),
+    pub target_data: *const u8,
+    /// Message size
+    pub message_size: usize,
+    /// Message bytes
+    pub message_data: *const u8,
 }
 
 /// UTF-8 text

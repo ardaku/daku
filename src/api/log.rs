@@ -19,8 +19,8 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use alloc::{borrow::Cow, string::ToString, vec::Vec};
-use core::{mem, slice};
+use alloc::{borrow::Cow, boxed::Box, string::ToString};
+use core::mem;
 
 use log::LevelFilter;
 
@@ -30,9 +30,13 @@ use crate::{
     tls::Local,
 };
 
-static CHANNEL: Local<u32> = Local::new(u32::MAX);
-
 struct Logger;
+
+struct State {
+    channel: u32,
+}
+
+static STATE: Local<State> = Local::new(State { channel: u32::MAX });
 
 impl From<log::Level> for Level {
     #[inline(always)]
@@ -57,40 +61,33 @@ impl log::Log for Logger {
         const LOGSIZE: usize = mem::size_of::<Log>();
 
         let target = record.target().as_bytes();
-        let mut log: Vec<u8> = Vec::with_capacity(LOGSIZE + target.len());
         let args = record.args();
         let message: Cow<'_, str> = if let Some(message) = args.as_str() {
             message.into()
         } else {
             args.to_string().into()
         };
-        let send = Log {
-            size: message.len(),
-            data: message.as_ptr(),
-            level: record.level().into(),
-            target: (),
-        };
-        let send: *const Log = &send;
-        let send: &[u8] =
-            unsafe { slice::from_raw_parts(send.cast(), LOGSIZE) };
-
-        log.extend(send);
-        log.extend(target);
-
+        let message = Box::new(message);
+        let log = Box::new(Log {
+            target_size: target.len() | Level::from(record.level()) as usize,
+            target_data: target.as_ptr(),
+            message_size: message.len(),
+            message_data: message.as_ptr(),
+        });
+        let log = cmd::defer(log);
         let cmd = Command {
             ready: usize::MAX, // ignored because always immediately ready
-            channel: CHANNEL.with(|channel| *channel),
-            size: log.len(),
-            data: log.as_ptr().cast(),
+            channel: STATE.with(|state| state.channel),
+            size: LOGSIZE,
+            data: log.cast(),
         };
+
+        // Defer dropping of command data until flush
+        cmd::defer(message);
 
         unsafe {
             cmd::queue([cmd]);
         }
-
-        // Defer dropping of command data until flush
-        cmd::defer([log]);
-        cmd::defer([message]);
     }
 
     #[inline(always)]
@@ -116,8 +113,8 @@ impl log::Log for Logger {
 /// ```
 #[inline(always)]
 pub fn init(level: impl Into<Option<log::Level>>) {
-    CHANNEL.with(|channel| {
-        *channel = portal::log();
+    STATE.with(|state| {
+        state.channel = portal::log();
         log::set_max_level(
             level
                 .into()
