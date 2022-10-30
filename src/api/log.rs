@@ -85,9 +85,7 @@ impl log::Log for Logger {
             data: log.cast(),
         };
 
-        unsafe {
-            cmd::queue([cmd]);
-        }
+        unsafe { cmd::queue(cmd) };
     }
 
     #[inline(always)]

@@ -61,10 +61,11 @@ pub fn defer(mut item: Box<dyn Any>) -> *mut () {
 /// Queue a command
 ///
 /// # Safety
-/// Commands must be valid according to the Daku spec.  Failure to pass in valid
+/// Command must be valid according to the Daku spec.  Failure to pass in valid
 /// `Command` struct may cause undefined behavior.
-pub unsafe fn queue<const N: usize>(commands: [Command; N]) {
-    STATE.with(|state| state.queue.extend(commands));
+#[inline(never)]
+pub unsafe fn queue(command: Command) {
+    STATE.with(|state| state.queue.push(command));
 }
 
 /// Flush commands
@@ -95,10 +96,10 @@ pub fn flush() {
 /// Queue and flush
 ///
 /// # Safety
-/// Commands must be valid according to the Daku spec.  Failure to pass in valid
+/// Command must be valid according to the Daku spec.  Failure to pass in valid
 /// `Command` struct may cause undefined behavior.
-pub unsafe fn until<const N: usize>(commands: [Command; N]) {
-    queue(commands);
+pub unsafe fn until(command: Command) {
+    queue(command);
     flush();
 }
 
@@ -125,12 +126,12 @@ unsafe fn execute_erased(
 ) -> impl Future<Output = ()> {
     let ready = add_waker();
     // Queue command and flush
-    until([Command {
+    until(Command {
         ready,
         channel,
         size,
         data,
-    }]);
+    });
 
     // Wait until ready
     Request(ready)
