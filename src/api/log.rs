@@ -67,13 +67,16 @@ impl log::Log for Logger {
         } else {
             args.to_string().into()
         };
-        let message = Box::new(message);
-        let log = Box::new(Log {
-            target_size: target.len() | Level::from(record.level()) as usize,
-            target_data: target.as_ptr(),
-            message_size: message.len(),
-            message_data: message.as_ptr(),
-        });
+        let log = Box::new((
+            Log {
+                target_size: target.len()
+                    | Level::from(record.level()) as usize,
+                target_data: target.as_ptr(),
+                message_size: message.len(),
+                message_data: message.as_ptr(),
+            },
+            message,
+        ));
         let log = cmd::defer(log);
         let cmd = Command {
             ready: usize::MAX, // ignored because always immediately ready
@@ -81,9 +84,6 @@ impl log::Log for Logger {
             size: LOGSIZE,
             data: log.cast(),
         };
-
-        // Defer dropping of command data until flush
-        cmd::defer(message);
 
         unsafe {
             cmd::queue([cmd]);

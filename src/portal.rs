@@ -39,9 +39,9 @@ fn init() {
             return;
         };
 
-        let mut ready_list = Vec::with_capacity(READY_LIST_CAPACITY);
-
         PORTALS.with(|p| {
+            let mut ready_list = Vec::with_capacity(READY_LIST_CAPACITY);
+
             #[cfg(feature = "log")]
             {
                 p[PORTAL_LOG] = sys::Portal::Log as u32;
@@ -52,7 +52,7 @@ fn init() {
             }
 
             let connect = &Connect {
-                ready_capacity: READY_LIST_CAPACITY,
+                ready_capacity: ready_list.capacity(),
                 ready_data: ready_list.as_mut_ptr(),
                 portals_size: p.len(),
                 portals_data: p.as_mut_ptr(),
@@ -69,9 +69,9 @@ fn init() {
             unsafe {
                 sys::ar(commands.len(), commands.as_ptr());
             }
-        });
 
-        *state = Some(ready_list);
+            *state = Some(ready_list);
+        });
     });
 }
 
