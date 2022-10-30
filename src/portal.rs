@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use core::mem;
 
 use crate::{
-    sys::{self, Command, Connect, Portal},
+    sys::{self, Command, Connect},
     tls::Local,
 };
 
@@ -10,13 +10,11 @@ use crate::{
 #[allow(unused)] // For when no portals are enabled via feature flags
 const READY_LIST_CAPACITY: usize = 256;
 
-#[cfg(feature = "log")]
-static LOG: Local<mem::MaybeUninit<u32>> =
-    Local::new(mem::MaybeUninit::uninit());
+const PORTAL_LOG: usize = 0;
+const PORTAL_PROMPT: usize = PORTAL_LOG + cfg!(feature = "log") as usize;
+const PORTAL_COUNT: usize = PORTAL_PROMPT + cfg!(feature = "prompt") as usize;
 
-#[cfg(feature = "prompt")]
-static PROMPT: Local<mem::MaybeUninit<u32>> =
-    Local::new(mem::MaybeUninit::uninit());
+static PORTALS: Local<[u32; PORTAL_COUNT]> = Local::new([0; PORTAL_COUNT]);
 
 static READY_LIST: Local<Option<Vec<usize>>> = Local::new(None);
 
@@ -42,42 +40,38 @@ fn init() {
         };
 
         let mut ready_list = Vec::with_capacity(READY_LIST_CAPACITY);
-        let mut portals: Vec<u32> = Vec::new();
 
-        if cfg!(feature = "log") {
-            portals.push(Portal::Log as u32);
-        }
-        if cfg!(feature = "prompt") {
-            portals.push(Portal::Prompt as u32);
-        }
+        PORTALS.with(|p| {
+            #[cfg(feature = "log")]
+            {
+                p[PORTAL_LOG] = sys::Portal::Log as u32;
+            }
+            #[cfg(feature = "prompt")]
+            {
+                p[PORTAL_PROMPT] = sys::Portal::Prompt as u32;
+            }
 
-        let connect = &Connect {
-            ready_capacity: READY_LIST_CAPACITY,
-            ready_data: ready_list.as_mut_ptr(),
-            portals_size: portals.len(),
-            portals_data: portals.as_mut_ptr(),
-        };
-        let connect: *const _ = connect;
+            let connect = &Connect {
+                ready_capacity: READY_LIST_CAPACITY,
+                ready_data: ready_list.as_mut_ptr(),
+                portals_size: p.len(),
+                portals_data: p.as_mut_ptr(),
+            };
+            let connect: *const _ = connect;
 
-        let commands = [Command {
-            ready: usize::MAX,
-            channel: 0,
-            size: mem::size_of::<Connect>(),
-            data: connect.cast(),
-        }];
+            let commands = [Command {
+                ready: usize::MAX,
+                channel: 0,
+                size: mem::size_of::<Connect>(),
+                data: connect.cast(),
+            }];
 
-        unsafe {
-            sys::ar(commands.len(), commands.as_ptr());
-        }
+            unsafe {
+                sys::ar(commands.len(), commands.as_ptr());
+            }
+        });
 
         *state = Some(ready_list);
-
-        #[cfg(feature = "prompt")]
-        PROMPT.with(|prompt| {
-            *prompt = mem::MaybeUninit::new(portals.pop().unwrap())
-        });
-        #[cfg(feature = "log")]
-        LOG.with(|log| *log = mem::MaybeUninit::new(portals.pop().unwrap()));
     });
 }
 
@@ -86,7 +80,7 @@ fn init() {
 #[inline(always)]
 pub(crate) fn log() -> u32 {
     init();
-    LOG.with(|log| unsafe { log.assume_init() })
+    PORTALS.with(|portal| portal[PORTAL_LOG])
 }
 
 /// Get the prompt channel
@@ -94,5 +88,5 @@ pub(crate) fn log() -> u32 {
 #[inline(always)]
 pub(crate) fn prompt() -> u32 {
     init();
-    PROMPT.with(|prompt| unsafe { prompt.assume_init() })
+    PORTALS.with(|portal| portal[PORTAL_PROMPT])
 }
