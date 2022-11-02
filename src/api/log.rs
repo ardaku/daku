@@ -7,7 +7,7 @@
 //! use daku::{run, api::log as daku_log};
 //!
 //! run::spawn(async {
-//!     daku_log::init(Level::Debug).await;
+//!     daku_log::init(Level::Debug);
 //!
 //!     // Queue two log messages, and print at once with a single syscall
 //!     log::info("=============");
