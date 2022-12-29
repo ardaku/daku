@@ -31,9 +31,8 @@ pub(crate) unsafe fn ready_list<R>(
     })
 }
 
-#[inline(never)]
-#[allow(dead_code)] // For when no portals are enabled via feature flags
-fn init() {
+#[inline(always)]
+pub(crate) fn init() {
     READY_LIST.with(|state| {
         if state.is_some() {
             return;
@@ -71,22 +70,16 @@ fn init() {
             }
 
             *state = Some(ready_list);
+
+            // API initialization
+            #[cfg(feature = "log")]
+            unsafe {
+                crate::api::log::init(p[PORTAL_LOG]);
+            }
+            #[cfg(feature = "prompt")]
+            unsafe {
+                crate::api::prompt::init(p[PORTAL_PROMPT]);
+            }
         });
     });
-}
-
-/// Get the log channel
-#[cfg(feature = "log")]
-#[inline(always)]
-pub(crate) fn log() -> u32 {
-    init();
-    PORTALS.with(|portal| portal[PORTAL_LOG])
-}
-
-/// Get the prompt channel
-#[cfg(feature = "prompt")]
-#[inline(always)]
-pub(crate) fn prompt() -> u32 {
-    init();
-    PORTALS.with(|portal| portal[PORTAL_PROMPT])
 }

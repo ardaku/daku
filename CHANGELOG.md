@@ -4,6 +4,18 @@ All notable changes to `daku` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://github.com/AldaronLau/semver).
 
+## [0.5.0] - Unreleased
+### Added
+ - `run::start()`
+ - `log` module now re-exports `log` crate
+
+### Changed
+ - Internal optimizations
+
+### Removed
+ - `api::log::init()`, now implicit
+ - `run::block_on()`, use `run::start()` instead
+
 ## [0.4.0] - 2022-11-02
 ### Added
  - `tls` module for task local storage

@@ -3,9 +3,23 @@
 use alloc::string::String;
 
 use crate::{
-    cmd, portal,
-    sys::{Prompt, Text},
+    cmd,
+    tls::Local,
+    sys,
 };
+
+struct State {
+    channel: u32,
+}
+
+static STATE: Local<State> = Local::new(State { channel: u32::MAX });
+
+#[inline(always)]
+pub(crate) unsafe fn init(channel: u32) {
+    STATE.with(|state| {
+        state.channel = channel;
+    })
+}
 
 /// Read a line, appending it to the provided buffer (not including the newline
 /// character).
@@ -15,15 +29,15 @@ use crate::{
 /// than 65_536 bytes (size of one WebAssembly page).
 #[inline(never)]
 pub async fn read_line(buf: &mut String) {
-    let channel = portal::prompt();
+    let channel = STATE.with(|state| state.channel);
 
     // Run command
     let mut capacity = buf.capacity();
-    let mut text = Text {
+    let mut text = sys::Text {
         size: buf.len(),
         data: buf.as_mut_ptr(),
     };
-    let prompt = Prompt {
+    let prompt = sys::Prompt {
         text: &mut text,
         capacity: &mut capacity,
     };
