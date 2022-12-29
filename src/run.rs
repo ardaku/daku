@@ -1,4 +1,4 @@
-//! Safe API for spawning asynchronous tasks
+//! Asynchronous APIs
 
 use core::{
     future::Future,
