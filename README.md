@@ -12,7 +12,7 @@ implementation it will be fully stabilized).
  - Reduced Syscalls
  - Channel-Based
  - Security via Portals
- - Anti-POSIX
+ - Non-POSIX-y
  - Full Multimedia Support
 
 # API
