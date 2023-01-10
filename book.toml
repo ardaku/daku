@@ -1,0 +1,6 @@
+[book]
+authors = ["Jeron Aldaron Lau"]
+language = "en"
+multilingual = false
+src = "spec"
+title = "Daku API Specification"
