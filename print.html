@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.1.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.2.</strong> Raster</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.3.</strong> Audio</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,7 +167,110 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Daku is an asynchronous system interface API with a focus on multimedia.  Some
+goals may overlap with WASI, others do not.  It is developed as a supporting
+specification for the Ardaku project.</p>
+<p>The current version of Daku is 32-bit only.</p>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="base-api"><a class="header" href="#base-api">Base API</a></h1>
+<p>For all APIs, addresses in memory refer to the memory exported as <code>memory</code>.
+All Daku types are lists of packed 32-bit little-endian values.</p>
+<p>The exported WebAssembly API contains a single function:</p>
+<h2 id="function-ar"><a class="header" href="#function-ar"><em>Function</em>: <code>ar()</code></a></h2>
+<p>Retconned from &quot;Ardaku&quot;; Asynchronous Request function.</p>
+<pre><code class="language-wat">(import &quot;daku&quot; &quot;ar&quot; (func $event
+    (param $cmd_size i32)   ;; List[Command].size
+    (param $cmd_addr i32)   ;; List[Command].addr
+    (result i32)            ;; List[Uint32].size 
+))
+</code></pre>
+<h3 id="parameters"><a class="header" href="#parameters">Parameters</a></h3>
+<ul>
+<li><code>$cmd_size</code>: The size of the data pointed to by <code>$cmd_addr</code></li>
+<li><code>$cmd_addr</code>: A pointer in the wasm memory to a list of <code>$cmd_size</code> commands</li>
+</ul>
+<h3 id="returns"><a class="header" href="#returns">Returns</a></h3>
+<ul>
+<li>The new size of the WebAssembly module's global <code>$ready_list</code></li>
+</ul>
+<h2 id="type-command"><a class="header" href="#type-command"><em>Type</em>: <code>Command</code></a></h2>
+<p>Commands are the way the Daku application sends messages to the environment.</p>
+<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
+<ul>
+<li><code>ready: val</code> - Arbitrary user value written to the ready list when the
+requested notifier is ready.</li>
+<li><code>channel: int</code> - The channel on which to send the command.</li>
+<li><code>size: int</code> - Size of data pointed to by <code>addr</code>, in bytes.</li>
+<li><code>addr: ptr</code> - Pointer to <code>size</code> bytes to be sent as a command.</li>
+</ul>
+<h2 id="setting-up-the-ready-list"><a class="header" href="#setting-up-the-ready-list">Setting Up The Ready List</a></h2>
+<p>At the beginning of a Daku application, it is required to send the &quot;Connect&quot;
+command on channel 0.  Channel 0 is always open and after connecting can be used
+to send arbitrary payloads to the environment.  The Daku API does not specify
+how this data is formed, so it's up to the embedder to decide.  This feature is
+specifically for non-standard extensions to the API, such as being able to write
+a high-level operating system driver depending on Daku.</p>
+<h2 id="type-connect"><a class="header" href="#type-connect"><em>Type</em>: <code>Connect</code></a></h2>
+<p>The connect command must only be sent once at the beginning of the app.</p>
+<h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
+<ul>
+<li><code>ready_size: int</code> - Maximum capacity of the ready list at <code>ready_addr</code>.</li>
+<li><code>ready_addr: ptr</code> - Pointer to the ready list with capacity for <code>ready_size</code>
+values.</li>
+<li><code>portals_size: int</code> - Number of portals to connect to.</li>
+<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
+</ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="portals"><a class="header" href="#portals">Portals</a></h1>
+<p>Portals allow Daku applications to interface with the OS.  The environment is
+not required to grant access to all portals requested by the application, and
+may either stop the application or mock out a fake implementation to protect the
+user's privacy.</p>
+<p>Implementations of portals should strive to be &quot;as mathematical&quot; as possible,
+meaning that there's no fancy engineering abstractions - just sending and
+receiving data and defining the required functionality.  This is to reduce the
+risk for possibly needing to deprecating portals in the future.  That said, it's
+ok to pack smaller pieces of data into one value if 32-bits can be guaranteed to
+most likely never be needed.</p>
+<p>Portals should also make use of shared high-level <a href="./types.html">types</a>.</p>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="log"><a class="header" href="#log">Log</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="prompt"><a class="header" href="#prompt">Prompt</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
+<h2 id="type-text"><a class="header" href="#type-text"><em>Type</em>: <code>Text</code></a></h2>
+<p>A buffer of UTF-8 text.</p>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<ul>
+<li><code>size: int</code> - Number of bytes pointed to at <code>addr</code>.</li>
+<li><code>addr: ptr</code> - UTF-8 string of <code>size</code> bytes.</li>
+</ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
+<h2 id="type-raster"><a class="header" href="#type-raster"><em>Type</em>: <code>Raster</code></a></h2>
+<p>A buffer of pixels (image, picture, video, etc.).</p>
+<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<ul>
+<li><code>size: val</code>
+<ul>
+<li><code>width: half</code> - Width of the image</li>
+<li><code>height: half</code> - Height of the image</li>
+</ul>
+</li>
+<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels (32 bits per pixel).</li>
+</ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
+<h2 id="type-audio"><a class="header" href="#type-audio"><em>Type</em>: <code>Audio</code></a></h2>
+<p>A buffer of floating-point audio.</p>
+<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
+<ul>
+<li><code>rate: int</code> - Sample rate of the audio.</li>
+<li><code>chan: val</code> - FIXME
+<ul>
+<li><code>config: half</code> - Positions of channels.</li>
+<li><code>count: half</code> - Number of channels.</li>
+</ul>
+</li>
+<li><code>size: int</code> - Number of samples per channel.</li>
+<li><code>addr: ptr</code> - List of <code>chan.count * size</code> 32-bit floats.</li>
+</ul>
 
                     </main>
 
