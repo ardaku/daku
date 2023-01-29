@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.1.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.2.</strong> Raster</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.3.</strong> Audio</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.3.</strong> Raster</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -168,10 +168,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>Daku is an asynchronous system interface API with a focus on multimedia.  Some
-goals may overlap with WASI, others do not.  It is developed as a supporting
-specification for the Ardaku project.</p>
-<p>The current version of Daku is 32-bit only.</p>
+<p>Daku is an asynchronous system interface API for WebAssembly with a focus on
+multimedia.  Some goals may overlap with WASI, others do not.  It is developed
+as a supporting specification for the Ardaku project.</p>
+<p>The current version of Daku is Wasm32 only.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="base-api"><a class="header" href="#base-api">Base API</a></h1>
 <p>For all APIs, addresses in memory refer to the memory exported as <code>memory</code>.
 All Daku types are lists of packed 32-bit little-endian values.</p>
@@ -235,10 +235,18 @@ most likely never be needed.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="log"><a class="header" href="#log">Log</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="prompt"><a class="header" href="#prompt">Prompt</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
+<h2 id="type-listt"><a class="header" href="#type-listt"><em>Type</em>: <code>List[T]</code></a></h2>
+<p>A list of elements of type <code>T</code>.</p>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<ul>
+<li><code>size: int</code> - Number of elements pointed to at <code>addr</code>.</li>
+<li><code>addr: ptr</code> - Packed list of <code>size</code> elements.</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
 <h2 id="type-text"><a class="header" href="#type-text"><em>Type</em>: <code>Text</code></a></h2>
 <p>A buffer of UTF-8 text.</p>
-<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of bytes pointed to at <code>addr</code>.</li>
 <li><code>addr: ptr</code> - UTF-8 string of <code>size</code> bytes.</li>
@@ -246,7 +254,7 @@ most likely never be needed.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
 <h2 id="type-raster"><a class="header" href="#type-raster"><em>Type</em>: <code>Raster</code></a></h2>
 <p>A buffer of pixels (image, picture, video, etc.).</p>
-<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
 <ul>
 <li><code>size: val</code>
 <ul>
@@ -256,20 +264,72 @@ most likely never be needed.</p>
 </li>
 <li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels (32 bits per pixel).</li>
 </ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
+<h2 id="type-positions"><a class="header" href="#type-positions"><em>Type</em>: <code>Positions</code></a></h2>
+<p>A 4-dimensional vector.</p>
+<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
+<ul>
+<li><code>x: float</code> - X position (-left +right)</li>
+<li><code>y: float</code> - Y position (-up +down)</li>
+<li><code>z: float</code> - Z position (-back +front)</li>
+<li><code>w: float</code> - W position (special)</li>
+</ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
+<h2 id="type-positions-1"><a class="header" href="#type-positions-1"><em>Type</em>: <code>Positions</code></a></h2>
+<p>A list of audio channel physical positions relative to the user at the origin.</p>
+<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
+<ul>
+<li><code>list: List[Vector]</code> - List of speakers / microphones in configuration.
+<ul>
+<li><code>x: float</code> - X position (-left +right)</li>
+<li><code>y: float</code> - Y position (-up +down)</li>
+<li><code>z: float</code> - Z position (-back +front)</li>
+<li><code>w: float</code> - Currently doesn't have a meaning</li>
+</ul>
+</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
 <h2 id="type-audio"><a class="header" href="#type-audio"><em>Type</em>: <code>Audio</code></a></h2>
 <p>A buffer of floating-point audio.</p>
-<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
+<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
 <ul>
-<li><code>rate: int</code> - Sample rate of the audio.</li>
-<li><code>chan: val</code> - FIXME
+<li><code>properties: val</code> - Audio properties
 <ul>
-<li><code>config: half</code> - Positions of channels.</li>
-<li><code>count: half</code> - Number of channels.</li>
+<li><code>rate: half</code> - Sample rate of the audio. (low).</li>
+<li><code>rate: byte</code> - Sample rate of the audio. (high).</li>
+<li><code>count: byte</code> - Number of channels.</li>
 </ul>
 </li>
+<li><code>config: Opt[Positions]</code> - Custom channel position configuration, default is
+FLAC/SMPTE/ITU-R recommendations.</li>
 <li><code>size: int</code> - Number of samples per channel.</li>
 <li><code>addr: ptr</code> - List of <code>chan.count * size</code> 32-bit floats.</li>
+</ul>
+<h1 id="flacsmpteitu-r-recommendations"><a class="header" href="#flacsmpteitu-r-recommendations">FLAC/SMPTE/ITU-R recommendations</a></h1>
+<ul>
+<li>1 Channel: Mono (Mono)
+<ol>
+<li><code>(0, 0, 0)</code></li>
+</ol>
+</li>
+<li>2 Channels: Stereo (Left, Right)
+<ol>
+<li><code>(-1, 0, 0)</code></li>
+<li><code>(1, 0, 0)</code></li>
+</ol>
+</li>
+<li>3 Channels: Surround 3.0 (Left, Right, Center)
+<ol>
+<li><code>(-1, 0, 0)</code></li>
+<li><code>(1, 0, 0)</code></li>
+<li><code>(0, 0, 0)</code></li>
+</ol>
+</li>
+<li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)</li>
+<li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)</li>
+<li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)</li>
+<li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)</li>
+<li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)</li>
 </ul>
 
                     </main>
