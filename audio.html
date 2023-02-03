@@ -170,6 +170,8 @@
 <p>A buffer of floating-point audio.</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
+<li><code>size: int</code> - Number of samples per channel.</li>
+<li><code>addr: ptr</code> - Interleaved samples; List of <code>chan.count * size</code> 32-bit floats.</li>
 <li><code>properties: val</code> - Audio properties
 <ul>
 <li><code>rate: half</code> - Sample rate of the audio. (low).</li>
@@ -179,34 +181,77 @@
 </li>
 <li><code>config: Opt[Positions]</code> - Custom channel position configuration, default is
 FLAC/SMPTE/ITU-R recommendations.</li>
-<li><code>size: int</code> - Number of samples per channel.</li>
-<li><code>addr: ptr</code> - List of <code>chan.count * size</code> 32-bit floats.</li>
 </ul>
 <h1 id="flacsmpteitu-r-recommendations"><a class="header" href="#flacsmpteitu-r-recommendations">FLAC/SMPTE/ITU-R recommendations</a></h1>
 <ul>
 <li>1 Channel: Mono (Mono)
 <ol>
-<li><code>(0, 0, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
 </ol>
 </li>
 <li>2 Channels: Stereo (Left, Right)
 <ol>
-<li><code>(-1, 0, 0)</code></li>
-<li><code>(1, 0, 0)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
 </ol>
 </li>
 <li>3 Channels: Surround 3.0 (Left, Right, Center)
 <ol>
-<li><code>(-1, 0, 0)</code></li>
-<li><code>(1, 0, 0)</code></li>
-<li><code>(0, 0, 0)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
 </ol>
 </li>
-<li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)</li>
-<li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)</li>
-<li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)</li>
-<li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)</li>
-<li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)</li>
+<li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(0, 0, -1, 1)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+</ol>
+</li>
+<li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(-0.5, 0, -0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, -0.8660254037844387, 1)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+</ol>
+</li>
 </ul>
 
                     </main>

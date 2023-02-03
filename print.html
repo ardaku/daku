@@ -171,7 +171,9 @@
 <p>Daku is an asynchronous system interface API for WebAssembly with a focus on
 multimedia.  Some goals may overlap with WASI, others do not.  It is developed
 as a supporting specification for the Ardaku project.</p>
-<p>The current version of Daku is Wasm32 only.</p>
+<h1 id="daku-specification-v100-beta0-draft"><a class="header" href="#daku-specification-v100-beta0-draft">Daku Specification v1.0.0-beta.0 (draft)</a></h1>
+<p>The current version of Daku targets the full WebAssembly 2.0 spec without any
+non-standard features.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="base-api"><a class="header" href="#base-api">Base API</a></h1>
 <p>For all APIs, addresses in memory refer to the memory exported as <code>memory</code>.
 All Daku types are lists of packed 32-bit little-endian values.</p>
@@ -197,11 +199,11 @@ All Daku types are lists of packed 32-bit little-endian values.</p>
 <p>Commands are the way the Daku application sends messages to the environment.</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
-<li><code>ready: val</code> - Arbitrary user value written to the ready list when the
-requested notifier is ready.</li>
-<li><code>channel: int</code> - The channel on which to send the command.</li>
 <li><code>size: int</code> - Size of data pointed to by <code>addr</code>, in bytes.</li>
 <li><code>addr: ptr</code> - Pointer to <code>size</code> bytes to be sent as a command.</li>
+<li><code>channel: int</code> - The channel on which to send the command.</li>
+<li><code>ready: val</code> - Arbitrary user value written to the ready list when the
+requested notifier is ready.</li>
 </ul>
 <h2 id="setting-up-the-ready-list"><a class="header" href="#setting-up-the-ready-list">Setting Up The Ready List</a></h2>
 <p>At the beginning of a Daku application, it is required to send the &quot;Connect&quot;
@@ -214,17 +216,17 @@ a high-level operating system driver depending on Daku.</p>
 <p>The connect command must only be sent once at the beginning of the app.</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
+<li><code>portals_size: int</code> - Number of portals to connect to.</li>
+<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
 <li><code>ready_size: int</code> - Maximum capacity of the ready list at <code>ready_addr</code>.</li>
 <li><code>ready_addr: ptr</code> - Pointer to the ready list with capacity for <code>ready_size</code>
 values.</li>
-<li><code>portals_size: int</code> - Number of portals to connect to.</li>
-<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="portals"><a class="header" href="#portals">Portals</a></h1>
-<p>Portals allow Daku applications to interface with the OS.  The environment is
-not required to grant access to all portals requested by the application, and
-may either stop the application or mock out a fake implementation to protect the
-user's privacy.</p>
+<p>Portals allow Daku applications to interface with the hardware and environment /
+OS.  The environment is not required to grant access to all portals requested by
+the application, and may either stop the application or mock out a fake
+implementation to protect the user's privacy.</p>
 <p>Implementations of portals should strive to be &quot;as mathematical&quot; as possible,
 meaning that there's no fancy engineering abstractions - just sending and
 receiving data and defining the required functionality.  This is to reduce the
@@ -262,7 +264,23 @@ most likely never be needed.</p>
 <li><code>height: half</code> - Height of the image</li>
 </ul>
 </li>
-<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels (32 bits per pixel).</li>
+<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels according to format.  Components
+must be packed into a power of two for the total bytes of all components in a
+pixel.</li>
+<li><code>format: int</code>: Bits per component
+<ul>
+<li><code>8</code>: 8 bits (integer)</li>
+<li><code>16</code>: 16 bits (integer)</li>
+<li><code>32</code>: 32 bits (float)</li>
+</ul>
+</li>
+<li><code>colorspace: int</code>
+<ul>
+<li><code>0</code>: Mask (1 component - grayscale/alphascale)</li>
+<li><code>1</code>: RGBA (4 components)</li>
+<li><code>2</code>: BGRA (4 components)</li>
+</ul>
+</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
 <h2 id="type-positions"><a class="header" href="#type-positions"><em>Type</em>: <code>Positions</code></a></h2>
@@ -272,7 +290,7 @@ most likely never be needed.</p>
 <li><code>x: float</code> - X position (-left +right)</li>
 <li><code>y: float</code> - Y position (-up +down)</li>
 <li><code>z: float</code> - Z position (-back +front)</li>
-<li><code>w: float</code> - W position (special)</li>
+<li><code>w: float</code> - W position (0 = vector, 1 = position)</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
 <h2 id="type-positions-1"><a class="header" href="#type-positions-1"><em>Type</em>: <code>Positions</code></a></h2>
@@ -284,7 +302,7 @@ most likely never be needed.</p>
 <li><code>x: float</code> - X position (-left +right)</li>
 <li><code>y: float</code> - Y position (-up +down)</li>
 <li><code>z: float</code> - Z position (-back +front)</li>
-<li><code>w: float</code> - Currently doesn't have a meaning</li>
+<li><code>w: float</code> - LFE or Positional? (0 = LFE, 1 = Positional)</li>
 </ul>
 </li>
 </ul>
@@ -293,6 +311,8 @@ most likely never be needed.</p>
 <p>A buffer of floating-point audio.</p>
 <h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
 <ul>
+<li><code>size: int</code> - Number of samples per channel.</li>
+<li><code>addr: ptr</code> - Interleaved samples; List of <code>chan.count * size</code> 32-bit floats.</li>
 <li><code>properties: val</code> - Audio properties
 <ul>
 <li><code>rate: half</code> - Sample rate of the audio. (low).</li>
@@ -302,34 +322,77 @@ most likely never be needed.</p>
 </li>
 <li><code>config: Opt[Positions]</code> - Custom channel position configuration, default is
 FLAC/SMPTE/ITU-R recommendations.</li>
-<li><code>size: int</code> - Number of samples per channel.</li>
-<li><code>addr: ptr</code> - List of <code>chan.count * size</code> 32-bit floats.</li>
 </ul>
 <h1 id="flacsmpteitu-r-recommendations"><a class="header" href="#flacsmpteitu-r-recommendations">FLAC/SMPTE/ITU-R recommendations</a></h1>
 <ul>
 <li>1 Channel: Mono (Mono)
 <ol>
-<li><code>(0, 0, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
 </ol>
 </li>
 <li>2 Channels: Stereo (Left, Right)
 <ol>
-<li><code>(-1, 0, 0)</code></li>
-<li><code>(1, 0, 0)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
 </ol>
 </li>
 <li>3 Channels: Surround 3.0 (Left, Right, Center)
 <ol>
-<li><code>(-1, 0, 0)</code></li>
-<li><code>(1, 0, 0)</code></li>
-<li><code>(0, 0, 0)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
 </ol>
 </li>
-<li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)</li>
-<li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)</li>
-<li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)</li>
-<li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)</li>
-<li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)</li>
+<li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+</ol>
+</li>
+<li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(0, 0, -1, 1)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+</ol>
+</li>
+<li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)
+<ol>
+<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
+<li><code>(0, 0, 1, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
+<li><code>(-0.5, 0, -0.8660254037844387, 1)</code></li>
+<li><code>(0.5, 0, -0.8660254037844387, 1)</code></li>
+<li><code>(-1, 0, 0, 1)</code></li>
+<li><code>(1, 0, 0, 1)</code></li>
+</ol>
+</li>
 </ul>
 
                     </main>

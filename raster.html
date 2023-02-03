@@ -176,7 +176,23 @@
 <li><code>height: half</code> - Height of the image</li>
 </ul>
 </li>
-<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels (32 bits per pixel).</li>
+<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels according to format.  Components
+must be packed into a power of two for the total bytes of all components in a
+pixel.</li>
+<li><code>format: int</code>: Bits per component
+<ul>
+<li><code>8</code>: 8 bits (integer)</li>
+<li><code>16</code>: 16 bits (integer)</li>
+<li><code>32</code>: 32 bits (float)</li>
+</ul>
+</li>
+<li><code>colorspace: int</code>
+<ul>
+<li><code>0</code>: Mask (1 component - grayscale/alphascale)</li>
+<li><code>1</code>: RGBA (4 components)</li>
+<li><code>2</code>: BGRA (4 components)</li>
+</ul>
+</li>
 </ul>
 
                     </main>

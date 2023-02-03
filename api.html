@@ -190,11 +190,11 @@ All Daku types are lists of packed 32-bit little-endian values.</p>
 <p>Commands are the way the Daku application sends messages to the environment.</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
-<li><code>ready: val</code> - Arbitrary user value written to the ready list when the
-requested notifier is ready.</li>
-<li><code>channel: int</code> - The channel on which to send the command.</li>
 <li><code>size: int</code> - Size of data pointed to by <code>addr</code>, in bytes.</li>
 <li><code>addr: ptr</code> - Pointer to <code>size</code> bytes to be sent as a command.</li>
+<li><code>channel: int</code> - The channel on which to send the command.</li>
+<li><code>ready: val</code> - Arbitrary user value written to the ready list when the
+requested notifier is ready.</li>
 </ul>
 <h2 id="setting-up-the-ready-list"><a class="header" href="#setting-up-the-ready-list">Setting Up The Ready List</a></h2>
 <p>At the beginning of a Daku application, it is required to send the &quot;Connect&quot;
@@ -207,11 +207,11 @@ a high-level operating system driver depending on Daku.</p>
 <p>The connect command must only be sent once at the beginning of the app.</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
+<li><code>portals_size: int</code> - Number of portals to connect to.</li>
+<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
 <li><code>ready_size: int</code> - Maximum capacity of the ready list at <code>ready_addr</code>.</li>
 <li><code>ready_addr: ptr</code> - Pointer to the ready list with capacity for <code>ready_size</code>
 values.</li>
-<li><code>portals_size: int</code> - Number of portals to connect to.</li>
-<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
 </ul>
 
                     </main>
