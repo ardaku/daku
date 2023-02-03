@@ -1,70 +1,22 @@
-# Daku v1.0.0-alpha.2
+# Daku v1.0.0-beta.0
 Daku is a system interface API similar to WASI with different goals.
 
-Since it's currently alpha, things may change but changes are somewhat unlikely.
-Alpha, beta and pre-release stages will not last very long (once there is an
-implementation it will be fully stabilized).
+Since Daku is currently in beta, things may change based on feedback but large
+changes are unlikely.
+
+The [daku specification](https://ardaku.org/daku) is currently in draft, so some
+remnants of the old spec may remain in this README and other files in the
+repository for now.
 
 ## Goals
- - Async-First
- - Immediately Stable
- - Simple
- - Reduced Syscalls
- - Channel-Based
- - Security via Portals
+ - Async-first
+ - Early stability of base API
+ - As simple as possible
+ - Reduced syscalls
+ - Channel-based
+ - Security via portals
  - Non-POSIX-y
- - Full Multimedia Support
-
-# API
-The daku api exports a single function `ar()`:
-
-```wat
-(import "daku" "ar" (func $event
-    (param $cmd_size i32)   ;; List[Command].size
-    (param $cmd_data i32)   ;; List[Command].reference
-    (result i32)            ;; List[Uint32].size 
-))
-```
-
-The function queues a number of asynchronous tasks, passed as a list (first two
-parameters).  When any asynchronous task completes, it gets pushed to the ready
-list and the function returns with the number of tasks that completed.  Each
-call to `ar()` clears the ready list.
-
-## `Command`
-```rust
-#[repr(C, packed)]
-struct Command {
-    /// Ready index for when command completes
-    ready: u32,
-    /// Channel id to use
-    channel: u32,
-    /// Data buffer size
-    size: u32,
-    /// Data buffer reference
-    data: *const (),
-}
-```
-
-## Channels
-Channel 0 is special, and lets you connect to portals.
-
-```rust
-#[repr(C, packed)]
-struct Connect {
-    /// The capacity of the ready list
-    ready_capacity: u32,
-    /// Reference to uninitialized ready list
-    ready_data: *mut u32,
-    /// The number of new portals
-    portals_size: u32,
-    /// in: List of new portal IDs - out: List of new portal channel IDs
-    portals_data: *mut u32,
-}
-```
-
-See [portals](https://github.com/ardaku/daku/blob/stable/PORTALS.md) for portal
-command APIs.
+ - Prioritize multimedia support
 
 ## Types
 

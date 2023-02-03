@@ -1,9 +1,9 @@
 # Portals
 
-Portals allow Daku applications to interface with the OS.  The environment is
-not required to grant access to all portals requested by the application, and
-may either stop the application or mock out a fake implementation to protect the
-user's privacy.
+Portals allow Daku applications to interface with the hardware and environment /
+OS.  The environment is not required to grant access to all portals requested by
+the application, and may either stop the application or mock out a fake
+implementation to protect the user's privacy.
 
 Implementations of portals should strive to be "as mathematical" as possible,
 meaning that there's no fancy engineering abstractions - just sending and

@@ -32,11 +32,11 @@ Commands are the way the Daku application sends messages to the environment.
 
 ### Fields
 
- - `ready: val` - Arbitrary user value written to the ready list when the
-   requested notifier is ready.
- - `channel: int` - The channel on which to send the command.
  - `size: int` - Size of data pointed to by `addr`, in bytes.
  - `addr: ptr` - Pointer to `size` bytes to be sent as a command.
+ - `channel: int` - The channel on which to send the command.
+ - `ready: val` - Arbitrary user value written to the ready list when the
+   requested notifier is ready.
 
 ## Setting Up The Ready List
 
@@ -53,8 +53,8 @@ The connect command must only be sent once at the beginning of the app.
 
 ### Fields
 
+ - `portals_size: int` - Number of portals to connect to.
+ - `portals_addr: ptr` - Input array of portal IDs, Output array of channels. 
  - `ready_size: int` - Maximum capacity of the ready list at `ready_addr`.
  - `ready_addr: ptr` - Pointer to the ready list with capacity for `ready_size`
    values.
- - `portals_size: int` - Number of portals to connect to.
- - `portals_addr: ptr` - Input array of portal IDs, Output array of channels. 

@@ -34,28 +34,28 @@ pub enum Portal {
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Connect {
-    /// The capacity of the ready list
-    pub ready_capacity: usize,
-    /// Reference to uninitialized ready list
-    pub ready_data: *mut usize,
     /// The number of new portals
     pub portals_size: usize,
     /// in: List of new portal IDs - out: List of new portal channel IDs
     pub portals_data: *mut u32,
+    /// The capacity of the ready list
+    pub ready_capacity: usize,
+    /// Reference to uninitialized ready list
+    pub ready_data: *mut usize,
 }
 
 /// A queued command
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Command {
-    /// Ready index for when command completes
-    pub ready: usize,
-    /// Channel id to use
-    pub channel: u32,
     /// Data buffer size
     pub size: usize,
     /// Data buffer reference
     pub data: *const (),
+    /// Channel id to use
+    pub channel: u32,
+    /// Ready index for when command completes
+    pub ready: usize,
 }
 
 #[link(wasm_import_module = "daku")]
