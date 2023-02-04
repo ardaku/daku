@@ -1,6 +1,6 @@
 # Vector
    
-## *Type*: `Positions`
+## *Type*: `Vector`
 
 A 4-dimensional vector.
 

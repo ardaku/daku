@@ -9,9 +9,8 @@ A buffer of pixels (image, picture, video, etc.).
  - `size: val`
    - `width: half` - Width of the image
    - `height: half` - Height of the image
- - `addr: ptr` - RGBA list of `size` pixels according to format.  Components
-   must be packed into a power of two for the total bytes of all components in a
-   pixel.
+ - `addr: ptr` - List of `size.width` * `size.height` pixels by row according to
+   format.
  - `format: int`: Bits per component
    - `8`: 8 bits (integer)
    - `16`: 16 bits (integer)

@@ -44,8 +44,8 @@ At the beginning of a Daku application, it is required to send the "Connect"
 command on channel 0.  Channel 0 is always open and after connecting can be used
 to send arbitrary payloads to the environment.  The Daku API does not specify
 how this data is formed, so it's up to the embedder to decide.  This feature is
-specifically for non-standard extensions to the API, such as being able to write
-a high-level operating system driver depending on Daku.
+specifically for non-standard extensions to Daku, such as being able to write a
+plugin API for a specific application.
 
 ## *Type*: `Connect`
 
