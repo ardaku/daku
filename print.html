@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.3.</strong> Raster</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.3.</strong> Vector</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.4.</strong> Raster 🧪</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions 🧪</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio 🧪</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -210,8 +210,8 @@ requested notifier is ready.</li>
 command on channel 0.  Channel 0 is always open and after connecting can be used
 to send arbitrary payloads to the environment.  The Daku API does not specify
 how this data is formed, so it's up to the embedder to decide.  This feature is
-specifically for non-standard extensions to the API, such as being able to write
-a high-level operating system driver depending on Daku.</p>
+specifically for non-standard extensions to Daku, such as being able to write a
+plugin API for a specific application.</p>
 <h2 id="type-connect"><a class="header" href="#type-connect"><em>Type</em>: <code>Connect</code></a></h2>
 <p>The connect command must only be sent once at the beginning of the app.</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
@@ -235,12 +235,30 @@ ok to pack smaller pieces of data into one value if 32-bits can be guaranteed to
 most likely never be needed.</p>
 <p>Portals should also make use of shared high-level <a href="./types.html">types</a>.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="log"><a class="header" href="#log">Log</a></h1>
+<h2 id="type-log"><a class="header" href="#type-log"><em>Type</em>: <code>Log</code></a></h2>
+<p>Write application logs.</p>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<ul>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="prompt"><a class="header" href="#prompt">Prompt</a></h1>
+<h2 id="type-prompt"><a class="header" href="#type-prompt"><em>Type</em>: <code>Prompt</code></a></h2>
+<p>Read textual user input from some source.</p>
+<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<ul>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+<li><code>: val</code> - .</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
 <h2 id="type-listt"><a class="header" href="#type-listt"><em>Type</em>: <code>List[T]</code></a></h2>
 <p>A list of elements of type <code>T</code>.</p>
-<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of elements pointed to at <code>addr</code>.</li>
 <li><code>addr: ptr</code> - Packed list of <code>size</code> elements.</li>
@@ -248,15 +266,25 @@ most likely never be needed.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
 <h2 id="type-text"><a class="header" href="#type-text"><em>Type</em>: <code>Text</code></a></h2>
 <p>A buffer of UTF-8 text.</p>
-<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of bytes pointed to at <code>addr</code>.</li>
 <li><code>addr: ptr</code> - UTF-8 string of <code>size</code> bytes.</li>
 </ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
+<h2 id="type-vector"><a class="header" href="#type-vector"><em>Type</em>: <code>Vector</code></a></h2>
+<p>A 4-dimensional vector.</p>
+<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
+<ul>
+<li><code>x: float</code> - X position (-left +right)</li>
+<li><code>y: float</code> - Y position (-up +down)</li>
+<li><code>z: float</code> - Z position (-back +front)</li>
+<li><code>w: float</code> - W position (0 = vector, 1 = position)</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
 <h2 id="type-raster"><a class="header" href="#type-raster"><em>Type</em>: <code>Raster</code></a></h2>
 <p>A buffer of pixels (image, picture, video, etc.).</p>
-<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
+<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
 <ul>
 <li><code>size: val</code>
 <ul>
@@ -264,9 +292,8 @@ most likely never be needed.</p>
 <li><code>height: half</code> - Height of the image</li>
 </ul>
 </li>
-<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels according to format.  Components
-must be packed into a power of two for the total bytes of all components in a
-pixel.</li>
+<li><code>addr: ptr</code> - List of <code>size.width</code> * <code>size.height</code> pixels by row according to
+format.</li>
 <li><code>format: int</code>: Bits per component
 <ul>
 <li><code>8</code>: 8 bits (integer)</li>
@@ -282,37 +309,29 @@ pixel.</li>
 </ul>
 </li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
-<h2 id="type-positions"><a class="header" href="#type-positions"><em>Type</em>: <code>Positions</code></a></h2>
-<p>A 4-dimensional vector.</p>
-<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
-<ul>
-<li><code>x: float</code> - X position (-left +right)</li>
-<li><code>y: float</code> - Y position (-up +down)</li>
-<li><code>z: float</code> - Z position (-back +front)</li>
-<li><code>w: float</code> - W position (0 = vector, 1 = position)</li>
-</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
-<h2 id="type-positions-1"><a class="header" href="#type-positions-1"><em>Type</em>: <code>Positions</code></a></h2>
+<h2 id="type-positions"><a class="header" href="#type-positions"><em>Type</em>: <code>Positions</code></a></h2>
 <p>A list of audio channel physical positions relative to the user at the origin.</p>
-<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
+<p>The position must either be a unit vector (length of 1) or all zeros (center).</p>
+<h3 id="fields-8"><a class="header" href="#fields-8">Fields</a></h3>
 <ul>
 <li><code>list: List[Vector]</code> - List of speakers / microphones in configuration.
 <ul>
 <li><code>x: float</code> - X position (-left +right)</li>
 <li><code>y: float</code> - Y position (-up +down)</li>
 <li><code>z: float</code> - Z position (-back +front)</li>
-<li><code>w: float</code> - LFE or Positional? (0 = LFE, 1 = Positional)</li>
+<li><code>w: float</code> - LFE? (0 = No, 1 = Yes)</li>
 </ul>
 </li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
 <h2 id="type-audio"><a class="header" href="#type-audio"><em>Type</em>: <code>Audio</code></a></h2>
 <p>A buffer of floating-point audio.</p>
-<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
+<h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of samples per channel.</li>
-<li><code>addr: ptr</code> - Interleaved samples; List of <code>chan.count * size</code> 32-bit floats.</li>
+<li><code>addr: ptr</code> - Interleaved samples; List of <code>properties.count * size</code> 32-bit
+floats.</li>
 <li><code>properties: val</code> - Audio properties
 <ul>
 <li><code>rate: half</code> - Sample rate of the audio. (low).</li>
@@ -327,70 +346,70 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 <ul>
 <li>1 Channel: Mono (Mono)
 <ol>
-<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>2 Channels: Stereo (Left, Right)
 <ol>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>3 Channels: Surround 3.0 (Left, Right, Center)
 <ol>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
-<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(0, 0, -1, 1)</code></li>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(0, 0, -1, 0)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(-0.5, 0, -0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, -0.8660254037844387, 1)</code></li>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, -0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, -0.8660254037844387, 0)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 </ul>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Positions - Daku API Specification</title>
+        <title>Positions 🧪 - Daku API Specification</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.3.</strong> Raster</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html" class="active"><strong aria-hidden="true">4.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.3.</strong> Vector</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.4.</strong> Raster 🧪</a></li><li class="chapter-item expanded "><a href="positions.html" class="active"><strong aria-hidden="true">4.5.</strong> Positions 🧪</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio 🧪</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -168,6 +168,7 @@
                         <h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
 <h2 id="type-positions"><a class="header" href="#type-positions"><em>Type</em>: <code>Positions</code></a></h2>
 <p>A list of audio channel physical positions relative to the user at the origin.</p>
+<p>The position must either be a unit vector (length of 1) or all zeros (center).</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
 <li><code>list: List[Vector]</code> - List of speakers / microphones in configuration.
@@ -175,7 +176,7 @@
 <li><code>x: float</code> - X position (-left +right)</li>
 <li><code>y: float</code> - Y position (-up +down)</li>
 <li><code>z: float</code> - Z position (-back +front)</li>
-<li><code>w: float</code> - LFE or Positional? (0 = LFE, 1 = Positional)</li>
+<li><code>w: float</code> - LFE? (0 = No, 1 = Yes)</li>
 </ul>
 </li>
 </ul>
@@ -185,7 +186,7 @@
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="vector.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="raster.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -203,7 +204,7 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="vector.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="raster.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 

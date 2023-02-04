@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Raster - Daku API Specification</title>
+        <title>Raster 🧪 - Daku API Specification</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html" class="active"><strong aria-hidden="true">4.3.</strong> Raster</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.3.</strong> Vector</a></li><li class="chapter-item expanded "><a href="raster.html" class="active"><strong aria-hidden="true">4.4.</strong> Raster 🧪</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions 🧪</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">4.6.</strong> Audio 🧪</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -176,9 +176,8 @@
 <li><code>height: half</code> - Height of the image</li>
 </ul>
 </li>
-<li><code>addr: ptr</code> - RGBA list of <code>size</code> pixels according to format.  Components
-must be packed into a power of two for the total bytes of all components in a
-pixel.</li>
+<li><code>addr: ptr</code> - List of <code>size.width</code> * <code>size.height</code> pixels by row according to
+format.</li>
 <li><code>format: int</code>: Bits per component
 <ul>
 <li><code>8</code>: 8 bits (integer)</li>
@@ -200,13 +199,13 @@ pixel.</li>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="text.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="vector.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="vector.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="positions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -218,13 +217,13 @@ pixel.</li>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="text.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="vector.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="vector.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="positions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

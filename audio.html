@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Audio - Daku API Specification</title>
+        <title>Audio 🧪 - Daku API Specification</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.3.</strong> Raster</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html" class="active"><strong aria-hidden="true">4.6.</strong> Audio</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">2.</strong> Base API</a></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">3.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">3.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">3.2.</strong> 0x01 - Prompt</a></li></ol></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">4.1.</strong> List</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">4.2.</strong> Text</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">4.3.</strong> Vector</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">4.4.</strong> Raster 🧪</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">4.5.</strong> Positions 🧪</a></li><li class="chapter-item expanded "><a href="audio.html" class="active"><strong aria-hidden="true">4.6.</strong> Audio 🧪</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -171,7 +171,8 @@
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of samples per channel.</li>
-<li><code>addr: ptr</code> - Interleaved samples; List of <code>chan.count * size</code> 32-bit floats.</li>
+<li><code>addr: ptr</code> - Interleaved samples; List of <code>properties.count * size</code> 32-bit
+floats.</li>
 <li><code>properties: val</code> - Audio properties
 <ul>
 <li><code>rate: half</code> - Sample rate of the audio. (low).</li>
@@ -186,70 +187,70 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 <ul>
 <li>1 Channel: Mono (Mono)
 <ol>
-<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>2 Channels: Stereo (Left, Right)
 <ol>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>3 Channels: Surround 3.0 (Left, Right, Center)
 <ol>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
-<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
+<li><code>(0, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>4 Channels: Surround 4.0 (FrontL, FrontR, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>5 Channels: Surround 5.0 (FrontL, FrontR, Front, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>6 Channels: Surround 5.1 (FrontL, FrontR, Front, Lfe, SurroundL, SurroundR)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
-<li><code>(0.9396926207859084, 0, -0.3420201433256687, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
+<li><code>(0.9396926207859084, 0, -0.3420201433256687, 0)</code></li>
 </ol>
 </li>
 <li>7 Channels: Surround 6.1 (FrontL, FrontR, Front, Lfe, Back, Left, Right)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(0, 0, -1, 1)</code></li>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(0, 0, -1, 0)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 <li>8 Channels: Surround 7.1 (FrontL, FrontR, Front, Lfe, BackL, BackR, Left, Right)
 <ol>
-<li><code>(-0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, 0.8660254037844387, 1)</code></li>
-<li><code>(0, 0, 1, 1)</code></li>
-<li><code>(0, 0, 0, 0)</code></li>
-<li><code>(-0.5, 0, -0.8660254037844387, 1)</code></li>
-<li><code>(0.5, 0, -0.8660254037844387, 1)</code></li>
-<li><code>(-1, 0, 0, 1)</code></li>
-<li><code>(1, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, 0.8660254037844387, 0)</code></li>
+<li><code>(0, 0, 1, 0)</code></li>
+<li><code>(0, 0, 0, 1)</code></li>
+<li><code>(-0.5, 0, -0.8660254037844387, 0)</code></li>
+<li><code>(0.5, 0, -0.8660254037844387, 0)</code></li>
+<li><code>(-1, 0, 0, 0)</code></li>
+<li><code>(1, 0, 0, 0)</code></li>
 </ol>
 </li>
 </ul>
