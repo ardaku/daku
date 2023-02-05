@@ -209,10 +209,11 @@ plugin API for a specific application.</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
 <li><code>portals_size: int</code> - Number of portals to connect to.</li>
-<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
+<li><code>portals_addr: ptr[int]</code> - Input array of portal IDs, Output array of
+channels. </li>
 <li><code>ready_size: int</code> - Maximum capacity of the ready list at <code>ready_addr</code>.</li>
-<li><code>ready_addr: ptr</code> - Pointer to the ready list with capacity for <code>ready_size</code>
-values.</li>
+<li><code>ready_addr: ptr[val]</code> - Pointer to the ready list with capacity for
+<code>ready_size</code> values.</li>
 </ul>
 
                     </main>

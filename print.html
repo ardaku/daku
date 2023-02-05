@@ -218,10 +218,11 @@ plugin API for a specific application.</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
 <li><code>portals_size: int</code> - Number of portals to connect to.</li>
-<li><code>portals_addr: ptr</code> - Input array of portal IDs, Output array of channels. </li>
+<li><code>portals_addr: ptr[int]</code> - Input array of portal IDs, Output array of
+channels. </li>
 <li><code>ready_size: int</code> - Maximum capacity of the ready list at <code>ready_addr</code>.</li>
-<li><code>ready_addr: ptr</code> - Pointer to the ready list with capacity for <code>ready_size</code>
-values.</li>
+<li><code>ready_addr: ptr[val]</code> - Pointer to the ready list with capacity for
+<code>ready_size</code> values.</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
 <p>Daku defines a few shared types that can be used in the command definitions.
@@ -250,7 +251,7 @@ should match similarly to another type defined here.</p>
 <h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of elements pointed to at <code>addr</code>.</li>
-<li><code>addr: ptr</code> - Packed list of <code>size</code> elements.</li>
+<li><code>addr: ptr[T]</code> - Packed list of <code>size</code> elements.</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
 <h2 id="type-text"><a class="header" href="#type-text"><em>Type</em>: <code>Text</code></a></h2>
@@ -258,7 +259,7 @@ should match similarly to another type defined here.</p>
 <h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
 <ul>
 <li><code>size: int</code> - Number of bytes pointed to at <code>addr</code>.</li>
-<li><code>addr: ptr</code> - UTF-8 string of <code>size</code> bytes.</li>
+<li><code>addr: ptr[byte]</code> - UTF-8 string of <code>size</code> bytes.</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
 <h2 id="type-vector"><a class="header" href="#type-vector"><em>Type</em>: <code>Vector</code></a></h2>
@@ -328,7 +329,7 @@ floats.</li>
 <li><code>count: byte</code> - Number of channels.</li>
 </ul>
 </li>
-<li><code>config: Opt[Positions]</code> - Custom channel position configuration, default is
+<li><code>config: opt[Positions]</code> - Custom channel position configuration, default is
 FLAC/SMPTE/ITU-R recommendations.</li>
 </ul>
 <h1 id="flacsmpteitu-r-recommendations"><a class="header" href="#flacsmpteitu-r-recommendations">FLAC/SMPTE/ITU-R recommendations</a></h1>
@@ -441,7 +442,7 @@ debugging.</p>
 trace.</li>
 </ul>
 </li>
-<li><code>target_addr: ptr</code> - UTF-8 string of <code>size</code> bytes.</li>
+<li><code>target_addr: ptr[byte]</code> - UTF-8 string of <code>size</code> bytes.</li>
 <li><code>message: Text</code> - Message to print.</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x01---prompt-notify"><a class="header" href="#0x01---prompt-notify">0x01 - Prompt (<code>notify</code>)</a></h1>
@@ -480,8 +481,8 @@ before ready to overwrite which buffer is being used.</li>
 <p>Read textual user input from some source.</p>
 <h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
 <ul>
-<li><code>capacity: ptr</code> - Pointer to capacity (<code>int</code>) of <code>command</code>.</li>
-<li><code>command: ptr</code> - Pointer to user-sent <code>Text</code>.</li>
+<li><code>capacity: ptr[int]</code> - Pointer to capacity of <code>command</code>.</li>
+<li><code>command: ptr[Text]</code> - Pointer to user-sent line of input.</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
