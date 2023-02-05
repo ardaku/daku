@@ -5,7 +5,7 @@ Occasionally, a command should use a custom type that packs data better, but it
 should match similarly to another type defined here.
 
 ## Primitives
- - `val`: An abritrary untyped 32 bits
+ - `val`: An arbitrary untyped 32 bits
  - `int`: A 32-bit integer
  - `float`: A 32-bit floating point
 
