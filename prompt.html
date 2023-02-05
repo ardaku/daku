@@ -165,15 +165,44 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="prompt"><a class="header" href="#prompt">Prompt</a></h1>
+                        <h1 id="prompt-notify"><a class="header" href="#prompt-notify">Prompt (<code>notify</code>)</a></h1>
+<p>Receive a line of textual user input from a debugging console.</p>
+<p>The text appended to the buffer won't contain the newline character.</p>
+<h3 id="usage-flow"><a class="header" href="#usage-flow">Usage Flow</a></h3>
+<ul>
+<li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
+<li>Once user enters a line of text in the prompt, become ready.</li>
+<li>Test if capacity is unchanged
+<ul>
+<li>Capacity is unchanged
+<ul>
+<li>Line has been appended to the text buffer</li>
+</ul>
+</li>
+<li>Capacity is changed
+<ul>
+<li>Guest reallocates buffer to requested size</li>
+<li>Re-sends now modified <code>Prompt</code> with new capacity, and possibly new
+<code>command.addr</code></li>
+<li>Capacity will be unchanged, and line of text appended to text buffer</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Won't be ready until next line of text has been entered</li>
+</ul>
+<hr />
+<ul>
+<li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
+<li>Send a <code>Prompt</code> again with different buffer on the prompt portal's channel
+before ready to overwrite which buffer is being used.</li>
+</ul>
 <h2 id="type-prompt"><a class="header" href="#type-prompt"><em>Type</em>: <code>Prompt</code></a></h2>
 <p>Read textual user input from some source.</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
-<li><code>: val</code> - .</li>
-<li><code>: val</code> - .</li>
-<li><code>: val</code> - .</li>
-<li><code>: val</code> - .</li>
+<li><code>capacity: ptr</code> - Pointer to capacity (<code>int</code>) of <code>command</code>.</li>
+<li><code>command: ptr</code> - Pointer to user-sent <code>Text</code>.</li>
 </ul>
 
                     </main>

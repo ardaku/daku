@@ -166,6 +166,26 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="types"><a class="header" href="#types">Types</a></h1>
+<p>Daku defines a few shared types that can be used in the command definitions.
+Occasionally, a command should use a custom type that packs data better, but it
+should match similarly to another type defined here.</p>
+<h2 id="primitives"><a class="header" href="#primitives">Primitives</a></h2>
+<ul>
+<li><code>val</code>: An abritrary untyped 32 bits</li>
+<li><code>int</code>: A 32-bit integer</li>
+<li><code>float</code>: A 32-bit floating point</li>
+</ul>
+<hr />
+<ul>
+<li><code>half</code>: A 16-bit integer</li>
+<li><code>byte</code>: An 8-bit integer</li>
+<li><code>nybl</code>: A 4-bit integer</li>
+</ul>
+<hr />
+<ul>
+<li><code>ptr[T]</code>: A 32-bit address</li>
+<li><code>opt[T]</code>: A 32-bit address or Null (0)</li>
+</ul>
 
                     </main>
 
