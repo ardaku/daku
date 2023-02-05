@@ -13,7 +13,7 @@ A buffer of floating-point audio.
    - `rate: half` - Sample rate of the audio. (low).
    - `rate: byte` - Sample rate of the audio. (high).
    - `count: byte` - Number of channels.
- - `config: Opt[Positions]` - Custom channel position configuration, default is
+ - `config: opt[Positions]` - Custom channel position configuration, default is
    FLAC/SMPTE/ITU-R recommendations.
 
 # FLAC/SMPTE/ITU-R recommendations

@@ -56,7 +56,8 @@ The connect command must only be sent once at the beginning of the app.
 ### Fields
 
  - `portals_size: int` - Number of portals to connect to.
- - `portals_addr: ptr` - Input array of portal IDs, Output array of channels. 
+ - `portals_addr: ptr[int]` - Input array of portal IDs, Output array of
+   channels. 
  - `ready_size: int` - Maximum capacity of the ready list at `ready_addr`.
- - `ready_addr: ptr` - Pointer to the ready list with capacity for `ready_size`
-   values.
+ - `ready_addr: ptr[val]` - Pointer to the ready list with capacity for
+   `ready_size` values.
