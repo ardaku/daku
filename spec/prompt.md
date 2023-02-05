@@ -1,4 +1,4 @@
-# Prompt (`notify`) 
+# 0x01 - Prompt (`notify`) 
 
 Receive a line of textual user input from a debugging console.
 

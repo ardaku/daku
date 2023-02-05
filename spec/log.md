@@ -1,4 +1,4 @@
-# Log (`ignore`)
+# 0x00 - Log (`ignore`)
 
 Log a message with an associated target and log level, usually to help with
 debugging.

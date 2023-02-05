@@ -5,29 +5,45 @@
 #[derive(Debug, Copy, Clone)]
 pub enum Portal {
     /// Logging API (stdout/printf)
-    Log = 0,
+    Log = 0x00,
     /// Developer command API (stdin/scanf)
-    Prompt = 1,
-    /// Set user information API (username, display name)
-    Account,
-    /// Get user information API (username, display name)
-    User,
-    /// Set system information API (system nickname, hostname)
-    System,
-    /// Get system information API (system nickname, hostname)
-    Host,
-    /// Set hardware features API (overclock, hardware time)
-    Hardware,
-    /// Get hardware features API (cpu / gpu specs)
-    Platform,
-    /// Task spawning API
-    Spawn,
-    /// Blocking task spawning API
-    SpawnBlocking,
-    /// MPMC Channel API
-    Channel,
-    /// Account API (create / delete users)
-    Admin,
+    Prompt = 0x01,
+    ///
+    Fetch = 0x02,
+    ///
+    Serve = 0x03,
+    ///
+    Speakers = 0x04,
+    ///
+    Microphone = 0x05,
+    ///
+    Screen = 0x06,
+    ///
+    Camera = 0x07,
+    ///
+    Window = 0x08,
+    ///
+    Spawn = 0x09,
+    /// Set user information API (username, display name, localization)
+    User = 0x0A,
+    /// Get user information API (username, display name, localization)
+    Preferences = 0x0B,
+    /// Create new users, settings for all users
+    System = 0x0C,
+    /// Get system information and settings
+    About = 0x0D,
+    ///
+    File = 0x0E,
+    ///
+    Hid = 0x0F,
+    ///
+    Timer = 0x10,
+    ///
+    Clock = 0x11,
+    ///
+    Gpu = 0x12,
+    ///
+    Location = 0x13,
 }
 
 /// Channel Zero Command
@@ -95,16 +111,6 @@ pub enum Level {
     ///
     /// Designates very low priority, often extremely verbose, information.
     Trace = 5,
-}
-
-/// Spawn a task with state
-#[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
-pub struct Spawn {
-    /// Task's asynchronous function (calls to `ar()` act as `.await` points)
-    pub func: extern "C" fn(data: *mut ()),
-    /// State to pass to asynchronous task function
-    pub data: *mut (),
 }
 
 /// Portal Log Command
