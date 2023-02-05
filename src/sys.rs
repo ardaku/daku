@@ -9,25 +9,25 @@ pub enum Portal {
     /// Developer command API (stdin/scanf)
     Prompt = 1,
     /// Set user information API (username, display name)
-    Account = 2,
+    Account,
     /// Get user information API (username, display name)
-    User = 3,
+    User,
     /// Set system information API (system nickname, hostname)
-    System = 4,
+    System,
     /// Get system information API (system nickname, hostname)
-    Host = 5,
+    Host,
     /// Set hardware features API (overclock, hardware time)
-    Hardware = 6,
+    Hardware,
     /// Get hardware features API (cpu / gpu specs)
-    Platform = 7,
+    Platform,
     /// Task spawning API
-    Spawn = 8,
+    Spawn,
     /// Blocking task spawning API
-    SpawnBlocking = 9,
+    SpawnBlocking,
     /// MPMC Channel API
-    Channel = 10,
+    Channel,
     /// Account API (create / delete users)
-    Admin = 11,
+    Admin,
 }
 
 /// Channel Zero Command
@@ -68,35 +68,33 @@ extern "C" {
 
 /// Log level, pretty much copied from
 /// [`log::Level`](https://docs.rs/log/0.4.17/log/enum.Level.html).
-#[repr(usize)]
+#[repr(u16)]
 #[derive(Debug, Copy, Clone)]
 pub enum Level {
-    /// The “trace” level.
-    ///
-    /// Designates very low priority, often extremely verbose, information.
-    Trace = 0b0000_0000_0000_0000_0000_0000_0000_0000,
-    /// The “debug” level.
-    ///
-    /// Designates lower priority information.
-    Debug = 0b0010_0000_0000_0000_0000_0000_0000_0000,
-    /// The “info” level.
-    ///
-    /// Designates useful information.
-    Info = 0b0100_0000_0000_0000_0000_0000_0000_0000,
-    /// The “warn” level.
-    ///
-    /// Designates hazardous situations.
-    Warn = 0b0110_0000_0000_0000_0000_0000_0000_0000,
-    /// The “error” level.
-    ///
-    /// Designates very serious errors.
-    Error = 0b1000_0000_0000_0000_0000_0000_0000_0000,
     /// The “trap” level.
     ///
     /// Trigger a trap without panicking.
-    Trap = 0b1010_0000_0000_0000_0000_0000_0000_0000,
-    /// Bit Mask.
-    Mask = 0b1110_0000_0000_0000_0000_0000_0000_0000,
+    Fatal = 0,
+    /// The “error” level.
+    ///
+    /// Designates very serious errors.
+    Error = 1,
+    /// The “warn” level.
+    ///
+    /// Designates hazardous situations.
+    Warn = 2,
+    /// The “info” level.
+    ///
+    /// Designates useful information.
+    Info = 3,
+    /// The “debug” level.
+    ///
+    /// Designates lower priority information.
+    Debug = 4,
+    /// The “trace” level.
+    ///
+    /// Designates very low priority, often extremely verbose, information.
+    Trace = 5,
 }
 
 /// Spawn a task with state
@@ -113,8 +111,10 @@ pub struct Spawn {
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Log {
-    /// Target size / log level
-    pub target_size: usize,
+    /// Target size
+    pub target_size: u16,
+    /// Log level
+    pub level: Level,
     /// Target bytes
     pub target_data: *const u8,
     /// Message size
@@ -137,8 +137,8 @@ pub struct Text {
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Prompt {
-    /// Text (in/out)
-    pub text: *mut Text,
     /// Capacity (in/out)
     pub capacity: *mut usize,
+    /// Text (in/out)
+    pub text: *mut Text,
 }

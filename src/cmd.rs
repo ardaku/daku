@@ -71,25 +71,19 @@ pub unsafe fn queue(command: Command) {
 /// Flush commands
 #[inline(never)]
 pub fn flush() {
-    STATE.with(|state| {
-        unsafe {
-            portal::ready_list(
-                sys::ar(state.queue.len(), state.queue.as_ptr()),
-                |ready_list| {
-                    for ready in ready_list {
-                        if *ready == usize::MAX {
-                            // Special value to ignore
-                            continue;
-                        }
-                        if let Some(waker) = state.pending[*ready].take() {
-                            waker.wake();
-                        }
+    STATE.with(|state| unsafe {
+        portal::ready_list(
+            sys::ar(state.queue.len(), state.queue.as_ptr()),
+            |ready_list| {
+                for ready in ready_list {
+                    if let Some(waker) = state.pending[*ready].take() {
+                        waker.wake();
                     }
-                    state.queue.clear();
-                    state.drops.clear();
-                },
-            )
-        }
+                }
+                state.queue.clear();
+                state.drops.clear();
+            },
+        )
     });
 }
 

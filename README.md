@@ -75,27 +75,6 @@ struct DateTime {
 }
 ```
 
-### List
-```rust
-#[repr(C, packed)]
-struct List<T> {
-    size: u32,
-    data: *mut T,
-}
-```
-
-### Text
-```rust
-#[repr(C, packed)]
-struct Text {
-    /// Number of bytes
-    size: usize,
-    /// UTF-8 String
-    data: *mut u8,
-}
-```
-
-
 ### TimeZone
 ```rust
 #[repr(C, u32)]

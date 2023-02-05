@@ -59,10 +59,10 @@ pub(crate) fn init() {
             let connect: *const _ = connect;
 
             let commands = [Command {
-                ready: usize::MAX,
-                channel: 0,
                 size: mem::size_of::<Connect>(),
                 data: connect.cast(),
+                ready: usize::MAX, // ignored because always immediately ready
+                channel: 0,
             }];
 
             unsafe {

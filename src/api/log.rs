@@ -25,21 +25,19 @@
 use alloc::{borrow::Cow, boxed::Box, string::ToString};
 use core::mem;
 
-use crate::{
-    cmd,
-    sys,
-    tls::Local,
-};
-
 pub use log::*;
+
+use crate::{cmd, sys, tls::Local};
+
+const LOGSIZE: usize = mem::size_of::<sys::Log>();
+
+static STATE: Local<State> = Local::new(State { channel: u32::MAX });
 
 struct Logger;
 
 struct State {
     channel: u32,
 }
-
-static STATE: Local<State> = Local::new(State { channel: u32::MAX });
 
 #[inline(always)]
 pub(crate) unsafe fn init(channel: u32) {
@@ -69,8 +67,6 @@ impl Log for Logger {
     }
 
     fn log(&self, record: &Record<'_>) {
-        const LOGSIZE: usize = mem::size_of::<sys::Log>();
-
         let target = record.target().as_bytes();
         let args = record.args();
         let message: Cow<'_, str> = if let Some(message) = args.as_str() {
@@ -80,8 +76,8 @@ impl Log for Logger {
         };
         let log = Box::new((
             sys::Log {
-                target_size: target.len()
-                    | sys::Level::from(record.level()) as usize,
+                target_size: target.len().try_into().unwrap_or(u8::MAX.into()),
+                level: sys::Level::from(record.level()),
                 target_data: target.as_ptr(),
                 message_size: message.len(),
                 message_data: message.as_ptr(),
@@ -103,4 +99,37 @@ impl Log for Logger {
     fn flush(&self) {
         cmd::flush();
     }
+}
+
+/// Logs a message at the fatal level.
+///
+/// Triggers a guest trap.
+///
+/// # Examples
+///
+/// ```
+/// use daku::log::fatal;
+///
+/// fatal("Subsystem", "Fatal error!");
+/// unreachable!()
+/// ```
+pub fn fatal(target: impl AsRef<str>, message: impl AsRef<str>) {
+    let target = target.as_ref().as_bytes();
+    let message = message.as_ref().as_bytes();
+    let log = &sys::Log {
+        target_size: target.len().try_into().unwrap_or(u8::MAX.into()),
+        level: sys::Level::Fatal,
+        target_data: target.as_ptr(),
+        message_size: message.len(),
+        message_data: message.as_ptr(),
+    };
+    let log: *const sys::Log = log;
+    let cmd = sys::Command {
+        ready: usize::MAX, // ignored because always immediately ready
+        channel: STATE.with(|state| state.channel),
+        size: LOGSIZE,
+        data: log.cast(),
+    };
+
+    unsafe { cmd::until(cmd) };
 }

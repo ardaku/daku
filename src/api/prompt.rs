@@ -2,11 +2,7 @@
 
 use alloc::string::String;
 
-use crate::{
-    cmd,
-    tls::Local,
-    sys,
-};
+use crate::{cmd, sys, tls::Local};
 
 struct State {
     channel: u32,
@@ -29,6 +25,7 @@ pub(crate) unsafe fn init(channel: u32) {
 /// than 65_536 bytes (size of one WebAssembly page).
 #[inline(never)]
 pub async fn read_line(buf: &mut String) {
+    //panic!("MNoadeit");
     let channel = STATE.with(|state| state.channel);
 
     // Run command
@@ -38,8 +35,8 @@ pub async fn read_line(buf: &mut String) {
         data: buf.as_mut_ptr(),
     };
     let prompt = sys::Prompt {
-        text: &mut text,
         capacity: &mut capacity,
+        text: &mut text,
     };
     unsafe { cmd::execute(channel, &prompt).await };
 
@@ -49,9 +46,9 @@ pub async fn read_line(buf: &mut String) {
         // Re-run command with new values
         unsafe {
             text.data = buf.as_mut_ptr();
-            cmd::execute(channel, &prompt).await
-        };
+            cmd::execute(channel, &prompt).await;
+        }
     }
 
-    unsafe { buf.as_mut_vec().set_len(text.size) }
+    unsafe { buf.as_mut_vec().set_len(text.size) };
 }

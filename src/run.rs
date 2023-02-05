@@ -7,7 +7,7 @@ use core::{
     task::{Context, RawWaker, RawWakerVTable, Waker},
 };
 
-use crate::{cmd, tls::Local, portal};
+use crate::{cmd, portal, tls::Local};
 
 const VTABLE: RawWakerVTable =
     RawWakerVTable::new(clone, wake_any, wake_any, drop);
@@ -53,7 +53,7 @@ pub(crate) fn new_waker() -> Waker {
 /// Must only be called once at the start of the program.
 #[inline(always)]
 pub unsafe fn start<F: Future<Output = ()>>(future: F) {
-    portal::init();    
+    portal::init();
 
     let waker = new_waker();
     let mut future = future;

@@ -40,16 +40,18 @@ Commands are the way the Daku application sends messages to the environment.
 
 ## Setting Up The Ready List
 
-At the beginning of a Daku application, it is required to send the "Connect"
+At the beginning of a Daku application, it is required to send the `Connect`
 command on channel 0.  Channel 0 is always open and after connecting can be used
 to send arbitrary payloads to the environment.  The Daku API does not specify
 how this data is formed, so it's up to the embedder to decide.  This feature is
 specifically for non-standard extensions to Daku, such as being able to write a
 plugin API for a specific application.
 
-## *Type*: `Connect`
+# Connect (`ignore`)
 
 The connect command must only be sent once at the beginning of the app.
+
+## *Type*: `Connect`
 
 ### Fields
 
