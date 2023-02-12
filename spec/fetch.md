@@ -26,7 +26,7 @@ This portal can be used to implement SSE as well.
  - `channel: ptr[int]` - (Out) Pointer to channel (0 if error).
  - `capacity: ptr[int]` - (Out) Pointer to capacity of `buffer`.
  - `buffer: ptr[List[byte]]` - (Out) Pointer to buffer for receiving parts of
-   the message.
+   the HTTP response.
 
 ## *Type*: `FetchAction`
 
