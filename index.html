@@ -179,10 +179,13 @@ receive data over a channel; To &quot;receive&quot; data, the Daku program must 
 a memory address of a buffer to the host.  After that, the channel may become
 &quot;ready&quot; and the buffer filled with new data.  This is only possible for <code>notify</code>
 channels.</p>
-<p>There are two kinds of channels in total; <code>ignore</code>s and <code>notify</code>s.  An ignore
-channel never becomes ready because it's implicity ready immediately.  The two
-kinds are mutually exclusive; you can't wait for notification from an ignore or
-tell Daku not to send a notification from a notify.</p>
+<p>There are three kinds of channels in total; <code>ignore</code>s, <code>notify</code>s, and
+<code>ignore-notify</code>s.  An ignore channel never becomes ready because it's implicity
+ready immediately.  The two kinds are mutually exclusive; you can't wait for
+notification from an ignore or tell Daku not to send a notification from a
+notify.  The <code>ignore-notify</code> channel type is used for the creation of new
+channels.  An <code>ignore-notify</code> channel becomes ready immediately like an <code>ignore</code>
+channel, but doesn't notify until the new channel is ready.</p>
 <h3 id="portal"><a class="header" href="#portal">Portal</a></h3>
 <p>A portal is an interface to some type of hardware on the host.  A portal
 represents the hardware directly rather than the Unix-like method of abstracting
