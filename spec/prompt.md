@@ -28,5 +28,5 @@ Read textual user input from some source.
 
 ### Fields
 
- - `capacity: ptr[int]` - Pointer to capacity of `command`.
- - `command: ptr[Text]` - Pointer to user-sent line of input.
+ - `capacity: ptr[int]` - (Out) Pointer to capacity of `command`.
+ - `command: ptr[Text]` - (Out) Pointer to user-sent line of input.
