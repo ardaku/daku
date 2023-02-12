@@ -4,7 +4,7 @@ Receive a line of textual user input from a debugging console.
 
 The text appended to the buffer won't contain the newline character.
 
-### Usage Flow
+### Usage Flow 1
  - Send a `Prompt` on the prompt portal's channel.
  - Once user enters a line of text in the prompt, become ready.
  - Test if capacity is unchanged
@@ -17,8 +17,7 @@ The text appended to the buffer won't contain the newline character.
      - Capacity will be unchanged, and line of text appended to text buffer
  - Won't be ready until next line of text has been entered
 
----
-
+### Usage Flow 2
  - Send a `Prompt` on the prompt portal's channel.
  - Send a `Prompt` again with different buffer on the prompt portal's channel
    before ready to overwrite which buffer is being used.

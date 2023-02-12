@@ -9,6 +9,10 @@ The exported WebAssembly API contains a single function:
 
 Retconned from "Ardaku"; Asynchronous Request function.
 
+Does not return until a `notify` command becomes ready; Otherwise, if at least
+one `ignore` command is sent, without also sending a `notify` command, returns
+immediately.
+
 ```wat
 (import "daku" "ar" (func $event
     (param $cmd_size i32)   ;; List[Command].size

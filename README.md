@@ -11,12 +11,12 @@ repository for now.
 ## Goals
  - Async-first
  - Early stability of base API
- - As simple as possible
- - Reduced syscalls
+ - As simple and efficient as possible
+ - Reduced context switching
  - Channel-based
  - Security via portals
  - Non-POSIX-y
- - Prioritize multimedia support
+ - Multimedia-focused
 
 ## Types
 

@@ -18,9 +18,3 @@ Portals should also make use of shared high-level [types](./types.md).
 Some portals only have one command that is sent on the channel to that portal.
 But, there are some portals that can create new channels that accept different
 commands and notify on different events.
-
-There are two kinds of channels; `ignore`s and `notify`s.  An ignore channel
-never returns the ready value to the user because it's implicity ready
-immediately.  The two kinds are mutually exclusive; you can't wait for
-notification from an ignore or tell Daku not to send a notification from a
-notify.
