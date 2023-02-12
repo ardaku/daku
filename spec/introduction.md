@@ -18,10 +18,13 @@ a memory address of a buffer to the host.  After that, the channel may become
 "ready" and the buffer filled with new data.  This is only possible for `notify`
 channels.
 
-There are two kinds of channels in total; `ignore`s and `notify`s.  An ignore
-channel never becomes ready because it's implicity ready immediately.  The two
-kinds are mutually exclusive; you can't wait for notification from an ignore or
-tell Daku not to send a notification from a notify.
+There are three kinds of channels in total; `ignore`s, `notify`s, and
+`ignore-notify`s.  An ignore channel never becomes ready because it's implicity
+ready immediately.  The two kinds are mutually exclusive; you can't wait for
+notification from an ignore or tell Daku not to send a notification from a
+notify.  The `ignore-notify` channel type is used for the creation of new
+channels.  An `ignore-notify` channel becomes ready immediately like an `ignore`
+channel, but doesn't notify until the new channel is ready.
 
 ### Portal
 A portal is an interface to some type of hardware on the host.  A portal
