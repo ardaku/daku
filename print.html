@@ -496,10 +496,41 @@ before ready to overwrite which buffer is being used.</li>
 <p>Read textual user input from some source.</p>
 <h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
 <ul>
-<li><code>capacity: ptr[int]</code> - Pointer to capacity of <code>command</code>.</li>
-<li><code>command: ptr[Text]</code> - Pointer to user-sent line of input.</li>
+<li><code>capacity: ptr[int]</code> - (Out) Pointer to capacity of <code>command</code>.</li>
+<li><code>command: ptr[Text]</code> - (Out) Pointer to user-sent line of input.</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch--ignore-notify"><a class="header" href="#0x02---fetch--ignore-notify">0x02 - Fetch 🧪 (<code>ignore-notify</code>)</a></h1>
+<p>Do an HTTP request to specified URL.</p>
+<h3 id="usage-flow-1"><a class="header" href="#usage-flow-1">Usage Flow</a></h3>
+<ul>
+<li>Send <code>Fetch</code> type as a command on the fetch portal's channel.</li>
+<li>&quot;Ready&quot; immediately and overwrites data pointed to by <code>channel</code>, but doesn't
+yield to the guest like other <code>ignore</code> channels.  Notifies based on readiness
+of new channel with ready data from the original command.</li>
+<li>Once data is received, buffer is overwritten up to <code>capacity</code> bytes, and
+<code>capacity</code> set to remaining byte count.</li>
+<li>Send <code>FetchConnection</code> type as command on new <code>channel</code> representing HTTP
+connection.</li>
+<li>Becomes ready when data is ready to be received over HTTP and written into
+the buffer.</li>
+</ul>
+<h2 id="type-fetch"><a class="header" href="#type-fetch"><em>Type</em>: <code>Fetch</code></a></h2>
+<h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
+<ul>
+<li><code>url: Text</code> - URL to do an HTTP request to (error if invalid).</li>
+<li><code>headers: opt[Text]</code> - Newline-delimited headers to send (error if invalid).</li>
+<li><code>body: opt[List[byte]]</code> - Payload to send.</li>
+<li><code>method: int</code> - 0: GET, 1: HEAD, 2: POST, 3: PUT, 4: DELETE.</li>
+<li><code>channel: ptr[int]</code> - (Out) Pointer to channel (0 if error).</li>
+<li><code>capacity: ptr[int]</code> - (Out) Pointer to capacity of <code>buffer</code>.</li>
+<li><code>buffer: ptr[List[byte]]</code> - (Out) Pointer to buffer for receiving parts of
+the message.</li>
+</ul>
+<h2 id="type-fetchconnection"><a class="header" href="#type-fetchconnection"><em>Type</em>: <code>FetchConnection</code></a></h2>
+<h3 id="fields-11"><a class="header" href="#fields-11">Fields</a></h3>
+<ul>
+<li><code>action: int</code> - 0: Hangup connection, 1: Poll for more data.</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x04---speakers-"><a class="header" href="#0x04---speakers-">0x04 - Speakers 🧪</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x05---microphone-"><a class="header" href="#0x05---microphone-">0x05 - Microphone 🧪</a></h1>
