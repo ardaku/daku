@@ -168,7 +168,7 @@
                         <h1 id="0x01---prompt-notify"><a class="header" href="#0x01---prompt-notify">0x01 - Prompt (<code>notify</code>)</a></h1>
 <p>Receive a line of textual user input from a debugging console.</p>
 <p>The text appended to the buffer won't contain the newline character.</p>
-<h3 id="usage-flow"><a class="header" href="#usage-flow">Usage Flow</a></h3>
+<h3 id="usage-flow-1"><a class="header" href="#usage-flow-1">Usage Flow 1</a></h3>
 <ul>
 <li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
 <li>Once user enters a line of text in the prompt, become ready.</li>
@@ -191,7 +191,7 @@
 </li>
 <li>Won't be ready until next line of text has been entered</li>
 </ul>
-<hr />
+<h3 id="usage-flow-2"><a class="header" href="#usage-flow-2">Usage Flow 2</a></h3>
 <ul>
 <li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
 <li>Send a <code>Prompt</code> again with different buffer on the prompt portal's channel

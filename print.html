@@ -171,15 +171,35 @@
 <p>Daku is an asynchronous system interface API for WebAssembly with a focus on
 multimedia.  Some goals may overlap with WASI, others do not.  It is developed
 as a supporting specification for the Ardaku project.</p>
-<h1 id="daku-specification-v100-beta0-draft"><a class="header" href="#daku-specification-v100-beta0-draft">Daku Specification v1.0.0-beta.0 (draft)</a></h1>
+<h2 id="daku-specification-v100-beta0-draft"><a class="header" href="#daku-specification-v100-beta0-draft">Daku Specification v1.0.0-beta.0 (draft)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
+<h2 id="terminology"><a class="header" href="#terminology">Terminology</a></h2>
+<h3 id="channel"><a class="header" href="#channel">Channel</a></h3>
+<p>In Daku, a channel is a type that can have data sent over it.  One can not
+receive data over a channel; To &quot;receive&quot; data, the Daku program must first send
+a memory address of a buffer to the host.  After that, the channel may become
+&quot;ready&quot; and the buffer filled with new data.  This is only possible for <code>notify</code>
+channels.</p>
+<p>There are two kinds of channels in total; <code>ignore</code>s and <code>notify</code>s.  An ignore
+channel never becomes ready because it's implicity ready immediately.  The two
+kinds are mutually exclusive; you can't wait for notification from an ignore or
+tell Daku not to send a notification from a notify.</p>
+<h3 id="portal"><a class="header" href="#portal">Portal</a></h3>
+<p>A portal is an interface to some type of hardware on the host.  A portal
+represents the hardware directly rather than the Unix-like method of abstracting
+it as a path or URI.  Portals are built in to the Daku specification as an
+abstraction over a channel.  Some channels are portals, while other channels
+usually represent devices found over that portal.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="base-api"><a class="header" href="#base-api">Base API</a></h1>
 <p>For all APIs, addresses in memory refer to the memory exported as <code>memory</code>.
 All Daku types are lists of packed 32-bit little-endian values.</p>
 <p>The exported WebAssembly API contains a single function:</p>
 <h2 id="function-ar"><a class="header" href="#function-ar"><em>Function</em>: <code>ar()</code></a></h2>
 <p>Retconned from &quot;Ardaku&quot;; Asynchronous Request function.</p>
+<p>Does not return until a <code>notify</code> command becomes ready; Otherwise, if at least
+one <code>ignore</code> command is sent, without also sending a <code>notify</code> command, returns
+immediately.</p>
 <pre><code class="language-wat">(import &quot;daku&quot; &quot;ar&quot; (func $event
     (param $cmd_size i32)   ;; List[Command].size
     (param $cmd_addr i32)   ;; List[Command].addr
@@ -419,11 +439,6 @@ most likely never be needed.</p>
 <p>Some portals only have one command that is sent on the channel to that portal.
 But, there are some portals that can create new channels that accept different
 commands and notify on different events.</p>
-<p>There are two kinds of channels; <code>ignore</code>s and <code>notify</code>s.  An ignore channel
-never returns the ready value to the user because it's implicity ready
-immediately.  The two kinds are mutually exclusive; you can't wait for
-notification from an ignore or tell Daku not to send a notification from a
-notify.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x00---log-ignore"><a class="header" href="#0x00---log-ignore">0x00 - Log (<code>ignore</code>)</a></h1>
 <p>Log a message with an associated target and log level, usually to help with
 debugging.</p>
@@ -448,7 +463,7 @@ trace.</li>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x01---prompt-notify"><a class="header" href="#0x01---prompt-notify">0x01 - Prompt (<code>notify</code>)</a></h1>
 <p>Receive a line of textual user input from a debugging console.</p>
 <p>The text appended to the buffer won't contain the newline character.</p>
-<h3 id="usage-flow-1"><a class="header" href="#usage-flow-1">Usage Flow</a></h3>
+<h3 id="usage-flow-1"><a class="header" href="#usage-flow-1">Usage Flow 1</a></h3>
 <ul>
 <li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
 <li>Once user enters a line of text in the prompt, become ready.</li>
@@ -471,7 +486,7 @@ trace.</li>
 </li>
 <li>Won't be ready until next line of text has been entered</li>
 </ul>
-<hr />
+<h3 id="usage-flow-2"><a class="header" href="#usage-flow-2">Usage Flow 2</a></h3>
 <ul>
 <li>Send a <code>Prompt</code> on the prompt portal's channel.</li>
 <li>Send a <code>Prompt</code> again with different buffer on the prompt portal's channel

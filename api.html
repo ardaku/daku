@@ -171,6 +171,9 @@ All Daku types are lists of packed 32-bit little-endian values.</p>
 <p>The exported WebAssembly API contains a single function:</p>
 <h2 id="function-ar"><a class="header" href="#function-ar"><em>Function</em>: <code>ar()</code></a></h2>
 <p>Retconned from &quot;Ardaku&quot;; Asynchronous Request function.</p>
+<p>Does not return until a <code>notify</code> command becomes ready; Otherwise, if at least
+one <code>ignore</code> command is sent, without also sending a <code>notify</code> command, returns
+immediately.</p>
 <pre><code class="language-wat">(import &quot;daku&quot; &quot;ar&quot; (func $event
     (param $cmd_size i32)   ;; List[Command].size
     (param $cmd_addr i32)   ;; List[Command].addr
