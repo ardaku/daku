@@ -8,6 +8,10 @@
 # At your choosing (See accompanying files LICENSE_APACHE_2_0.txt,
 # LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).
 
+[workspace]
+default-members = ["."]
+members = [".", "cargo-daku"]
+
 [package]
 name = "daku"
 version = "0.5.0"

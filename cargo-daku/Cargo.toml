@@ -1,0 +1,21 @@
+[package]
+name = "cargo-daku"
+version = "0.0.0"
+license = "Apache-2.0 OR BSL-1.0 OR MIT"
+description = "Daku API cargo plugin"
+repository = "https://github.com/ardaku/daku"
+documentation = "https://docs.rs/cargo-daku"
+homepage = "https://github.com/ardaku/daku/blob/stable/cargo-daku/CHANGELOG.md"
+include = ["Cargo.toml", "README.md", "src/*"]
+categories = [
+    "api-bindings",
+    "asynchronous",
+    "hardware-support",
+    "os",
+    "wasm",
+]
+keywords = ["daku", "webassembly", "ardaku", "quantii", "system"]
+readme = "README.md"
+edition = "2021"
+
+[dependencies]
