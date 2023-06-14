@@ -13,6 +13,8 @@ Does not return until a `notify` command becomes ready; Otherwise, if at least
 one `ignore` command is sent, without also sending a `notify` command, returns
 immediately.
 
+A special no-op `ignore` command can be sent as an empty command on channel 0.
+
 ```wat
 (import "daku" "ar" (func $event
     (param $cmd_size i32)   ;; List[Command].size
@@ -28,7 +30,7 @@ immediately.
 
 ### Returns
 
- - The new size of the WebAssembly module's global `$ready_list`
+ - The number of ready channels in the ready list (new length of ready list).
 
 ## *Type*: `Command`
 
@@ -39,29 +41,4 @@ Commands are the way the Daku application sends messages to the environment.
  - `size: int` - Size of data pointed to by `addr`, in bytes.
  - `addr: ptr` - Pointer to `size` bytes to be sent as a command.
  - `channel: int` - The channel on which to send the command.
- - `ready: val` - Arbitrary user value written to the ready list when the
-   requested notifier is ready.
-
-## Setting Up The Ready List
-
-At the beginning of a Daku application, it is required to send the `Connect`
-command on channel 0.  Channel 0 is always open and after connecting can be used
-to send arbitrary payloads to the environment.  The Daku API does not specify
-how this data is formed, so it's up to the embedder to decide.  This feature is
-specifically for non-standard extensions to Daku, such as being able to write a
-plugin API for a specific application.
-
-# Connect (`ignore`)
-
-The connect command must only be sent once at the beginning of the app.
-
-## *Type*: `Connect`
-
-### Fields
-
- - `portals_size: int` - Number of portals to connect to.
- - `portals_addr: ptr[int]` - Input array of portal IDs, Output array of
-   channels. 
- - `ready_size: int` - Maximum capacity of the ready list at `ready_addr`.
- - `ready_addr: ptr[val]` - Pointer to the ready list with capacity for
-   `ready_size` values.
+ - `ready: val` - Arbitrary 32-bit value to write to ready list (`notify` only).
