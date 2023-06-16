@@ -1,13 +1,14 @@
-# 0x00 - Log (`ignore`)
+# 0x00 - Log
 
 Log a message with an associated target and log level, usually to help with
 debugging.
 
-### Usage Flow
- - Send `Log` on the log portal's channel.
- - "Ready" immediately and concurrently writes the log message
+## Readiness
 
-## *Type*: `Log`
+Should only become ready once logging has completed (stopping the process
+wouldn't result in a partially-formed log message).
+
+## *Command*: `Log`
 
 ### Fields
 

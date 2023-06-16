@@ -1,4 +1,4 @@
-# 0x01 - Prompt (`notify`) 
+# 0x01 - Prompt 
 
 Receive a line of textual user input from a debugging console.
 
@@ -22,7 +22,7 @@ The text appended to the buffer won't contain the newline character.
  - Send a `Prompt` again with different buffer on the prompt portal's channel
    before ready to overwrite which buffer is being used.
 
-## *Type*: `Prompt`
+## *Command*: `Prompt`
 
 Read textual user input from some source.
 

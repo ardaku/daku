@@ -5,17 +5,17 @@ Occasionally, a command should use a custom type that packs data better, but it
 should match similarly to another type defined here.
 
 ## Primitives
- - `val`: An arbitrary untyped 32 bits
- - `int`: A 32-bit integer
- - `float`: A 32-bit floating point
+ - `val` An arbitrary untyped 32 bits
+ - `int` A 32-bit integer
+ - `float` A 32-bit floating point
 
 ---
 
- - `half`: A 16-bit integer
- - `byte`: An 8-bit integer
- - `nybl`: A 4-bit integer
+ - `half` A 16-bit integer
+ - `byte` An 8-bit integer
+ - `nybl` A 4-bit integer
 
 ---
 
- - `ptr[T]`: A 32-bit address
- - `opt[T]`: A 32-bit address or Null (0)
+ - `ptr[T]` A 32-bit address
+ - `opt[T]` A 32-bit address or Null (0)
