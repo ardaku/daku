@@ -1,26 +1,15 @@
-# 0x01 - Prompt 
+# 0x01 - Prompt
 
 Receive a line of textual user input from a debugging console.
 
 The text appended to the buffer won't contain the newline character.
 
-### Usage Flow 1
- - Send a `Prompt` on the prompt portal's channel.
- - Once user enters a line of text in the prompt, become ready.
- - Test if capacity is unchanged
-   - Capacity is unchanged
-     - Line has been appended to the text buffer
-   - Capacity is changed
-     - Guest reallocates buffer to requested size
-     - Re-sends now modified `Prompt` with new capacity, and possibly new
-       `command.addr`
-     - Capacity will be unchanged, and line of text appended to text buffer
- - Won't be ready until next line of text has been entered
+## Readiness
 
-### Usage Flow 2
- - Send a `Prompt` on the prompt portal's channel.
- - Send a `Prompt` again with different buffer on the prompt portal's channel
-   before ready to overwrite which buffer is being used.
+Becomes ready once either line of text has been entered.  With either
+
+ 1. Buffer is not big enough, with `capacity` modified to what is required
+ 2. Buffer is big enough, `command` text overwritten.
 
 ## *Command*: `Prompt`
 
@@ -28,5 +17,10 @@ Read textual user input from some source.
 
 ### Fields
 
- - `capacity: ptr[int]` - (Out) Pointer to capacity of `command`.
- - `command: ptr[Text]` - (Out) Pointer to user-sent line of input.
+ - `capacity: ptr[int]` - (In/Out) Pointer to capacity of `command`.
+ - `command: ptr[Text]` - (In/Out) Pointer to user-sent line of input.
+
+### Traps
+
+ - If input `capacity` is less than `command.size`
+ - If address at (input) `command.addr + capacity` has no page
