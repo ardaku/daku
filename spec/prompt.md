@@ -24,3 +24,4 @@ Read textual user input from some source.
 
  - If input `capacity` is less than `command.size`
  - If address at (input) `command.addr + capacity` has no page
+ - If address at `capacity + 3` has no page

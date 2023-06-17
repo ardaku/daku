@@ -29,3 +29,6 @@ Becomes ready once either
 ### Variants (`int`)
  0. `Poll` - Poll for more data from server.
  1. `Hangup` - Hang up connection to server.
+
+### Traps
+ - If variant is unknown (not `0` or `1`)

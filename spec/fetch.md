@@ -2,7 +2,8 @@
 
 Do an HTTPS request to specified URL.
 
-SSE is expected to be implemented as an abstraction over this API.
+SSE is expected to be implemented as an abstraction over this API (rather than
+be provided as its own portal).
 
 ## Connection
 
@@ -27,7 +28,7 @@ Becomes ready once either
 
  - `url: Text` - URL to do an HTTPS request to (does not include `https://`
    protocol)
- - `headers: Text` - Newline-delimited extra headers to send
+ - `headers: Text` - Extra headers to send (separated by `\n`)
  - `body: opt[List[byte]]` - Optional payload/content body to send
  - `method: int` - 0: GET, 1: HEAD, 2: POST, 3: PUT, 4: DELETE.
  - `capacity: ptr[int]` - (In/Out) Pointer to capacity of `buffer`.
@@ -52,9 +53,15 @@ Becomes ready once either
  - If `url` query after `?` is not `a~z`, `A~Z`, `0~9`, `-`, `_` `.`, `~`, `+`,
    `=`, `;`, or `&`
  - If `headers` begins with `\n` or ends with `\n`
- - If `headers` line does not match `Title-Kebab-Case: expected-type`
+ - If `headers` line does not match `Title-Kebab-Case: expected-type` (no `\r`
+   allowed)
  - If `headers` line contains an invalid (Like `Not-A-Header`), redudant (Like
    `Content-Length`), or insecure (Also like `Content-Length`) `header`
- - If address at `body.addr + body.size` has no page
  - If input `capacity` is less than `buffer.size`
  - If address at (input) `buffer.addr + body.capacity` has no page
+ - If address at `body.addr + body.size` has no page
+ - If address at `url.addr + url.size` has no page
+ - If address at `headers.addr + headers.size` has no page
+ - If address at `body + 3` has no page
+ - If address at `capacity + 3` has no page
+ - If address at `buffer + 3` has no page
