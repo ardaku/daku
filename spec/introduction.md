@@ -8,7 +8,7 @@ It will be possible to make a fully-featured compatibility layer to implement
 WASI over Daku, and Daku over WASI once asynchronous APIs are implemented in
 WASI.
 
-## Daku Specification v1.0.0-pre.0 (draft v3)
+## Daku Specification v1.0.0-pre.0 (draft v4)
 
 The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.

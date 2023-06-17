@@ -7,6 +7,11 @@ Channel representing an HTTPS connection to a client.
 ### Variants (`int`)
  0. `Continue` - Keep polling.
  1. `Hangup` - Hang up connection.
+ - Respond with informational response status code `100-199` (FIXME: full list)
+ - Respond with successful response status code `200-299` (FIXME: full list)
+ - Respond with redirection message status code `300-399` (FIXME: full list)
+ - Respond with client error response status code `400-499` (FIXME: full list)
+ - Respond with server error response status code `500-599` (FIXME: full list)
 
 ## Readiness
 
@@ -32,6 +37,9 @@ Becomes ready once either
 
 ### Traps
 
+ - If `poll` invalid/unknown variant
+ - If `poll` is not `0` or `1` after response headers already sent
+ - If `poll` is non-null and not a reponse status code before headers sent
  - If `request.size > request.capacity`
  - If address at `content.addr + content.size` has no page
  - If address at `error + 3` has no page
