@@ -165,7 +165,46 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="client-"><a class="header" href="#client-">Client 🧪</a></h1>
+                        <h1 id="device-client-"><a class="header" href="#device-client-"><em>Device</em>: Client 🧪</a></h1>
+<p>Channel representing an HTTPS connection to a client.</p>
+<h2 id="type-poll"><a class="header" href="#type-poll"><em>Type</em>: <code>Poll</code></a></h2>
+<h3 id="variants-int"><a class="header" href="#variants-int">Variants (<code>int</code>)</a></h3>
+<ol start="0">
+<li><code>Continue</code> - Keep polling.</li>
+<li><code>Hangup</code> - Hang up connection.</li>
+</ol>
+<h2 id="readiness"><a class="header" href="#readiness">Readiness</a></h2>
+<p>Becomes ready once either</p>
+<ul>
+<li>The client has headers and possible content body ready to be retrieved (no
+error is set to 0).</li>
+<li>The client has headers, but they are too large for <code>request</code>
+(<code>request.capacity</code> set to required capacity)</li>
+<li>Errors have overflown (at least one error set to <code>255</code>)</li>
+<li>The client hung up (<code>poll</code> set to <code>Hangup</code>)</li>
+<li>The client is ready for more data (<code>poll</code> set to <code>Continue</code>)</li>
+</ul>
+<h2 id="command-client"><a class="header" href="#command-client"><em>Command</em>: <code>Client</code></a></h2>
+<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
+<ul>
+<li><code>content: List[byte]</code> Content body to send.</li>
+<li><code>poll: opt[Poll]</code> (In/Out) Pointer to poll state (In:Server, Out:Client)</li>
+<li><code>request: opt[_]</code> Request buffer
+<ul>
+<li><code>capacity: ptr[int]</code> (In/Out) Pointer to capacity of <code>headers_content</code>.</li>
+<li><code>headers_content: ptr[Text]</code> (In/Out) Pointer to headers and content.</li>
+</ul>
+</li>
+</ul>
+<h3 id="traps"><a class="header" href="#traps">Traps</a></h3>
+<ul>
+<li>If <code>request.size &gt; request.capacity</code></li>
+<li>If address at <code>content.addr + content.size</code> has no page</li>
+<li>If address at <code>error + 3</code> has no page</li>
+<li>If address at <code>request + 7</code> has no page</li>
+<li>If address at <code>request.capacity + 3</code>  has no page</li>
+<li>If address at <code>request.headers_content.addr + request.capacity</code> has no page</li>
+</ul>
 
                     </main>
 

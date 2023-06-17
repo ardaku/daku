@@ -174,7 +174,7 @@ as a supporting specification for the Ardaku project.</p>
 <p>It will be possible to make a fully-featured compatibility layer to implement
 WASI over Daku, and Daku over WASI once asynchronous APIs are implemented in
 WASI.</p>
-<h2 id="daku-specification-v100-pre0-draft-v2"><a class="header" href="#daku-specification-v100-pre0-draft-v2">Daku Specification v1.0.0-pre.0 (draft v2)</a></h2>
+<h2 id="daku-specification-v100-pre0-draft-v3"><a class="header" href="#daku-specification-v100-pre0-draft-v3">Daku Specification v1.0.0-pre.0 (draft v3)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
 <h2 id="terminology"><a class="header" href="#terminology">Terminology</a></h2>
@@ -514,10 +514,12 @@ wouldn't result in a partially-formed log message).</p>
 <ul>
 <li>If input <code>capacity</code> is less than <code>command.size</code></li>
 <li>If address at (input) <code>command.addr + capacity</code> has no page</li>
+<li>If address at <code>capacity + 3</code> has no page</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
 <p>Do an HTTPS request to specified URL.</p>
-<p>SSE is expected to be implemented as an abstraction over this API.</p>
+<p>SSE is expected to be implemented as an abstraction over this API (rather than
+be provided as its own portal).</p>
 <h2 id="connection"><a class="header" href="#connection">Connection</a></h2>
 <p>Host device channel is opened upon readiness (allocated only if successful).
 The channel allocation should happen immediately upon return of <code>ar()</code>, and must
@@ -541,7 +543,7 @@ channel has been opened)
 <ul>
 <li><code>url: Text</code> - URL to do an HTTPS request to (does not include <code>https://</code>
 protocol)</li>
-<li><code>headers: Text</code> - Newline-delimited extra headers to send</li>
+<li><code>headers: Text</code> - Extra headers to send (separated by <code>\n</code>)</li>
 <li><code>body: opt[List[byte]]</code> - Optional payload/content body to send</li>
 <li><code>method: int</code> - 0: GET, 1: HEAD, 2: POST, 3: PUT, 4: DELETE.</li>
 <li><code>capacity: ptr[int]</code> - (In/Out) Pointer to capacity of <code>buffer</code>.</li>
@@ -569,12 +571,18 @@ or <code>/</code></li>
 <li>If <code>url</code> query after <code>?</code> is not <code>a~z</code>, <code>A~Z</code>, <code>0~9</code>, <code>-</code>, <code>_</code> <code>.</code>, <code>~</code>, <code>+</code>,
 <code>=</code>, <code>;</code>, or <code>&amp;</code></li>
 <li>If <code>headers</code> begins with <code>\n</code> or ends with <code>\n</code></li>
-<li>If <code>headers</code> line does not match <code>Title-Kebab-Case: expected-type</code></li>
+<li>If <code>headers</code> line does not match <code>Title-Kebab-Case: expected-type</code> (no <code>\r</code>
+allowed)</li>
 <li>If <code>headers</code> line contains an invalid (Like <code>Not-A-Header</code>), redudant (Like
 <code>Content-Length</code>), or insecure (Also like <code>Content-Length</code>) <code>header</code></li>
-<li>If address at <code>body.addr + body.size</code> has no page</li>
 <li>If input <code>capacity</code> is less than <code>buffer.size</code></li>
 <li>If address at (input) <code>buffer.addr + body.capacity</code> has no page</li>
+<li>If address at <code>body.addr + body.size</code> has no page</li>
+<li>If address at <code>url.addr + url.size</code> has no page</li>
+<li>If address at <code>headers.addr + headers.size</code> has no page</li>
+<li>If address at <code>body + 3</code> has no page</li>
+<li>If address at <code>capacity + 3</code> has no page</li>
+<li>If address at <code>buffer + 3</code> has no page</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="device-host-"><a class="header" href="#device-host-"><em>Device</em>: Host 🧪</a></h1>
 <p>Channel representing an HTTPS connection to a server.</p>
@@ -607,8 +615,97 @@ channel has been opened)
 <li><code>Poll</code> - Poll for more data from server.</li>
 <li><code>Hangup</code> - Hang up connection to server.</li>
 </ol>
+<h3 id="traps-3"><a class="header" href="#traps-3">Traps</a></h3>
+<ul>
+<li>If variant is unknown (not <code>0</code> or <code>1</code>)</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="client-"><a class="header" href="#client-">Client 🧪</a></h1>
+<p>Serve resources over HTTPS.</p>
+<p>SSE is expected to be implemented as an abstraction over this API (rather than
+be provided as its own portal).</p>
+<h2 id="connection-1"><a class="header" href="#connection-1">Connection</a></h2>
+<p>Client device channel is opened upon readiness.  The channel allocation should
+happen immediately upon return of <code>ar()</code>, and must follow in the order of the
+ready list.</p>
+<h2 id="readiness-4"><a class="header" href="#readiness-4">Readiness</a></h2>
+<p>Becomes ready once either</p>
+<ul>
+<li>A client connects.</li>
+<li>The number of connection errors (with <code>errors</code> being non-null) since the last
+successful connetion, in one of the 4 categories has exceeded 255</li>
+</ul>
+<h2 id="command-serve"><a class="header" href="#command-serve"><em>Command</em>: <code>Serve</code></a></h2>
+<h3 id="fields-13"><a class="header" href="#fields-13">Fields</a></h3>
+<ul>
+<li><code>config: val</code>
+<ul>
+<li><code>port: half</code> Port number to connect to</li>
+<li><code>connections: half</code> How many client connections to attempt maximum
+<ul>
+<li>If sign bit is set to negative, allow other computers to connection as a
+client</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>errors: opt[val]</code> Output number of errors that occured since last successful
+connection (or since start, if becoming ready on first success)
+<ul>
+<li><code>load: byte</code> Number rejected based on load being too high (clients
+connecting is larger than ready list size)</li>
+<li><code>maximum: byte</code> Number rejected based on too many connections exceeding
+maximum set with <code>connections</code></li>
+<li><code>https: byte</code> Number rejected for invalid HTTPS</li>
+<li><code>timeout: byte</code> Number rejected based on timeout on sending headers</li>
+</ul>
+</li>
+</ul>
+<h3 id="traps-4"><a class="header" href="#traps-4">Traps</a></h3>
+<ul>
+<li>If <code>connections = -32768</code></li>
+<li>If <code>port = 0</code> (local only) and <code>connections</code> sign bit is negative</li>
+<li>If address at <code>errors + 3</code> has no page</li>
+</ul>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="device-client-"><a class="header" href="#device-client-"><em>Device</em>: Client 🧪</a></h1>
+<p>Channel representing an HTTPS connection to a client.</p>
+<h2 id="type-poll"><a class="header" href="#type-poll"><em>Type</em>: <code>Poll</code></a></h2>
+<h3 id="variants-int-2"><a class="header" href="#variants-int-2">Variants (<code>int</code>)</a></h3>
+<ol start="0">
+<li><code>Continue</code> - Keep polling.</li>
+<li><code>Hangup</code> - Hang up connection.</li>
+</ol>
+<h2 id="readiness-5"><a class="header" href="#readiness-5">Readiness</a></h2>
+<p>Becomes ready once either</p>
+<ul>
+<li>The client has headers and possible content body ready to be retrieved (no
+error is set to 0).</li>
+<li>The client has headers, but they are too large for <code>request</code>
+(<code>request.capacity</code> set to required capacity)</li>
+<li>Errors have overflown (at least one error set to <code>255</code>)</li>
+<li>The client hung up (<code>poll</code> set to <code>Hangup</code>)</li>
+<li>The client is ready for more data (<code>poll</code> set to <code>Continue</code>)</li>
+</ul>
+<h2 id="command-client"><a class="header" href="#command-client"><em>Command</em>: <code>Client</code></a></h2>
+<h3 id="fields-14"><a class="header" href="#fields-14">Fields</a></h3>
+<ul>
+<li><code>content: List[byte]</code> Content body to send.</li>
+<li><code>poll: opt[Poll]</code> (In/Out) Pointer to poll state (In:Server, Out:Client)</li>
+<li><code>request: opt[_]</code> Request buffer
+<ul>
+<li><code>capacity: ptr[int]</code> (In/Out) Pointer to capacity of <code>headers_content</code>.</li>
+<li><code>headers_content: ptr[Text]</code> (In/Out) Pointer to headers and content.</li>
+</ul>
+</li>
+</ul>
+<h3 id="traps-5"><a class="header" href="#traps-5">Traps</a></h3>
+<ul>
+<li>If <code>request.size &gt; request.capacity</code></li>
+<li>If address at <code>content.addr + content.size</code> has no page</li>
+<li>If address at <code>error + 3</code> has no page</li>
+<li>If address at <code>request + 7</code> has no page</li>
+<li>If address at <code>request.capacity + 3</code>  has no page</li>
+<li>If address at <code>request.headers_content.addr + request.capacity</code> has no page</li>
+</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x04---speakers-"><a class="header" href="#0x04---speakers-">0x04 - Speakers 🧪</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x05---microphone-"><a class="header" href="#0x05---microphone-">0x05 - Microphone 🧪</a></h1>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x06---screen-"><a class="header" href="#0x06---screen-">0x06 - Screen 🧪</a></h1>

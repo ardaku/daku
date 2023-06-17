@@ -166,6 +166,52 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
+<p>Serve resources over HTTPS.</p>
+<p>SSE is expected to be implemented as an abstraction over this API (rather than
+be provided as its own portal).</p>
+<h2 id="connection"><a class="header" href="#connection">Connection</a></h2>
+<p>Client device channel is opened upon readiness.  The channel allocation should
+happen immediately upon return of <code>ar()</code>, and must follow in the order of the
+ready list.</p>
+<h2 id="readiness"><a class="header" href="#readiness">Readiness</a></h2>
+<p>Becomes ready once either</p>
+<ul>
+<li>A client connects.</li>
+<li>The number of connection errors (with <code>errors</code> being non-null) since the last
+successful connetion, in one of the 4 categories has exceeded 255</li>
+</ul>
+<h2 id="command-serve"><a class="header" href="#command-serve"><em>Command</em>: <code>Serve</code></a></h2>
+<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
+<ul>
+<li><code>config: val</code>
+<ul>
+<li><code>port: half</code> Port number to connect to</li>
+<li><code>connections: half</code> How many client connections to attempt maximum
+<ul>
+<li>If sign bit is set to negative, allow other computers to connection as a
+client</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>errors: opt[val]</code> Output number of errors that occured since last successful
+connection (or since start, if becoming ready on first success)
+<ul>
+<li><code>load: byte</code> Number rejected based on load being too high (clients
+connecting is larger than ready list size)</li>
+<li><code>maximum: byte</code> Number rejected based on too many connections exceeding
+maximum set with <code>connections</code></li>
+<li><code>https: byte</code> Number rejected for invalid HTTPS</li>
+<li><code>timeout: byte</code> Number rejected based on timeout on sending headers</li>
+</ul>
+</li>
+</ul>
+<h3 id="traps"><a class="header" href="#traps">Traps</a></h3>
+<ul>
+<li>If <code>connections = -32768</code></li>
+<li>If <code>port = 0</code> (local only) and <code>connections</code> sign bit is negative</li>
+<li>If address at <code>errors + 3</code> has no page</li>
+</ul>
 
                     </main>
 

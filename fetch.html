@@ -167,7 +167,8 @@
                     <main>
                         <h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
 <p>Do an HTTPS request to specified URL.</p>
-<p>SSE is expected to be implemented as an abstraction over this API.</p>
+<p>SSE is expected to be implemented as an abstraction over this API (rather than
+be provided as its own portal).</p>
 <h2 id="connection"><a class="header" href="#connection">Connection</a></h2>
 <p>Host device channel is opened upon readiness (allocated only if successful).
 The channel allocation should happen immediately upon return of <code>ar()</code>, and must
@@ -191,7 +192,7 @@ channel has been opened)
 <ul>
 <li><code>url: Text</code> - URL to do an HTTPS request to (does not include <code>https://</code>
 protocol)</li>
-<li><code>headers: Text</code> - Newline-delimited extra headers to send</li>
+<li><code>headers: Text</code> - Extra headers to send (separated by <code>\n</code>)</li>
 <li><code>body: opt[List[byte]]</code> - Optional payload/content body to send</li>
 <li><code>method: int</code> - 0: GET, 1: HEAD, 2: POST, 3: PUT, 4: DELETE.</li>
 <li><code>capacity: ptr[int]</code> - (In/Out) Pointer to capacity of <code>buffer</code>.</li>
@@ -219,12 +220,18 @@ or <code>/</code></li>
 <li>If <code>url</code> query after <code>?</code> is not <code>a~z</code>, <code>A~Z</code>, <code>0~9</code>, <code>-</code>, <code>_</code> <code>.</code>, <code>~</code>, <code>+</code>,
 <code>=</code>, <code>;</code>, or <code>&amp;</code></li>
 <li>If <code>headers</code> begins with <code>\n</code> or ends with <code>\n</code></li>
-<li>If <code>headers</code> line does not match <code>Title-Kebab-Case: expected-type</code></li>
+<li>If <code>headers</code> line does not match <code>Title-Kebab-Case: expected-type</code> (no <code>\r</code>
+allowed)</li>
 <li>If <code>headers</code> line contains an invalid (Like <code>Not-A-Header</code>), redudant (Like
 <code>Content-Length</code>), or insecure (Also like <code>Content-Length</code>) <code>header</code></li>
-<li>If address at <code>body.addr + body.size</code> has no page</li>
 <li>If input <code>capacity</code> is less than <code>buffer.size</code></li>
 <li>If address at (input) <code>buffer.addr + body.capacity</code> has no page</li>
+<li>If address at <code>body.addr + body.size</code> has no page</li>
+<li>If address at <code>url.addr + url.size</code> has no page</li>
+<li>If address at <code>headers.addr + headers.size</code> has no page</li>
+<li>If address at <code>body + 3</code> has no page</li>
+<li>If address at <code>capacity + 3</code> has no page</li>
+<li>If address at <code>buffer + 3</code> has no page</li>
 </ul>
 
                     </main>
