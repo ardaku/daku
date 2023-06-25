@@ -12,14 +12,14 @@ wouldn't result in a partially-formed log message).
 
 ### Fields
 
- - `message: Text` - Message to print.
- - `target: Text` Target name; First character is log level
+ - `message: Text` - Message to print; first character is log level
    - `F`: Fail (Trap the task)
    - `E`: Error
    - `W`: Warn
    - `I`: Info
    - `D`: Debug
    - `T`: Trace
+ - `target: Text` Target name
 
 ### Traps
 

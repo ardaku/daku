@@ -25,14 +25,13 @@ pub(crate) unsafe fn init(channel: u32) {
 /// than 65_536 bytes (size of one WebAssembly page).
 #[inline(never)]
 pub async fn read_line(buf: &mut String) {
-    //panic!("MNoadeit");
     let channel = STATE.with(|state| state.channel);
 
     // Run command
     let mut capacity = buf.capacity();
     let mut text = sys::Text {
         size: buf.len(),
-        data: buf.as_mut_ptr(),
+        addr: buf.as_mut_ptr() as usize,
     };
     let prompt = sys::Prompt {
         capacity: &mut capacity,
@@ -45,7 +44,7 @@ pub async fn read_line(buf: &mut String) {
         buf.reserve(additional);
         // Re-run command with new values
         unsafe {
-            text.data = buf.as_mut_ptr();
+            text.addr = buf.as_mut_ptr() as usize;
             cmd::execute(channel, &prompt).await;
         }
     }

@@ -84,49 +84,43 @@ extern "C" {
 
 /// Log level, pretty much copied from
 /// [`log::Level`](https://docs.rs/log/0.4.17/log/enum.Level.html).
-#[repr(u16)]
+#[repr(u8)]
 #[derive(Debug, Copy, Clone)]
 pub enum Level {
     /// The “trap” level.
     ///
     /// Trigger a trap without panicking.
-    Fatal = 0,
+    Fail = b'F',
     /// The “error” level.
     ///
     /// Designates very serious errors.
-    Error = 1,
+    Error = b'E',
     /// The “warn” level.
     ///
     /// Designates hazardous situations.
-    Warn = 2,
+    Warn = b'W',
     /// The “info” level.
     ///
     /// Designates useful information.
-    Info = 3,
+    Info = b'I',
     /// The “debug” level.
     ///
     /// Designates lower priority information.
-    Debug = 4,
+    Debug = b'D',
     /// The “trace” level.
     ///
     /// Designates very low priority, often extremely verbose, information.
-    Trace = 5,
+    Trace = b'T',
 }
 
 /// Portal Log Command
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Log {
-    /// Target size
-    pub target_size: u16,
-    /// Log level
-    pub level: Level,
-    /// Target bytes
-    pub target_data: *const u8,
-    /// Message size
-    pub message_size: usize,
-    /// Message bytes
-    pub message_data: *const u8,
+    /// Log message
+    pub message: Text,
+    /// Log target
+    pub target: Text,
 }
 
 /// UTF-8 text
@@ -136,7 +130,7 @@ pub struct Text {
     /// Length of string
     pub size: usize,
     /// UTF-8 String
-    pub data: *mut u8,
+    pub addr: usize,
 }
 
 /// Developer console prompt
