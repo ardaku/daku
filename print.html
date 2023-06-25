@@ -174,7 +174,7 @@ as a supporting specification for the Ardaku project.</p>
 <p>It will be possible to make a fully-featured compatibility layer to implement
 WASI over Daku, and Daku over WASI once asynchronous APIs are implemented in
 WASI.</p>
-<h2 id="daku-specification-v100-pre0-draft-v4"><a class="header" href="#daku-specification-v100-pre0-draft-v4">Daku Specification v1.0.0-pre.0 (draft v4)</a></h2>
+<h2 id="daku-specification-v100-pre0-draft-v5"><a class="header" href="#daku-specification-v100-pre0-draft-v5">Daku Specification v1.0.0-pre.0 (draft v5)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
 <h2 id="terminology"><a class="header" href="#terminology">Terminology</a></h2>
@@ -474,8 +474,7 @@ wouldn't result in a partially-formed log message).</p>
 <h2 id="command-log"><a class="header" href="#command-log"><em>Command</em>: <code>Log</code></a></h2>
 <h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
 <ul>
-<li><code>message: Text</code> - Message to print.</li>
-<li><code>target: Text</code> Target name; First character is log level
+<li><code>message: Text</code> - Message to print; first character is log level
 <ul>
 <li><code>F</code>: Fail (Trap the task)</li>
 <li><code>E</code>: Error</li>
@@ -485,6 +484,7 @@ wouldn't result in a partially-formed log message).</p>
 <li><code>T</code>: Trace</li>
 </ul>
 </li>
+<li><code>target: Text</code> Target name</li>
 </ul>
 <h3 id="traps"><a class="header" href="#traps">Traps</a></h3>
 <ul>
