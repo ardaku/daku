@@ -50,3 +50,18 @@ impl Str for &mut str {
         self.as_mut_ptr()
     }
 }
+
+pub trait Float {
+    fn clean(self) -> Self;
+}
+
+impl Float for f32 {
+    #[inline(always)]
+    fn clean(self) -> Self {
+        if self.is_nan() {
+            Self::from_bits(u32::MAX)
+        } else {
+            self
+        }
+    }
+}

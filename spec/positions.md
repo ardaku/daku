@@ -1,6 +1,6 @@
 # Positions
 
-## *Type*: `Positions`
+## *Type*: `Positions` (subtype of `List`)
 
 A list of audio channel physical positions relative to the user at the origin.
 

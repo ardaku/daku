@@ -2,7 +2,7 @@
 
 use core::marker::PhantomData;
 
-use crate::sealed::{Addr, Str};
+use crate::sealed::{Addr, Float, Str};
 
 /// Portal IDs
 #[repr(u32)]
@@ -234,3 +234,147 @@ impl<T> List<T> {
 pub trait Ptr<T>: Addr<T> {}
 
 impl<A, T> Ptr<T> for A where A: Addr<T> {}
+
+/// A 4-dimensional floating-point vector
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone, Default)]
+pub struct Vector {
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+}
+
+impl Vector {
+    /// Create a new 4-dimensional vector
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        Self {
+            x: x.clean(),
+            y: y.clean(),
+            z: z.clean(),
+            w: w.clean(),
+        }
+    }
+
+    /// Get x
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    /// Get y
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    /// Get z
+    pub fn z(&self) -> f32 {
+        self.z
+    }
+
+    /// Get w
+    pub fn w(&self) -> f32 {
+        self.w
+    }
+
+    /// Set x
+    pub fn set_x(&mut self, x: f32) {
+        self.x = x.clean();
+    }
+
+    /// Set y
+    pub fn set_y(&mut self, y: f32) {
+        self.y = y.clean();
+    }
+
+    /// Set z
+    pub fn set_z(&mut self, z: f32) {
+        self.z = z.clean();
+    }
+
+    /// Set w
+    pub fn set_w(&mut self, w: f32) {
+        self.w = w.clean();
+    }
+}
+
+/// A mapping of channels to speaker positions
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default)]
+pub struct Positions(List<Vector>);
+
+impl Positions {
+    /// Create a positions mapping
+    pub fn new(size: usize, addr: impl Ptr<Vector>) -> Self {
+        Self(List::new(size, addr))
+    }
+
+    /// Get the length of the UTF-8 text in bytes.
+    #[inline(always)]
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    /// Get a pointer to the UTF-8 text's data.
+    #[inline(always)]
+    pub fn as_ptr(&self) -> *const Vector {
+        self.0.as_ptr()
+    }
+
+    /// Get a mutable pointer to the UTF-8 text's data.
+    #[inline(always)]
+    pub fn as_mut_ptr(&self) -> *mut Vector {
+        self.0.as_mut_ptr()
+    }
+
+    /// Set the length of the UTF-8 text in bytes.
+    #[inline(always)]
+    pub fn set_len(&mut self, len: usize) {
+        self.0.set_len(len);
+    }
+
+    /// Set the address of the UTF-8 text.
+    #[inline(always)]
+    pub fn set_addr(&mut self, addr: impl Addr<Vector>) {
+        self.0.set_addr(addr);
+    }
+}
+
+/// Number (implemented for [`f32`])
+pub trait Num: Float {}
+
+impl<T> Num for T where T: Float {}
+
+/// A 2-D integer width/height pair.
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone, Default)]
+pub struct Dimensions {
+    width: u16,
+    height: u16,
+}
+
+impl Dimensions {
+    /// Create a new `Dimensions`.
+    pub fn new(width: u16, height: u16) -> Self {
+        Self { width, height }
+    }
+
+    /// Get width dimension.
+    pub fn width(&self) -> u16 {
+        self.width
+    }
+
+    /// Get height dimension.
+    pub fn height(&self) -> u16 {
+        self.height
+    }
+
+    /// Set width dimension.
+    pub fn set_width(&mut self, width: u16) {
+        self.width = width;
+    }
+
+    /// Set height dimension.
+    pub fn set_height(&mut self, height: u16) {
+        self.height = height;
+    }
+}

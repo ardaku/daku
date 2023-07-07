@@ -22,7 +22,7 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use alloc::{boxed::Box, string::String, borrow::ToOwned};
+use alloc::{borrow::ToOwned, boxed::Box, string::String};
 use core::{fmt::Write, future::Future, mem};
 
 pub use log::*;
