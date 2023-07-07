@@ -38,6 +38,6 @@ Becomes ready once either
 
 ### Traps
 
- - If `connections = -32768`
- - If `port = 0` (local only) and `connections` sign bit is negative
- - If address at `errors + 3` has no page
+ 0. If `connections = -32768`
+ 1. If `port = 0` (local only) and `connections` sign bit is negative
+ 2. If address at `errors + 3` has no page

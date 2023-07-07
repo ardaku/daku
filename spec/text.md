@@ -1,6 +1,6 @@
 # Text
 
-## *Type*: `Text`
+## *Type*: `Text` (subtype of `List`)
 
 A buffer of UTF-8 text.
 

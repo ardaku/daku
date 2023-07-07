@@ -37,12 +37,12 @@ Becomes ready once either
 
 ### Traps
 
- - If `poll` invalid/unknown variant
- - If `poll` is not `0` or `1` after response headers already sent
- - If `poll` is non-null and not a reponse status code before headers sent
- - If `request.size > request.capacity`
- - If address at `content.addr + content.size` has no page
- - If address at `error + 3` has no page
- - If address at `request + 7` has no page
- - If address at `request.capacity + 3`  has no page
- - If address at `request.headers_content.addr + request.capacity` has no page
+ 0. If `poll` invalid/unknown variant
+ 1. If `poll` is not `0` or `1` after response headers already sent
+ 2. If `poll` is non-null and not a reponse status code before headers sent
+ 3. If `request.size > request.capacity`
+ 4. If address at `content.addr + content.size` has no page
+ 5. If address at `error + 3` has no page
+ 6. If address at `request + 7` has no page
+ 7. If address at `request.capacity + 3`  has no page
+ 8. If address at `request.headers_content.addr + request.capacity` has no page

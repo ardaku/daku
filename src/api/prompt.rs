@@ -29,10 +29,7 @@ pub async fn read_line(buf: &mut String) {
 
     // Run command
     let mut capacity = buf.capacity();
-    let mut text = sys::Text {
-        size: buf.len(),
-        addr: buf.as_mut_ptr() as usize,
-    };
+    let mut text = sys::Text::new(buf.as_mut_str());
     let prompt = sys::Prompt {
         capacity: &mut capacity,
         text: &mut text,
@@ -44,10 +41,10 @@ pub async fn read_line(buf: &mut String) {
         buf.reserve(additional);
         // Re-run command with new values
         unsafe {
-            text.addr = buf.as_mut_ptr() as usize;
+            text.set_addr(buf.as_mut_ptr());
             cmd::execute(channel, &prompt).await;
         }
     }
 
-    unsafe { buf.as_mut_vec().set_len(text.size) };
+    unsafe { buf.as_mut_vec().set_len(text.len()) };
 }

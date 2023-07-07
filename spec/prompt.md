@@ -22,6 +22,6 @@ Read textual user input from some source.
 
 ### Traps
 
- - If input `capacity` is less than `command.size`
- - If address at (input) `command.addr + capacity` has no page
- - If address at `capacity + 3` has no page
+ 0. If input `capacity` is less than `command.size`
+ 1. If address at (input) `command.addr + capacity` has no page
+ 2. If address at `capacity + 3` has no page

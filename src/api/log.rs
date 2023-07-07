@@ -22,8 +22,8 @@
 //!
 //! [log]: https://crates.io/crates/log
 
-use alloc::{boxed::Box, string::String};
-use core::{fmt::Write, mem, future::Future};
+use alloc::{boxed::Box, string::String, borrow::ToOwned};
+use core::{fmt::Write, future::Future, mem};
 
 pub use log::*;
 
@@ -67,7 +67,7 @@ impl Log for Logger {
     }
 
     fn log(&self, record: &Record<'_>) {
-        let target = record.target().as_bytes();
+        let target = record.target().to_owned();
         let args = record.args();
         let mut message = String::new();
         message.push(char::from(sys::Level::from(record.level()) as u8));
@@ -75,16 +75,11 @@ impl Log for Logger {
 
         let log = Box::new((
             sys::Log {
-                target: sys::Text {
-                    size: target.len(),
-                    addr: target.as_ptr() as usize,
-                },
-                message: sys::Text {
-                    size: message.len(),
-                    addr: message.as_ptr() as usize,
-                },
+                target: sys::Text::new(target.as_str()),
+                message: sys::Text::new(message.as_str()),
             },
             message,
+            target,
         ));
         let log = cmd::defer(log);
         let cmd = sys::Command {
@@ -114,14 +109,8 @@ impl Log for Logger {
 #[inline(always)]
 pub fn flush() -> impl Future<Output = ()> {
     let log = sys::Log {
-        target: sys::Text {
-            size: 0,
-            addr: 0,
-        },
-        message: sys::Text {
-            size: 0,
-            addr: 0,
-        },
+        target: sys::Text::default(),
+        message: sys::Text::default(),
     };
 
     unsafe { cmd::execute(STATE.with(|state| state.channel), &log) }
@@ -140,7 +129,7 @@ pub fn flush() -> impl Future<Output = ()> {
 /// unreachable!()
 /// ```
 pub fn fail(target: impl AsRef<str>, message: impl AsRef<str>) {
-    let target = target.as_ref().as_bytes();
+    let target = target.as_ref();
     let msg = message.as_ref();
     let mut message = String::new();
     message.push(char::from(sys::Level::Fail as u8));
@@ -148,14 +137,8 @@ pub fn fail(target: impl AsRef<str>, message: impl AsRef<str>) {
 
     let log = Box::new((
         sys::Log {
-            target: sys::Text {
-                size: target.len(),
-                addr: target.as_ptr() as usize,
-            },
-            message: sys::Text {
-                size: message.len(),
-                addr: message.as_ptr() as usize,
-            },
+            target: sys::Text::new(target),
+            message: sys::Text::new(message.as_str()),
         },
         message,
     ));

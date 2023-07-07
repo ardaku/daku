@@ -31,4 +31,4 @@ Becomes ready once either
  1. `Hangup` - Hang up connection to server.
 
 ### Traps
- - If variant is unknown (not `0` or `1`)
+ 0. If variant is unknown (not `0` or `1`)

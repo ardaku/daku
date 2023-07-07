@@ -51,6 +51,7 @@ pub mod sys;
 pub mod tls;
 
 mod portal;
+mod sealed;
 
 // FIXME: Remove
 // pub mod cpu_info;

@@ -7,7 +7,7 @@ should match similarly to another type defined here.
 ## Primitives
  - `val` An arbitrary untyped 32 bits
  - `int` A 32-bit integer
- - `float` A 32-bit floating point
+ - `num` A 32-bit floating point (May require all 1 bits for NaN representation)
 
 ---
 

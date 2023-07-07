@@ -6,13 +6,13 @@ A buffer of floating-point audio.
 
 ### Fields
 
- - `size: int` - Number of samples per channel.
- - `addr: ptr` - Interleaved samples; List of `properties.count * size` 32-bit
-   floats.
- - `properties: val` - Audio properties
-   - `rate: half` - Sample rate of the audio. (low).
-   - `rate: byte` - Sample rate of the audio. (high).
-   - `count: byte` - Number of channels.
+ - `size: val`
+   - `frame: byte` - Number of channels per frame.
+   - `chunk: byte` - Number of frames per chunk.
+   - `count: half` - Number of chunks.
+ - `addr: ptr[float]` - Interleaved samples; List of
+   `size.frame * size.chunk * size.count` 32-bit floats.
+ - `rate: int` - Sample rate of the audio (hertz)
  - `config: opt[Positions]` - Custom channel position configuration, default is
    FLAC/SMPTE/ITU-R recommendations.
 

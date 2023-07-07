@@ -9,7 +9,7 @@ The position must either be a unit vector (length of 1) or all zeros (center).
 ### Fields
 
  - `list: List[Vector]` - List of speakers / microphones in configuration.
-   - `x: float` - X position (-left +right)
-   - `y: float` - Y position (-up +down)
-   - `z: float` - Z position (-back +front)
-   - `w: float` - LFE? (0 = No, 1 = Yes)
+   - `x: num` - X position (-left +right)
+   - `y: num` - Y position (-up +down)
+   - `z: num` - Z position (-back +front)
+   - `w: num` - LFE? (0 = No, NaN = Yes)

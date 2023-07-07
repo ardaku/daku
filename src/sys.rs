@@ -1,5 +1,9 @@
 //! FFI bindings to the Daku API.
 
+use core::marker::PhantomData;
+
+use crate::sealed::{Addr, Str};
+
 /// Portal IDs
 #[repr(u32)]
 #[derive(Debug, Copy, Clone)]
@@ -125,12 +129,45 @@ pub struct Log {
 
 /// UTF-8 text
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
-pub struct Text {
-    /// Length of string
-    pub size: usize,
-    /// UTF-8 String
-    pub addr: usize,
+#[derive(Debug, Copy, Clone, Default)]
+pub struct Text(List<u8>);
+
+impl Text {
+    /// Create a new UTF-8 text.
+    #[inline(always)]
+    pub fn new(str: impl Str) -> Text {
+        Self(List::new(str.len(), str.to_addr()))
+    }
+
+    /// Get the length of the UTF-8 text in bytes.
+    #[inline(always)]
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    /// Get a pointer to the UTF-8 text's data.
+    #[inline(always)]
+    pub fn as_ptr(&self) -> *const u8 {
+        self.0.as_ptr()
+    }
+
+    /// Get a mutable pointer to the UTF-8 text's data.
+    #[inline(always)]
+    pub fn as_mut_ptr(&self) -> *mut u8 {
+        self.0.as_mut_ptr()
+    }
+
+    /// Set the length of the UTF-8 text in bytes.
+    #[inline(always)]
+    pub fn set_len(&mut self, len: usize) {
+        self.0.set_len(len);
+    }
+
+    /// Set the address of the UTF-8 text.
+    #[inline(always)]
+    pub fn set_addr(&mut self, addr: impl Addr<u8>) {
+        self.0.set_addr(addr);
+    }
 }
 
 /// Developer console prompt
@@ -142,3 +179,58 @@ pub struct Prompt {
     /// Text (in/out)
     pub text: *mut Text,
 }
+
+/// Daku list (similar to Rust's slice)
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone, Default)]
+pub struct List<T> {
+    size: usize,
+    addr: usize,
+    data: PhantomData<[T]>,
+}
+
+impl<T> List<T> {
+    /// Create a new list.
+    #[inline(always)]
+    pub fn new(size: usize, addr: impl Ptr<T>) -> Self {
+        let data = PhantomData;
+        let addr = addr.as_usize();
+
+        Self { size, addr, data }
+    }
+
+    /// Get the length of the list.
+    #[inline(always)]
+    pub fn len(&self) -> usize {
+        self.size
+    }
+
+    /// Get a pointer to the list's data.
+    #[inline(always)]
+    pub fn as_ptr(&self) -> *const T {
+        self.addr as *const T
+    }
+
+    /// Get a mutable pointer to the list's data.
+    #[inline(always)]
+    pub fn as_mut_ptr(&self) -> *mut T {
+        self.addr as *mut T
+    }
+
+    /// Set the length of the list.
+    #[inline(always)]
+    pub fn set_len(&mut self, len: usize) {
+        self.size = len;
+    }
+
+    /// Set the address of the list.
+    #[inline(always)]
+    pub fn set_addr(&mut self, addr: impl Addr<T>) {
+        self.addr = addr.as_usize();
+    }
+}
+
+/// Memory Address (implemented for pointer types)
+pub trait Ptr<T>: Addr<T> {}
+
+impl<A, T> Ptr<T> for A where A: Addr<T> {}
