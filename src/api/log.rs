@@ -12,8 +12,8 @@
 //!         log::set_max_level(LevelFilter::Debug);
 //!
 //!         // Queue two log messages, and print at once with a single syscall
-//!         log::info("=============");
-//!         log::info("Hello, world!");
+//!         log::info!("=============");
+//!         log::info!("Hello, world!");
 //!         // Without the call to flush, messages would print on next syscall
 //!         log::logger().flush();
 //!     });
@@ -23,7 +23,7 @@
 //! [log]: https://crates.io/crates/log
 
 use alloc::{boxed::Box, string::String};
-use core::{fmt::Write, mem};
+use core::{fmt::Write, mem, future::Future};
 
 pub use log::*;
 
@@ -70,7 +70,7 @@ impl Log for Logger {
         let target = record.target().as_bytes();
         let args = record.args();
         let mut message = String::new();
-        message.push(char::from(record.level() as u8));
+        message.push(char::from(sys::Level::from(record.level()) as u8));
         write!(&mut message, "{args}").ok();
 
         let log = Box::new((
@@ -88,7 +88,8 @@ impl Log for Logger {
         ));
         let log = cmd::defer(log);
         let cmd = sys::Command {
-            ready: usize::MAX, // ignored because always immediately ready
+            // Ignore
+            ready: usize::MAX,
             channel: STATE.with(|state| state.channel),
             size: LOGSIZE,
             data: log.cast(),
@@ -99,8 +100,31 @@ impl Log for Logger {
 
     #[inline(always)]
     fn flush(&self) {
+        // A weak flush (wait until sent to the environment, but not until fully
+        // written).
         cmd::flush();
     }
+}
+
+/// Asynchronous flush.
+///
+/// Waits until a flush completes (If logs are being written to a file, waits
+/// until the writing is complete).  If you just need to flush queued logs, then
+/// use [`logger()`] and [`Log::flush()`].
+#[inline(always)]
+pub fn flush() -> impl Future<Output = ()> {
+    let log = sys::Log {
+        target: sys::Text {
+            size: 0,
+            addr: 0,
+        },
+        message: sys::Text {
+            size: 0,
+            addr: 0,
+        },
+    };
+
+    unsafe { cmd::execute(STATE.with(|state| state.channel), &log) }
 }
 
 /// Logs a message at the fail level.
@@ -137,7 +161,8 @@ pub fn fail(target: impl AsRef<str>, message: impl AsRef<str>) {
     ));
     let log = cmd::defer(log);
     let cmd = sys::Command {
-        ready: usize::MAX, // ignored because always immediately ready
+        // Ignore
+        ready: usize::MAX,
         channel: STATE.with(|state| state.channel),
         size: LOGSIZE,
         data: log.cast(),

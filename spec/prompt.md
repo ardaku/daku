@@ -6,10 +6,10 @@ The text appended to the buffer won't contain the newline character.
 
 ## Readiness
 
-Becomes ready once either line of text has been entered.  With either
+Becomes ready once a line of text has been entered.  With either
 
  1. Buffer is not big enough, with `capacity` modified to what is required
- 2. Buffer is big enough, `command` text overwritten.
+ 2. Buffer is big enough, `command` text overwritten
 
 ## *Command*: `Prompt`
 
