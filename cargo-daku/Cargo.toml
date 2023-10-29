@@ -19,3 +19,4 @@ readme = "README.md"
 edition = "2021"
 
 [dependencies]
+nucleide = "0.1"
