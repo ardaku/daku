@@ -37,28 +37,21 @@ Commands are the way the Daku application sends messages to the environment.
 
  - `size: int` Size of data pointed to by `addr`, in bytes.
  - `addr: ptr` Pointer to `size` bytes to be sent as a command.
- - `channel: int` The channel on which to send the command.
- - `ready: val` Arbitrary non-zero 32-bit value to write to ready list, or zero
-   to forget.
 
-## *Type*: `Ready` (subtype of `Command`)
+### Data
 
-Update ready list.
+Data starts with a WebAssembly integer (ULEB128-encoded 32-bit unsigned)
+representing the channel number.  Channel 0 is for custom host APIs (which can
+in turn allocate new channels).  If `size` is set to 0 and `addr` is null (0),
+then interpret as pass (no-op command, forcing `ar()` to return immediately).
+If `size` is set to 0 and `addr` is non-null (not 0), then update the ready list
+with `Ready`.
+
+## *Type*: `Ready`
+
+Update ready list (list of channels which are ready).
 
 ### Fields
 
- - `size: int(0)` Empty buffer
- - `addr: ptr(0)` Pointer to null
  - `ready_size: int` Ready list size (non-zero)
  - `ready_addr: ptr[int]` Ready list address (non-null)
-
-## *Type*: `Pass` (subtype of `Ready`)
-
-No-op command.  Forces `ar()` to return immediately.
-
-### Fields
-
- - `size: int(0)` Empty buffer
- - `addr: ptr(0)` Pointer to null
- - `ready_size: int(0)` Empty ready list
- - `ready_addr: ptr(0)` Null ready list
