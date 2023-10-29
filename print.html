@@ -174,7 +174,7 @@ as a supporting specification for the Ardaku project.</p>
 <p>It will be possible to make a fully-featured compatibility layer to implement
 WASI over Daku, and Daku over WASI once asynchronous APIs are implemented in
 WASI.</p>
-<h2 id="daku-specification-v100-pre0-draft-v8"><a class="header" href="#daku-specification-v100-pre0-draft-v8">Daku Specification v1.0.0-pre.0 (draft v8)</a></h2>
+<h2 id="daku-specification-v100-pre0-draft-v9"><a class="header" href="#daku-specification-v100-pre0-draft-v9">Daku Specification v1.0.0-pre.0 (draft v9)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
 <h2 id="terminology"><a class="header" href="#terminology">Terminology</a></h2>
@@ -241,27 +241,20 @@ early return can be forced with a <code>Pass</code> no-op command.</p>
 <ul>
 <li><code>size: int</code> Size of data pointed to by <code>addr</code>, in bytes.</li>
 <li><code>addr: ptr</code> Pointer to <code>size</code> bytes to be sent as a command.</li>
-<li><code>channel: int</code> The channel on which to send the command.</li>
-<li><code>ready: val</code> Arbitrary non-zero 32-bit value to write to ready list, or zero
-to forget.</li>
 </ul>
-<h2 id="type-ready-subtype-of-command"><a class="header" href="#type-ready-subtype-of-command"><em>Type</em>: <code>Ready</code> (subtype of <code>Command</code>)</a></h2>
-<p>Update ready list.</p>
+<h3 id="data"><a class="header" href="#data">Data</a></h3>
+<p>Data starts with a WebAssembly integer (ULEB128-encoded 32-bit unsigned)
+representing the channel number.  Channel 0 is for custom host APIs (which can
+in turn allocate new channels).  If <code>size</code> is set to 0 and <code>addr</code> is null (0),
+then interpret as pass (no-op command, forcing <code>ar()</code> to return immediately).
+If <code>size</code> is set to 0 and <code>addr</code> is non-null (not 0), then update the ready list
+with <code>Ready</code>.</p>
+<h2 id="type-ready"><a class="header" href="#type-ready"><em>Type</em>: <code>Ready</code></a></h2>
+<p>Update ready list (list of channels which are ready).</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
-<li><code>size: int(0)</code> Empty buffer</li>
-<li><code>addr: ptr(0)</code> Pointer to null</li>
 <li><code>ready_size: int</code> Ready list size (non-zero)</li>
 <li><code>ready_addr: ptr[int]</code> Ready list address (non-null)</li>
-</ul>
-<h2 id="type-pass-subtype-of-ready"><a class="header" href="#type-pass-subtype-of-ready"><em>Type</em>: <code>Pass</code> (subtype of <code>Ready</code>)</a></h2>
-<p>No-op command.  Forces <code>ar()</code> to return immediately.</p>
-<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
-<ul>
-<li><code>size: int(0)</code> Empty buffer</li>
-<li><code>addr: ptr(0)</code> Pointer to null</li>
-<li><code>ready_size: int(0)</code> Empty ready list</li>
-<li><code>ready_addr: ptr(0)</code> Null ready list</li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
 <p>Daku defines a few shared types that can be used in the command definitions.
@@ -287,7 +280,7 @@ should match similarly to another type defined here.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
 <h2 id="type-listt"><a class="header" href="#type-listt"><em>Type</em>: <code>List[T]</code></a></h2>
 <p>A list of elements of type <code>T</code>.</p>
-<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
 <ul>
 <li><code>size: int</code> Number of elements pointed to at <code>addr</code>.</li>
 <li><code>addr: ptr[T]</code> Packed list of <code>size</code> elements.</li>
@@ -295,7 +288,7 @@ should match similarly to another type defined here.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
 <h2 id="type-text-subtype-of-list"><a class="header" href="#type-text-subtype-of-list"><em>Type</em>: <code>Text</code> (subtype of <code>List</code>)</a></h2>
 <p>A buffer of UTF-8 text.</p>
-<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
+<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
 <ul>
 <li><code>size: int</code> Number of bytes pointed to at <code>addr</code>.</li>
 <li><code>addr: ptr[byte]</code> UTF-8 string of <code>size</code> bytes.</li>
@@ -303,7 +296,7 @@ should match similarly to another type defined here.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
 <h2 id="type-vector"><a class="header" href="#type-vector"><em>Type</em>: <code>Vector</code></a></h2>
 <p>A 4-dimensional vector.</p>
-<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
+<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
 <ul>
 <li><code>x: num</code> X position (-left +right)</li>
 <li><code>y: num</code> Y position (-up +down)</li>
@@ -314,7 +307,7 @@ should match similarly to another type defined here.</p>
 <h2 id="type-positions-subtype-of-list"><a class="header" href="#type-positions-subtype-of-list"><em>Type</em>: <code>Positions</code> (subtype of <code>List</code>)</a></h2>
 <p>A list of audio channel physical positions relative to the user at the origin.</p>
 <p>The position must either be a unit vector (length of 1) or all zeros (center).</p>
-<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
+<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
 <ul>
 <li><code>list: List[Vector]</code> - List of speakers / microphones in configuration.
 <ul>
@@ -328,7 +321,7 @@ should match similarly to another type defined here.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
 <h2 id="type-audio"><a class="header" href="#type-audio"><em>Type</em>: <code>Audio</code></a></h2>
 <p>A buffer of floating-point audio.</p>
-<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
+<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
 <ul>
 <li><code>size: val</code>
 <ul>
@@ -417,7 +410,7 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="dimensions"><a class="header" href="#dimensions">Dimensions</a></h1>
 <h2 id="type-dimensions"><a class="header" href="#type-dimensions"><em>Type</em>: <code>Dimensions</code></a></h2>
 <p>A 2-D integer width/height pair.</p>
-<h3 id="fields-8"><a class="header" href="#fields-8">Fields</a></h3>
+<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
 <ul>
 <li><code>size: val</code> Dimensions pair
 <ul>
@@ -429,7 +422,7 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
 <h2 id="type-raster"><a class="header" href="#type-raster"><em>Type</em>: <code>Raster</code></a></h2>
 <p>A buffer of pixels (image, picture, video, etc.).</p>
-<h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
+<h3 id="fields-8"><a class="header" href="#fields-8">Fields</a></h3>
 <ul>
 <li><code>size: Dimensions</code> Size of the image</li>
 <li><code>addr: ptr</code> List of <code>size.width</code> * <code>size.height</code> pixels by row according to
@@ -477,7 +470,7 @@ wouldn't result in a partially-formed log message).</p>
 <p>Will not log if log level is not provided.  This is useful for using readiness
 to flush the logs, since logs are guaranteed to be ordered.</p>
 <h2 id="command-log"><a class="header" href="#command-log"><em>Command</em>: <code>Log</code></a></h2>
-<h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
+<h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
 <ul>
 <li><code>message: Text</code> - Message to print; first character is log level
 <ul>
@@ -510,7 +503,7 @@ to flush the logs, since logs are guaranteed to be ordered.</p>
 </ol>
 <h2 id="command-prompt"><a class="header" href="#command-prompt"><em>Command</em>: <code>Prompt</code></a></h2>
 <p>Read textual user input from some source.</p>
-<h3 id="fields-11"><a class="header" href="#fields-11">Fields</a></h3>
+<h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
 <ul>
 <li><code>capacity: ptr[int]</code> - (In/Out) Pointer to capacity of <code>command</code>.</li>
 <li><code>command: ptr[Text]</code> - (In/Out) Pointer to user-sent line of input.</li>
@@ -544,7 +537,7 @@ channel has been opened)
 </li>
 </ul>
 <h2 id="command-fetch"><a class="header" href="#command-fetch"><em>Command</em>: <code>Fetch</code></a></h2>
-<h3 id="fields-12"><a class="header" href="#fields-12">Fields</a></h3>
+<h3 id="fields-11"><a class="header" href="#fields-11">Fields</a></h3>
 <ul>
 <li><code>url: Text</code> - URL to do an HTTPS request to (does not include <code>https://</code>
 protocol)</li>
@@ -640,7 +633,7 @@ ready list.</p>
 successful connetion, in one of the 4 categories has exceeded 255</li>
 </ul>
 <h2 id="command-serve"><a class="header" href="#command-serve"><em>Command</em>: <code>Serve</code></a></h2>
-<h3 id="fields-13"><a class="header" href="#fields-13">Fields</a></h3>
+<h3 id="fields-12"><a class="header" href="#fields-12">Fields</a></h3>
 <ul>
 <li><code>config: val</code>
 <ul>
@@ -698,7 +691,7 @@ error is set to 0).</li>
 <li>The client is ready for more data (<code>poll</code> set to <code>Continue</code>)</li>
 </ul>
 <h2 id="command-client"><a class="header" href="#command-client"><em>Command</em>: <code>Client</code></a></h2>
-<h3 id="fields-14"><a class="header" href="#fields-14">Fields</a></h3>
+<h3 id="fields-13"><a class="header" href="#fields-13">Fields</a></h3>
 <ul>
 <li><code>content: List[byte]</code> Content body to send.</li>
 <li><code>poll: opt[Poll]</code> (In/Out) Pointer to poll state (In:Server, Out:Client)</li>

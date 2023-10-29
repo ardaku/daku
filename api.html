@@ -194,27 +194,20 @@ early return can be forced with a <code>Pass</code> no-op command.</p>
 <ul>
 <li><code>size: int</code> Size of data pointed to by <code>addr</code>, in bytes.</li>
 <li><code>addr: ptr</code> Pointer to <code>size</code> bytes to be sent as a command.</li>
-<li><code>channel: int</code> The channel on which to send the command.</li>
-<li><code>ready: val</code> Arbitrary non-zero 32-bit value to write to ready list, or zero
-to forget.</li>
 </ul>
-<h2 id="type-ready-subtype-of-command"><a class="header" href="#type-ready-subtype-of-command"><em>Type</em>: <code>Ready</code> (subtype of <code>Command</code>)</a></h2>
-<p>Update ready list.</p>
+<h3 id="data"><a class="header" href="#data">Data</a></h3>
+<p>Data starts with a WebAssembly integer (ULEB128-encoded 32-bit unsigned)
+representing the channel number.  Channel 0 is for custom host APIs (which can
+in turn allocate new channels).  If <code>size</code> is set to 0 and <code>addr</code> is null (0),
+then interpret as pass (no-op command, forcing <code>ar()</code> to return immediately).
+If <code>size</code> is set to 0 and <code>addr</code> is non-null (not 0), then update the ready list
+with <code>Ready</code>.</p>
+<h2 id="type-ready"><a class="header" href="#type-ready"><em>Type</em>: <code>Ready</code></a></h2>
+<p>Update ready list (list of channels which are ready).</p>
 <h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
-<li><code>size: int(0)</code> Empty buffer</li>
-<li><code>addr: ptr(0)</code> Pointer to null</li>
 <li><code>ready_size: int</code> Ready list size (non-zero)</li>
 <li><code>ready_addr: ptr[int]</code> Ready list address (non-null)</li>
-</ul>
-<h2 id="type-pass-subtype-of-ready"><a class="header" href="#type-pass-subtype-of-ready"><em>Type</em>: <code>Pass</code> (subtype of <code>Ready</code>)</a></h2>
-<p>No-op command.  Forces <code>ar()</code> to return immediately.</p>
-<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
-<ul>
-<li><code>size: int(0)</code> Empty buffer</li>
-<li><code>addr: ptr(0)</code> Pointer to null</li>
-<li><code>ready_size: int(0)</code> Empty ready list</li>
-<li><code>ready_addr: ptr(0)</code> Null ready list</li>
 </ul>
 
                     </main>
