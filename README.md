@@ -1,22 +1,54 @@
-# Daku v1.0.0-beta.0
-Daku is a system interface API similar to WASI with different goals.
+# Daku v1.0.0-pre.0 (draft v10)
 
-Since Daku is currently in beta, things may change based on feedback but large
-changes are unlikely.
+> Asynchronous host interface abstraction API for WebAssembly plugins, drivers,
+> applications, and more! 
+
+The `daku` crate is designed to be used for applications that run within a host,
+such as a plugin in an application, or a driver in an operating system, and even
+a program in an operation system (similar to WASI), and more!
+
+Since Daku is currently in the pre-release stage, things may change based on
+feedback but large changes are unlikely.
 
 The [daku specification](https://ardaku.org/daku) is currently in draft, so some
 remnants of the old spec may remain in this README and other files in the
 repository for now.
 
 ## Goals
- - Async-first
- - Early stability of base API
+ - Modular
+ - Minimal (in API surface, and memory footprint)
+ - Asynchronous
+ - Stable base API
  - As simple and efficient as possible
  - Reduced context switching
- - Channel-based
- - Security via portals
- - Non-POSIX-y
- - Multimedia-focused
+ - Security-first
+ - First-class multimedia portals
+ - Portals compatible with WASI versions via 2-way abstractions
+
+## License
+Copyright © 2022-2023 The Daku Contributors.
+
+Licensed under any of
+ - Apache License, Version 2.0, ([LICENSE\_APACHE] or
+   <https://www.apache.org/licenses/LICENSE-2.0>)
+ - Boost Software License, Version 1.0, ([LICENSE\_BOOST] or
+   <https://www.boost.org/LICENSE_1_0.txt>)
+ - MIT License, ([LICENSE\_MIT] or <https://mit-license.org/>)
+
+at your option.
+
+### Contribution
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+licensed as described above, without any additional terms or conditions.
+
+## Help
+If you want help using or contributing to this library or specification, feel
+free to send me an email at <aldaronlau@gmail.com>.
+
+[LICENSE\_APACHE]: https://github.com/ardaku/daku/blob/stable/LICENSE_APACHE
+[LICENSE\_BOOST]: https://github.com/ardaku/daku/blob/stable/LICENSE_BOOST
+[LICENSE\_MIT]: https://github.com/ardaku/daku/blob/stable/LICENSE_MIT
 
 ## Types
 

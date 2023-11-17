@@ -1,6 +1,7 @@
 # Summary
 
  - [Introduction](./introduction.md)
+ - [Glossary](./glossary.md)
  - [Daku Custom Section](./daku.md)
  - [Channel Allocation](./channel.md)
  - [Base API](./api.md)
