@@ -5,7 +5,7 @@ drivers, applications, and more!  It is developed as a supporting specification
 for the Ardaku project (Ardaku is an engine for running Daku modules for the
 listed use-cases).
 
-## Daku Specification v1.0.0-pre.0 (draft v10)
+## Daku Specification v1.0.0-pre.0 (draft v11)
 
 The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.

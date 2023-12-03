@@ -1,7 +1,4 @@
-# Base API
-
-For all APIs, addresses in memory refer to the memory exported as `memory`.
-All Daku types are lists of packed 32-bit little-endian values.
+# Host Exports
 
 The exported WebAssembly API contains a single function:
 
@@ -10,7 +7,7 @@ The exported WebAssembly API contains a single function:
 Retconned from "Ardaku"; Asynchronous Request function.
 
 Returns once at least one command (with a non-zero `ready` value) completes.  An
-early return can be forced with a `Pass` no-op command.
+early return can be forced with a null noöp command.
 
 ```wat
 (import "daku" "ar" (func $event
@@ -27,31 +24,4 @@ early return can be forced with a `Pass` no-op command.
 
 ### Returns
 
- - The number of ready channels in the ready list (new length of ready list).
-
-## *Type*: `Command`
-
-Commands are the way the Daku application sends messages to the environment.
-
-### Fields
-
- - `size: int` Size of data pointed to by `addr`, in bytes.
- - `addr: ptr` Pointer to `size` bytes to be sent as a command.
-
-### Data
-
-Data starts with a WebAssembly integer (ULEB128-encoded 32-bit unsigned)
-representing the channel number.  Channel 0 is for custom host APIs (which can
-in turn allocate new channels).  If `size` is set to 0 and `addr` is null (0),
-then interpret as pass (no-op command, forcing `ar()` to return immediately).
-If `size` is set to 0 and `addr` is non-null (not 0), then update the ready list
-with `Ready`.
-
-## *Type*: `Ready`
-
-Update ready list (list of channels which are ready).
-
-### Fields
-
- - `ready_size: int` Ready list size (non-zero)
- - `ready_addr: ptr[int]` Ready list address (non-null)
+ - The number of ready commands in the ready list (new length of ready list).

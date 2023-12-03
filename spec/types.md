@@ -11,6 +11,7 @@ should match similarly to another type defined here.
 
 ---
 
+ - `long` A 64-bit integer
  - `half` A 16-bit integer
  - `byte` An 8-bit integer
  - `nybl` A 4-bit integer
