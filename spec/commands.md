@@ -17,5 +17,6 @@ Commands are the way the Daku application sends messages to the environment.
 
 ### Fields
 
- - `chan: int` Channel to send data on
- - `addr: opt[T]` Pointer to command data for command `T`
+ - `ready_channel: int` Channel to send data on, 0 = ready status
+ - `index: val` Meaning depends on channel
+ - `data: List[T]` List type depends on channel
