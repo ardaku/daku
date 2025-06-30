@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Region 🧪 - Daku API Specification</title>
+        <title>Command - Daku API Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -166,28 +166,26 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="region"><a class="header" href="#region">Region</a></h1>
-<h2 id="type-region"><a class="header" href="#type-region"><em>Type</em>: <code>Region</code></a></h2>
-<p>Region code</p>
+                        <h1 id="command"><a class="header" href="#command">Command</a></h1>
+<h2 id="type-command"><a class="header" href="#type-command"><em>Type</em>: <code>Command</code></a></h2>
+<p>Command sent from the guest to the host</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
-<li><code>identifier: [byte; 2]</code></li>
-</ul>
-<h3 id="region-identifiers"><a class="header" href="#region-identifiers">Region Identifiers</a></h3>
-<ul>
-<li><code>US</code>: United States</li>
-<li><code>GB</code>: Great Britain / UK</li>
+<li><code>channel: int</code> (in) Which channel is being used, (out) number of channels
+opened</li>
+<li><code>capacity: int</code> Capacity of <code>buffer</code></li>
+<li><code>buffer: Buffer</code> Data buffer</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="lang.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="buffer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="langregion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="runtime.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -197,11 +195,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="lang.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="buffer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="langregion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="runtime.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

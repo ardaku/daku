@@ -1,65 +1,64 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Daku API Specification</title>
-        
-        <meta name="robots" content="noindex" />
-        
-        
+        <meta name="robots" content="noindex">
 
 
         <!-- Custom HTML head -->
-        
 
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
     </head>
     <body>
-        <!-- Provide site root to javascript -->
-        <script type="text/javascript">
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
-
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -72,78 +71,80 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
-            var theme;
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
+            sidebar_toggle.checked = sidebar === 'visible';
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="glossary.html"><strong aria-hidden="true">2.</strong> Glossary</a></li><li class="chapter-item expanded "><a href="daku.html"><strong aria-hidden="true">3.</strong> Daku Custom Section</a></li><li class="chapter-item expanded "><a href="channels.html"><strong aria-hidden="true">4.</strong> Channels</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">5.</strong> Commands</a></li><li class="chapter-item expanded "><a href="api.html"><strong aria-hidden="true">6.</strong> Host Exports</a></li><li class="chapter-item expanded "><a href="guest.html"><strong aria-hidden="true">7.</strong> Guest Exports</a></li><li class="chapter-item expanded "><a href="types.html"><strong aria-hidden="true">8.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="list.html"><strong aria-hidden="true">8.1.</strong> List</a></li><li class="chapter-item expanded "><a href="buffer.html"><strong aria-hidden="true">8.2.</strong> Buffer</a></li><li class="chapter-item expanded "><a href="text.html"><strong aria-hidden="true">8.3.</strong> Text</a></li><li class="chapter-item expanded "><a href="vector.html"><strong aria-hidden="true">8.4.</strong> Vector</a></li><li class="chapter-item expanded "><a href="positions.html"><strong aria-hidden="true">8.5.</strong> Positions</a></li><li class="chapter-item expanded "><a href="audio.html"><strong aria-hidden="true">8.6.</strong> Audio</a></li><li class="chapter-item expanded "><a href="dimensions.html"><strong aria-hidden="true">8.7.</strong> Dimensions</a></li><li class="chapter-item expanded "><a href="raster.html"><strong aria-hidden="true">8.8.</strong> Raster 🧪</a></li><li class="chapter-item expanded "><a href="timestamp.html"><strong aria-hidden="true">8.9.</strong> Timestamp 🧪</a></li><li class="chapter-item expanded "><a href="date.html"><strong aria-hidden="true">8.10.</strong> Date 🧪</a></li><li class="chapter-item expanded "><a href="time.html"><strong aria-hidden="true">8.11.</strong> Time 🧪</a></li><li class="chapter-item expanded "><a href="datetime.html"><strong aria-hidden="true">8.12.</strong> DateTime 🧪</a></li><li class="chapter-item expanded "><a href="lang.html"><strong aria-hidden="true">8.13.</strong> Lang 🧪</a></li><li class="chapter-item expanded "><a href="region.html"><strong aria-hidden="true">8.14.</strong> Region 🧪</a></li><li class="chapter-item expanded "><a href="langregion.html"><strong aria-hidden="true">8.15.</strong> LangRegion 🧪</a></li></ol></li><li class="chapter-item expanded "><a href="portals.html"><strong aria-hidden="true">9.</strong> Portals</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="log.html"><strong aria-hidden="true">9.1.</strong> 0x00 - Log</a></li><li class="chapter-item expanded "><a href="prompt.html"><strong aria-hidden="true">9.2.</strong> 0x01 - Prompt</a></li><li class="chapter-item expanded "><a href="fetch.html"><strong aria-hidden="true">9.3.</strong> 0x02 - Fetch 🧪</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="host.html"><strong aria-hidden="true">9.3.1.</strong> Device/Host 🧪</a></li></ol></li><li class="chapter-item expanded "><a href="serve.html"><strong aria-hidden="true">9.4.</strong> 0x03 - Serve 🧪</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="client.html"><strong aria-hidden="true">9.4.1.</strong> Device/Client 🧪</a></li></ol></li><li class="chapter-item expanded "><a href="speakers.html"><strong aria-hidden="true">9.5.</strong> 0x04 - Speakers 🧪</a></li><li class="chapter-item expanded "><a href="microphone.html"><strong aria-hidden="true">9.6.</strong> 0x05 - Microphone 🧪</a></li><li class="chapter-item expanded "><a href="screen.html"><strong aria-hidden="true">9.7.</strong> 0x06 - Screen 🧪</a></li><li class="chapter-item expanded "><a href="camera.html"><strong aria-hidden="true">9.8.</strong> 0x07 - Camera 🧪</a></li><li class="chapter-item expanded "><a href="window.html"><strong aria-hidden="true">9.9.</strong> 0x08 - Window 🧪</a></li><li class="chapter-item expanded "><a href="spawn.html"><strong aria-hidden="true">9.10.</strong> 0x09 - Spawn 🧪</a></li><li class="chapter-item expanded "><a href="user.html"><strong aria-hidden="true">9.11.</strong> 0x0A - User 🧪</a></li><li class="chapter-item expanded "><a href="preferences.html"><strong aria-hidden="true">9.12.</strong> 0x0B - Preferences 🧪</a></li><li class="chapter-item expanded "><a href="system.html"><strong aria-hidden="true">9.13.</strong> 0x0C - System 🧪</a></li><li class="chapter-item expanded "><a href="about.html"><strong aria-hidden="true">9.14.</strong> 0x0D - About 🧪</a></li><li class="chapter-item expanded "><a href="file.html"><strong aria-hidden="true">9.15.</strong> 0x0E - File 🧪</a></li><li class="chapter-item expanded "><a href="hid.html"><strong aria-hidden="true">9.16.</strong> 0x0F - Hid 🧪</a></li><li class="chapter-item expanded "><a href="timer.html"><strong aria-hidden="true">9.17.</strong> 0x10 - Timer 🧪</a></li><li class="chapter-item expanded "><a href="clock.html"><strong aria-hidden="true">9.18.</strong> 0x11 - Clock 🧪</a></li><li class="chapter-item expanded "><a href="gpu.html"><strong aria-hidden="true">9.19.</strong> 0x12 - Gpu 🧪</a></li><li class="chapter-item expanded "><a href="location.html"><strong aria-hidden="true">9.20.</strong> 0x13 - Location 🧪</a></li></ol></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Daku API Specification</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
-                        
 
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
                         <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
@@ -154,10 +155,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -171,7 +171,7 @@
 <p>Daku is an asynchronous host interface abstraction API for WebAssembly plugins,
 drivers, applications, and more!  Daku is both an API and a file format.  Ardaku
 is an engine you can use for running Daku modules on different Wasm runtimes.</p>
-<h2 id="daku-specification-v100-pre0-draft-v12"><a class="header" href="#daku-specification-v100-pre0-draft-v12">Daku Specification v1.0.0-pre.0 (draft v12)</a></h2>
+<h2 id="daku-specification-v100-pre0-draft-v14"><a class="header" href="#daku-specification-v100-pre0-draft-v14">Daku Specification v1.0.0-pre.0 (draft v14)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
 <h2 id="goals"><a class="header" href="#goals">Goals</a></h2>
@@ -186,7 +186,7 @@ non-standard or experimental features.</p>
 <li>Security-first</li>
 <li>First-class multimedia portals (WASI compatible)</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="glossary"><a class="header" href="#glossary">Glossary</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="glossary"><a class="header" href="#glossary">Glossary</a></h1>
 <h3 id="guest"><a class="header" href="#guest">Guest</a></h3>
 <p>A program that interfaces with the Daku API.</p>
 <h3 id="host"><a class="header" href="#host">Host</a></h3>
@@ -204,107 +204,11 @@ overwritten upon completion of the command.</p>
 module begins.  A custom command portal is always opened at channel 0.  Other
 portals can be opened using the portal extension, which provides
 system-interface APIs similar to what WASI does.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="daku-custom-section"><a class="header" href="#daku-custom-section">Daku Custom Section</a></h1>
-<p>The Daku custom section is a WebAssembly custom section that must follow the
-order of conventional sections</p>
-<ol>
-<li><code>name</code></li>
-<li><code>producers</code></li>
-<li><code>target_features</code></li>
-<li><code>daku</code></li>
-</ol>
-<p>The base section without extensions is just a WebAssembly vector of portal IDs.</p>
-<p>For details on the experimental nucleide extension see
-<a href="https://docs.rs/nucleide/latest/nucleide/#daku-daku">https://docs.rs/nucleide/latest/nucleide/#daku-daku</a></p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="channels"><a class="header" href="#channels">Channels</a></h1>
-<h2 id="channel-0"><a class="header" href="#channel-0">Channel 0</a></h2>
-<p>Channel 0 is a special channel that allows you to send arbitrary bytes
-(<a href="./buffer.html"><code>Buffer</code></a>) to the host from the guest.  This is what a custom
-plugin API would use.  Sending commands on channel 0 may also open &quot;Device
-Channels&quot;.</p>
-<h2 id="portal-channels"><a class="header" href="#portal-channels">Portal Channels</a></h2>
-<p>Portal channels represent a bus (and permission to talk to it) on the computer.
-Portal channels are opened before the program starts (based on the <code>daku</code> custom
-section).  Going in order of the portals, will allocate channels in ascending
-order starting from 1.  There may be more than one channel per portal.  They can
-not and will not be closed until the WASM module exits.</p>
-<h2 id="device-channels"><a class="header" href="#device-channels">Device Channels</a></h2>
-<p>Device channels represent something (physically or virtually) connected to a
-bus.  Device channels are opened by sending commands to portals (this command
-is not allowed to fail if constructed properly, even if the data is stale - so
-you may open a channel to a disconnected device).  They are allocated after the
-portal channels.  When the device channel is closed it's number goes into a
-garbage list.  The last ID is popped off the garbage list when opening a new
-device channel (if it exists).</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
-<p>Commands are data sent from the guest to the host.  Their structure is specific
-to the channel which they are sent.  All commands have a lifetime, and the data
-sent should only be freed after the command lifetime has ended.</p>
-<h2 id="command-lifetime-flow"><a class="header" href="#command-lifetime-flow">Command Lifetime Flow</a></h2>
-<ul>
-<li>Guest allocates a command on the heap</li>
-<li>Guest sends the command address to the host with <code>ar()</code></li>
-<li>Host returns from <code>ar()</code> with the address of the command in the &quot;ready list&quot;</li>
-<li>Host frees or reüses (for streams) the command as its lifetime has ended</li>
-</ul>
-<h2 id="type-command"><a class="header" href="#type-command"><em>Type</em>: <code>Command</code></a></h2>
-<p>Commands are the way the Daku application sends messages to the environment.</p>
-<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
-<ul>
-<li><code>chan: int</code> Channel to send data on</li>
-<li><code>addr: opt[T]</code> Pointer to command data for command <code>T</code></li>
-</ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="host-exports"><a class="header" href="#host-exports">Host Exports</a></h1>
-<p>The exported WebAssembly API contains a single function:</p>
-<h2 id="function-ar"><a class="header" href="#function-ar"><em>Function</em>: <code>ar()</code></a></h2>
-<p>Retconned from &quot;Ardaku&quot;; Asynchronous Request function.</p>
-<p>Returns once at least one command (with a non-zero <code>ready</code> value) completes.  An
-early return can be forced with a null noöp command.</p>
-<pre><code class="language-wat">(import &quot;daku&quot; &quot;ar&quot; (func $event
-    (param $cmd_size i32)   ;; List[Command].size
-    (param $cmd_addr i32)   ;; List[Command].addr
-    (result i32)            ;; List[Uint32].size 
-))
-</code></pre>
-<h3 id="parameters"><a class="header" href="#parameters">Parameters</a></h3>
-<ul>
-<li><code>$cmd_size</code> The size of the data pointed to by <code>$cmd_addr</code></li>
-<li><code>$cmd_addr</code> A pointer in the wasm memory to a list of <code>$cmd_size</code> commands</li>
-</ul>
-<h3 id="returns"><a class="header" href="#returns">Returns</a></h3>
-<ul>
-<li>The number of ready commands in the ready list (new length of ready list).</li>
-</ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="guest-exports"><a class="header" href="#guest-exports">Guest Exports</a></h1>
-<ul>
-<li>Export 32-bit memory as <code>mem</code></li>
-<li>Export &quot;main&quot; function as <code>run</code></li>
-<li>Export ready list global pointer as <code>rl4</code> for a size 16 ready list
-<ul>
-<li><code>rl0</code> for a size 1 ready list</li>
-<li><code>rl1</code> for a size 2 ready list</li>
-<li><code>rl2</code> for a size 4 ready list</li>
-<li><code>rl3</code> for a size 8 ready list</li>
-<li><code>rl4</code> for a size 16 ready list</li>
-<li><code>rl5</code> for a size 32 ready list</li>
-<li><code>rl6</code> for a size 64 ready list</li>
-<li><code>rl7</code> for a size 128 ready list</li>
-<li><code>rl8</code> for a size 256 ready list</li>
-<li><code>rl9</code> for a size 512 ready list</li>
-</ul>
-</li>
-</ul>
-<h2 id="type-readylistn"><a class="header" href="#type-readylistn"><em>Type</em>: <code>ReadyList[N]</code></a></h2>
-<p>The list of ready/complete commands</p>
-<h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
-<ul>
-<li><code>ready_list: [opt[T]; N]</code> Ready list of commands</li>
-</ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="types"><a class="header" href="#types">Types</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="primitives"><a class="header" href="#primitives">Primitives</a></h1>
 <p>Daku defines a few shared types that can be used in the command definitions.
 Occasionally, a command should use a custom type that packs data better, but it
 should match similarly to another type defined here.</p>
-<h2 id="primitives"><a class="header" href="#primitives">Primitives</a></h2>
+<h2 id="primitives-1"><a class="header" href="#primitives-1">Primitives</a></h2>
 <ul>
 <li><code>val</code> An arbitrary untyped 32 bits</li>
 <li><code>int</code> A 32-bit integer</li>
@@ -322,43 +226,131 @@ should match similarly to another type defined here.</p>
 <li><code>ptr[T]</code> A 32-bit address</li>
 <li><code>opt[T]</code> A 32-bit address or Null (0)</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
 <h2 id="type-listt"><a class="header" href="#type-listt"><em>Type</em>: <code>List[T]</code></a></h2>
 <p>A list of elements of type <code>T</code></p>
-<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
 <li><code>size: int</code> Number of elements pointed to at <code>addr</code></li>
 <li><code>addr: ptr[T]</code> Packed list of <code>size</code> elements</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="buffer"><a class="header" href="#buffer">Buffer</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="buffer"><a class="header" href="#buffer">Buffer</a></h1>
 <h2 id="type-buffer"><a class="header" href="#type-buffer"><em>Type</em>: <code>Buffer</code></a></h2>
 <p>A list of bytes</p>
-<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
+<h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
 <ul>
 <li><code>data: List[byte]</code> Buffer data</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="command-1"><a class="header" href="#command-1">Command</a></h1>
+<h2 id="type-command"><a class="header" href="#type-command"><em>Type</em>: <code>Command</code></a></h2>
+<p>Command sent from the guest to the host</p>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<ul>
+<li><code>channel: int</code> (in) Which channel is being used, (out) number of channels
+opened</li>
+<li><code>capacity: int</code> Capacity of <code>buffer</code></li>
+<li><code>buffer: Buffer</code> Data buffer</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="runtime"><a class="header" href="#runtime">Runtime</a></h1>
+<p>The Daku runtime can be used alone or with other parts of the Daku
+specification.  When using Daku, your target is a Daku plugin app.  The Daku
+runtime specification defines how to asynchronously communicate between the
+plugin and the host app (which could either be another WASM sandboxed Daku
+plugin or a native Daku engine like Ardaku).</p>
+<h2 id="guest-exports-host-imports"><a class="header" href="#guest-exports-host-imports">Guest Exports (Host Imports)</a></h2>
+<ul>
+<li>Export 32-bit memory as <code>m</code></li>
+<li>Export function <code>main() -&gt; ()</code> as <code>a</code></li>
+<li>Export ready list global <code>List[ptr[Command]]</code> pointer as <code>r</code></li>
+</ul>
+<h2 id="guest-imports-host-exports"><a class="header" href="#guest-imports-host-exports">Guest Imports (Host Exports)</a></h2>
+<ul>
+<li>Import function <code>ar(cmd_size, cmd_addr)</code> Asynchronous Request (Retconned from
+"Ardaku")</li>
+</ul>
+<h2 id="plugin-communication-flow"><a class="header" href="#plugin-communication-flow">Plugin Communication Flow</a></h2>
+<ul>
+<li>Host calls guest's <code>a()</code> function</li>
+<li>Guest creates a list of commands</li>
+<li>Guest calls host's <code>ar()</code> function with list of commands</li>
+<li>Host executes commands, when at least one completes, returns from <code>ar()</code>
+having set the data at pointer <code>r</code> in memory <code>m</code> to a list (using default
+length as capacity) of completed <code>ptr[Command]</code> list</li>
+<li>Guest loops through the <code>ptr[Command]</code> ready-list and processes them, may
+either free or reüse the command structures</li>
+<li>Guest generates new list of commands, calling <code>ar()</code> again (repeat)</li>
+<li>Guest's <code>a()</code> function completes and plugin has stopped</li>
+</ul>
+<h2 id="function-ar"><a class="header" href="#function-ar"><em>Function</em>: <code>ar()</code></a></h2>
+<pre><code class="language-wat">(import "daku" "ar" (func $event
+   (param $cmd_size i32) ;; List[ptr[Command]].size
+   (param $cmd_addr i32) ;; List[ptr[Command]].addr
+))
+</code></pre>
+<h3 id="parameters"><a class="header" href="#parameters">Parameters</a></h3>
+<ul>
+<li><code>$cmd_size</code> The size of the data pointed to by <code>$cmd_addr</code></li>
+<li><code>$cmd_addr</code> A pointer in the wasm memory to a <code>Command</code> list of size
+<code>$cmd_size</code></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="channels"><a class="header" href="#channels">Channels</a></h1>
+<h2 id="portal-channels"><a class="header" href="#portal-channels">Portal Channels</a></h2>
+<p>Portal channels represent a bus (and permission to talk to it) on the computer.
+Portal channels are opened before the program starts (based on the <code>daku</code> custom
+section).  Going in order of the portals, will allocate channels in ascending
+order starting from 1.  There may be more than one channel per portal.  They can
+not and will not be closed until the WASM module exits.</p>
+<h2 id="channel-0"><a class="header" href="#channel-0">Channel 0</a></h2>
+<p>Channel 0 is a special channel that allows you to send arbitrary bytes
+(<a href="./buffer.html"><code>Buffer</code></a>) to the host from the guest.  This is what a custom
+plugin API would use.  Sending commands on a channel opened to portal 0 may also
+open "Device Channels".  The buffer sent is re-written with received bytes, and
+the <code>Command.channel</code> field set to number of device channels opened.</p>
+<h2 id="device-channels"><a class="header" href="#device-channels">Device Channels</a></h2>
+<p>Device channels represent something (physically or virtually) connected to a
+bus.  Device channels are opened by sending commands to channels (this command
+is not allowed to fail if constructed properly, even if the data is stale - so
+you may open a channel to a disconnected device).  They are allocated after the
+portal channels.  When the device channel is closed it's number goes into a
+garbage list.  The last ID is popped off the garbage list when opening a new
+device channel (if it exists).</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="daku-custom-section"><a class="header" href="#daku-custom-section">Daku Custom Section</a></h1>
+<p>The Daku custom section is a WebAssembly custom section that must follow the
+order of conventional sections</p>
+<ol>
+<li><code>name</code></li>
+<li><code>producers</code></li>
+<li><code>target_features</code></li>
+<li><code>daku</code></li>
+</ol>
+<p>The base <code>daku</code> section without extensions is just a WebAssembly vector of
+portal IDs.</p>
+<p>For details on the experimental nucleide extension see
+<a href="https://docs.rs/nucleide/latest/nucleide/#daku-daku">https://docs.rs/nucleide/latest/nucleide/#daku-daku</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="portal-types"><a class="header" href="#portal-types">Portal Types</a></h1>
+<p>There are common type definitions shared between the portals' APIs</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">Text</a></h1>
 <h2 id="type-text-subtype-of-list"><a class="header" href="#type-text-subtype-of-list"><em>Type</em>: <code>Text</code> (subtype of <code>List</code>)</a></h2>
 <p>A buffer of UTF-8 text.</p>
-<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
+<h3 id="fields-3"><a class="header" href="#fields-3">Fields</a></h3>
 <ul>
 <li><code>text: Buffer</code> UTF-8 formatted buffer</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="vector"><a class="header" href="#vector">Vector</a></h1>
 <h2 id="type-vector"><a class="header" href="#type-vector"><em>Type</em>: <code>Vector</code></a></h2>
 <p>A 4-dimensional vector.</p>
-<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
+<h3 id="fields-4"><a class="header" href="#fields-4">Fields</a></h3>
 <ul>
 <li><code>x: num</code> X position (-left +right)</li>
 <li><code>y: num</code> Y position (-up +down)</li>
 <li><code>z: num</code> Z position (-back +front)</li>
 <li><code>w: num</code> W position (0 = vector, 1 = position)</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="positions"><a class="header" href="#positions">Positions</a></h1>
 <h2 id="type-positions-subtype-of-list"><a class="header" href="#type-positions-subtype-of-list"><em>Type</em>: <code>Positions</code> (subtype of <code>List</code>)</a></h2>
 <p>A list of audio channel physical positions relative to the user at the origin.</p>
 <p>The position must either be a unit vector (length of 1) or all zeros (center).</p>
-<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
+<h3 id="fields-5"><a class="header" href="#fields-5">Fields</a></h3>
 <ul>
 <li><code>list: List[Vector]</code> - List of speakers / microphones in configuration.
 <ul>
@@ -369,10 +361,10 @@ should match similarly to another type defined here.</p>
 </ul>
 </li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="audio"><a class="header" href="#audio">Audio</a></h1>
 <h2 id="type-audio"><a class="header" href="#type-audio"><em>Type</em>: <code>Audio</code></a></h2>
 <p>A buffer of floating-point audio.</p>
-<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
+<h3 id="fields-6"><a class="header" href="#fields-6">Fields</a></h3>
 <ul>
 <li><code>size: val</code>
 <ul>
@@ -458,10 +450,10 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 </ol>
 </li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="dimensions"><a class="header" href="#dimensions">Dimensions</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="dimensions"><a class="header" href="#dimensions">Dimensions</a></h1>
 <h2 id="type-dimensions"><a class="header" href="#type-dimensions"><em>Type</em>: <code>Dimensions</code></a></h2>
 <p>A 2-D integer width/height pair.</p>
-<h3 id="fields-8"><a class="header" href="#fields-8">Fields</a></h3>
+<h3 id="fields-7"><a class="header" href="#fields-7">Fields</a></h3>
 <ul>
 <li><code>size: val</code> Dimensions pair
 <ul>
@@ -470,10 +462,10 @@ FLAC/SMPTE/ITU-R recommendations.</li>
 </ul>
 </li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="raster"><a class="header" href="#raster">Raster</a></h1>
 <h2 id="type-raster"><a class="header" href="#type-raster"><em>Type</em>: <code>Raster</code></a></h2>
 <p>A buffer of pixels (image, picture, video, etc.).</p>
-<h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
+<h3 id="fields-8"><a class="header" href="#fields-8">Fields</a></h3>
 <ul>
 <li><code>size: Dimensions</code> Size of the image</li>
 <li><code>addr: ptr</code> List of <code>size.width</code> * <code>size.height</code> pixels by row according to
@@ -493,7 +485,7 @@ format.</li>
 </ul>
 </li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="timestamp"><a class="header" href="#timestamp">Timestamp</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="timestamp"><a class="header" href="#timestamp">Timestamp</a></h1>
 <h2 id="type-timestamp"><a class="header" href="#type-timestamp"><em>Type</em>: <code>Timestamp</code></a></h2>
 <p>The number of TAI microseconds since Jan 1 00:00:00.000_000, year 0 in
 <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601:2004</a></p>
@@ -506,73 +498,121 @@ format.</li>
 <li>TAI not UTC, meaning that a leap second gets representation, rather than
 being represented as repeat of previous second as it would be in unix time.</li>
 </ul>
-<h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
+<h3 id="fields-9"><a class="header" href="#fields-9">Fields</a></h3>
 <ul>
 <li><code>micros: long</code></li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="date"><a class="header" href="#date">Date</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="date"><a class="header" href="#date">Date</a></h1>
 <h2 id="type-date"><a class="header" href="#type-date"><em>Type</em>: <code>Date</code></a></h2>
 <p>A naïve date (unspecified timezone)</p>
-<h3 id="fields-11"><a class="header" href="#fields-11">Fields</a></h3>
+<h3 id="fields-10"><a class="header" href="#fields-10">Fields</a></h3>
 <ul>
 <li><code>year: half</code> Range: 0 ~ 65_535</li>
 <li><code>month: byte</code> Range: 1 ~ 12</li>
 <li><code>day: byte</code> Range: (of week: 1 ~ 7) &lt;&lt; 5 | (of month: 1 ~ 31)</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="time"><a class="header" href="#time">Time</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="time"><a class="header" href="#time">Time</a></h1>
 <h2 id="type-time"><a class="header" href="#type-time"><em>Type</em>: <code>Time</code></a></h2>
 <p>A naïve time (unspecified timezone)</p>
-<h3 id="fields-12"><a class="header" href="#fields-12">Fields</a></h3>
+<h3 id="fields-11"><a class="header" href="#fields-11">Fields</a></h3>
 <ul>
 <li><code>hour: byte</code> Range: 0 ~ 23</li>
 <li><code>minute: byte</code> Range: 1 ~ 59</li>
 <li><code>millis: half</code> Range: 0 ~ 60_999 (can represent leap seconds)</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="datetime"><a class="header" href="#datetime">DateTime</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="datetime"><a class="header" href="#datetime">DateTime</a></h1>
 <h2 id="type-datetime"><a class="header" href="#type-datetime"><em>Type</em>: <code>DateTime</code></a></h2>
 <p>A naïve date and time (unspecified timezone)</p>
-<h3 id="fields-13"><a class="header" href="#fields-13">Fields</a></h3>
+<h3 id="fields-12"><a class="header" href="#fields-12">Fields</a></h3>
 <ul>
 <li><code>date: Date</code> The date</li>
 <li><code>time: Time</code> The time</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="lang"><a class="header" href="#lang">Lang</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lang"><a class="header" href="#lang">Lang</a></h1>
 <h2 id="type-lang"><a class="header" href="#type-lang"><em>Type</em>: <code>Lang</code></a></h2>
 <p>Spoken language</p>
-<h3 id="fields-14"><a class="header" href="#fields-14">Fields</a></h3>
+<h3 id="fields-13"><a class="header" href="#fields-13">Fields</a></h3>
 <ul>
 <li><code>identifier: [byte; 2]</code></li>
 </ul>
 <h3 id="language-identifiers"><a class="header" href="#language-identifiers">Language Identifiers</a></h3>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="region"><a class="header" href="#region">Region</a></h1>
+<ul>
+<li><code>en</code>: English</li>
+<li><code>eo</code>: Esperanto</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="region"><a class="header" href="#region">Region</a></h1>
 <h2 id="type-region"><a class="header" href="#type-region"><em>Type</em>: <code>Region</code></a></h2>
 <p>Region code</p>
-<h3 id="fields-15"><a class="header" href="#fields-15">Fields</a></h3>
+<h3 id="fields-14"><a class="header" href="#fields-14">Fields</a></h3>
 <ul>
 <li><code>identifier: [byte; 2]</code></li>
 </ul>
 <h3 id="region-identifiers"><a class="header" href="#region-identifiers">Region Identifiers</a></h3>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="langregion"><a class="header" href="#langregion">LangRegion</a></h1>
+<ul>
+<li><code>US</code>: United States</li>
+<li><code>GB</code>: Great Britain / UK</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="langregion"><a class="header" href="#langregion">LangRegion</a></h1>
 <h2 id="type-langregion"><a class="header" href="#type-langregion"><em>Type</em>: <code>LangRegion</code></a></h2>
 <p>A spoken language plus a region code for dialect</p>
-<h3 id="fields-16"><a class="header" href="#fields-16">Fields</a></h3>
+<h3 id="fields-15"><a class="header" href="#fields-15">Fields</a></h3>
 <ul>
 <li><code>lang: Lang</code> The language</li>
 <li><code>region: Region</code> The region to specify dialect</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="portals"><a class="header" href="#portals">Portals</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="leapsecond"><a class="header" href="#leapsecond">LeapSecond</a></h1>
+<h2 id="type-leapsecond"><a class="header" href="#type-leapsecond"><em>Type</em>: <code>LeapSecond</code></a></h2>
+<p>A leap second</p>
+<h3 id="fields-16"><a class="header" href="#fields-16">Fields</a></h3>
+<ul>
+<li><code>year: half</code> Which year</li>
+<li><code>month: byte</code> Always the last day of the month (0-11)</li>
+<li><code>delta: byte</code> Direction (either -1 or +1)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="timedesignation"><a class="header" href="#timedesignation">TimeDesignation</a></h1>
+<h2 id="type-timedesignation"><a class="header" href="#type-timedesignation"><em>Type</em>: <code>TimeDesignation</code></a></h2>
+<p>Name of a timezone</p>
+<h3 id="fields-17"><a class="header" href="#fields-17">Fields</a></h3>
+<ul>
+<li><code>designation: int</code></li>
+</ul>
+<h3 id="designations"><a class="header" href="#designations">Designations</a></h3>
+<ol start="0">
+<li>UTC</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="timeadjustment"><a class="header" href="#timeadjustment">TimeAdjustment</a></h1>
+<h2 id="type-timeadjustment"><a class="header" href="#type-timeadjustment"><em>Type</em>: <code>TimeAdjustment</code></a></h2>
+<p>A time adjustment like daylight savings time</p>
+<h3 id="fields-18"><a class="header" href="#fields-18">Fields</a></h3>
+<ul>
+<li><code>old: DateTime</code> Old time</li>
+<li><code>new: DateTime</code> New time</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="timezone"><a class="header" href="#timezone">TimeZone</a></h1>
+<h2 id="type-timezone"><a class="header" href="#type-timezone"><em>Type</em>: <code>TimeZone</code></a></h2>
+<p>A timezone specification</p>
+<h3 id="fields-19"><a class="header" href="#fields-19">Fields</a></h3>
+<ul>
+<li><code>designation: TimeDesignation</code> Name of the timezone</li>
+<li><code>extension: opt[_]</code>: Reserved for timezone specification extensions</li>
+<li><code>offset: DateTime</code> Date and time of this timezone for UTC jan 1 00:00:00:000
+year 0</li>
+<li><code>adjustments: List[TimeAdjustment]</code> List of adjustments made in this timezone</li>
+<li><code>leap_seconds: List[LeapSecond]</code>: List of leap seconds</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="portals"><a class="header" href="#portals">Portals</a></h1>
 <p>Portals allow Daku applications to interface with the hardware and environment /
 OS.  The environment is not required to grant access to all portals requested by
 the application, and may either stop the application or mock out a fake
 implementation to protect the user's privacy.</p>
-<p>Implementations of portals should strive to be &quot;as mathematical&quot; as possible,
+<p>Implementations of portals should strive to be "as mathematical" as possible,
 meaning that there's no fancy engineering abstractions - just sending and
 receiving data and defining the required functionality.  This is to reduce the
 risk for possibly needing to deprecating portals in the future.  That said, it's
 ok to pack smaller pieces of data into one value if 32-bits can be guaranteed to
 most likely never be needed.</p>
 <p>Portals should also make use of shared high-level <a href="./types.html">types</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x00---log"><a class="header" href="#0x00---log">0x00 - Log</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x00---log"><a class="header" href="#0x00---log">0x00 - Log</a></h1>
 <p>Log a message with an associated target and log level, usually to help with
 debugging.</p>
 <h2 id="portal-channels-1"><a class="header" href="#portal-channels-1">Portal Channels</a></h2>
@@ -590,7 +630,7 @@ wouldn't result in a partially-formed log message).</p>
 <p>If no target is necessary, prefer empty target for traditional stdout/stderr
 compatibility.  Treat <code>I</code>/<code>D</code>/<code>T</code> as stdout, and <code>W</code>/<code>E</code>/<code>F</code> as stderr,
 preferring <code>I</code> and <code>W</code>.</p>
-<h3 id="fields-17"><a class="header" href="#fields-17">Fields</a></h3>
+<h3 id="fields-20"><a class="header" href="#fields-20">Fields</a></h3>
 <ul>
 <li><code>target: Text</code> Target name</li>
 <li><code>message: Text</code> Message to print</li>
@@ -602,7 +642,7 @@ preferring <code>I</code> and <code>W</code>.</p>
 <li>If address at <code>message.addr + message.size - 1</code> has no page</li>
 <li>If address at <code>target.addr + target.size - 1</code> has no page</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x01---prompt"><a class="header" href="#0x01---prompt">0x01 - Prompt</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x01---prompt"><a class="header" href="#0x01---prompt">0x01 - Prompt</a></h1>
 <p>Receive a line of textual user input from a debugging console.</p>
 <p>The text appended to the buffer won't contain the newline character.</p>
 <h2 id="portal-channels-2"><a class="header" href="#portal-channels-2">Portal Channels</a></h2>
@@ -617,7 +657,7 @@ preferring <code>I</code> and <code>W</code>.</p>
 </ol>
 <h2 id="command-prompt"><a class="header" href="#command-prompt"><em>Command</em>: <code>Prompt</code></a></h2>
 <p>Read textual user input from some source.</p>
-<h3 id="fields-18"><a class="header" href="#fields-18">Fields</a></h3>
+<h3 id="fields-21"><a class="header" href="#fields-21">Fields</a></h3>
 <ul>
 <li><code>capacity: ptr[int]</code> - (In/Out) Pointer to capacity of <code>command</code>.</li>
 <li><code>command: ptr[Text]</code> - (In/Out) Pointer to user-sent line of input.</li>
@@ -628,7 +668,7 @@ preferring <code>I</code> and <code>W</code>.</p>
 <li>If address at (input) <code>command.addr + capacity</code> has no page</li>
 <li>If address at <code>capacity + 3</code> has no page</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x02---fetch-"><a class="header" href="#0x02---fetch-">0x02 - Fetch 🧪</a></h1>
 <p>Do an HTTPS request to specified URL.</p>
 <p>SSE is expected to be implemented as an abstraction over this API (rather than
 be provided as its own portal).</p>
@@ -655,7 +695,7 @@ channel has been opened)
 </li>
 </ul>
 <h2 id="command-fetch"><a class="header" href="#command-fetch"><em>Command</em>: <code>Fetch</code></a></h2>
-<h3 id="fields-19"><a class="header" href="#fields-19">Fields</a></h3>
+<h3 id="fields-22"><a class="header" href="#fields-22">Fields</a></h3>
 <ul>
 <li><code>url: Text</code> - URL to do an HTTPS request to (does not include <code>https://</code>
 protocol)</li>
@@ -700,7 +740,7 @@ allowed)</li>
 <li>If address at <code>capacity + 3</code> has no page</li>
 <li>If address at <code>buffer + 3</code> has no page</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="device-host-"><a class="header" href="#device-host-"><em>Device</em>: Host 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="device-host-"><a class="header" href="#device-host-"><em>Device</em>: Host 🧪</a></h1>
 <p>Channel representing an HTTPS connection to a server.</p>
 <h2 id="type-fetcherror"><a class="header" href="#type-fetcherror"><em>Type</em>: <code>FetchError</code></a></h2>
 <p>An error may be indicated once either <code>Fetch</code> or <code>Host</code> command becomes ready.</p>
@@ -735,7 +775,7 @@ channel has been opened)
 <ol start="0">
 <li>If variant is unknown (not <code>0</code> or <code>1</code>)</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x03---serve-"><a class="header" href="#0x03---serve-">0x03 - Serve 🧪</a></h1>
 <p>Serve resources over HTTPS.</p>
 <p>SSE is expected to be implemented as an abstraction over this API (rather than
 be provided as its own portal).</p>
@@ -755,7 +795,7 @@ ready list.</p>
 successful connetion, in one of the 4 categories has exceeded 255</li>
 </ul>
 <h2 id="command-serve"><a class="header" href="#command-serve"><em>Command</em>: <code>Serve</code></a></h2>
-<h3 id="fields-20"><a class="header" href="#fields-20">Fields</a></h3>
+<h3 id="fields-23"><a class="header" href="#fields-23">Fields</a></h3>
 <ul>
 <li><code>config: val</code>
 <ul>
@@ -786,7 +826,7 @@ maximum set with <code>connections</code></li>
 <li>If <code>port = 0</code> (local only) and <code>connections</code> sign bit is negative</li>
 <li>If address at <code>errors + 3</code> has no page</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="device-client-"><a class="header" href="#device-client-"><em>Device</em>: Client 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="device-client-"><a class="header" href="#device-client-"><em>Device</em>: Client 🧪</a></h1>
 <p>Channel representing an HTTPS connection to a client.</p>
 <h2 id="type-poll"><a class="header" href="#type-poll"><em>Type</em>: <code>Poll</code></a></h2>
 <h3 id="variants-int-2"><a class="header" href="#variants-int-2">Variants (<code>int</code>)</a></h3>
@@ -813,7 +853,7 @@ error is set to 0).</li>
 <li>The client is ready for more data (<code>poll</code> set to <code>Continue</code>)</li>
 </ul>
 <h2 id="command-client"><a class="header" href="#command-client"><em>Command</em>: <code>Client</code></a></h2>
-<h3 id="fields-21"><a class="header" href="#fields-21">Fields</a></h3>
+<h3 id="fields-24"><a class="header" href="#fields-24">Fields</a></h3>
 <ul>
 <li><code>content: List[byte]</code> Content body to send.</li>
 <li><code>poll: opt[Poll]</code> (In/Out) Pointer to poll state (In:Server, Out:Client)</li>
@@ -836,30 +876,28 @@ error is set to 0).</li>
 <li>If address at <code>request.capacity + 3</code>  has no page</li>
 <li>If address at <code>request.headers_content.addr + request.capacity</code> has no page</li>
 </ol>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x04---speakers-"><a class="header" href="#0x04---speakers-">0x04 - Speakers 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x05---microphone-"><a class="header" href="#0x05---microphone-">0x05 - Microphone 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x06---screen-"><a class="header" href="#0x06---screen-">0x06 - Screen 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x07---camera-"><a class="header" href="#0x07---camera-">0x07 - Camera 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x08---window-"><a class="header" href="#0x08---window-">0x08 - Window 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x09---spawn-"><a class="header" href="#0x09---spawn-">0x09 - Spawn 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0a---user-"><a class="header" href="#0x0a---user-">0x0A - User 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0b---preferences-"><a class="header" href="#0x0b---preferences-">0x0B - Preferences 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0c---system-"><a class="header" href="#0x0c---system-">0x0C - System 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0d---about-"><a class="header" href="#0x0d---about-">0x0D - About 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0e---file-"><a class="header" href="#0x0e---file-">0x0E - File 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x0f---hid-"><a class="header" href="#0x0f---hid-">0x0F - Hid 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x10---timer-"><a class="header" href="#0x10---timer-">0x10 - Timer 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x11---clock-"><a class="header" href="#0x11---clock-">0x11 - Clock 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x12---gpu-"><a class="header" href="#0x12---gpu-">0x12 - Gpu 🧪</a></h1>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="0x13---location-"><a class="header" href="#0x13---location-">0x13 - Location 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x04---speakers-"><a class="header" href="#0x04---speakers-">0x04 - Speakers 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x05---microphone-"><a class="header" href="#0x05---microphone-">0x05 - Microphone 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x06---screen-"><a class="header" href="#0x06---screen-">0x06 - Screen 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x07---camera-"><a class="header" href="#0x07---camera-">0x07 - Camera 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x08---window-"><a class="header" href="#0x08---window-">0x08 - Window 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x09---spawn-"><a class="header" href="#0x09---spawn-">0x09 - Spawn 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0a---user-"><a class="header" href="#0x0a---user-">0x0A - User 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0b---preferences-"><a class="header" href="#0x0b---preferences-">0x0B - Preferences 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0c---system-"><a class="header" href="#0x0c---system-">0x0C - System 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0d---about-"><a class="header" href="#0x0d---about-">0x0D - About 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0e---file-"><a class="header" href="#0x0e---file-">0x0E - File 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x0f---hid-"><a class="header" href="#0x0f---hid-">0x0F - Hid 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x10---timer-"><a class="header" href="#0x10---timer-">0x10 - Timer 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x11---clock-"><a class="header" href="#0x11---clock-">0x11 - Clock 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x12---gpu-"><a class="header" href="#0x12---gpu-">0x12 - Gpu 🧪</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="0x13---location-"><a class="header" href="#0x13---location-">0x13 - Location 🧪</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
 
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -867,49 +905,35 @@ error is set to 0).</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
 
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
-        
-        <script type="text/javascript">
+        <script>
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
         </script>
-        
-        
 
+    </div>
     </body>
 </html>

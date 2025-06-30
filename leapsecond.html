@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Region 🧪 - Daku API Specification</title>
+        <title>LeapSecond 🧪 - Daku API Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -166,28 +166,25 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="region"><a class="header" href="#region">Region</a></h1>
-<h2 id="type-region"><a class="header" href="#type-region"><em>Type</em>: <code>Region</code></a></h2>
-<p>Region code</p>
+                        <h1 id="leapsecond"><a class="header" href="#leapsecond">LeapSecond</a></h1>
+<h2 id="type-leapsecond"><a class="header" href="#type-leapsecond"><em>Type</em>: <code>LeapSecond</code></a></h2>
+<p>A leap second</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
 <ul>
-<li><code>identifier: [byte; 2]</code></li>
-</ul>
-<h3 id="region-identifiers"><a class="header" href="#region-identifiers">Region Identifiers</a></h3>
-<ul>
-<li><code>US</code>: United States</li>
-<li><code>GB</code>: Great Britain / UK</li>
+<li><code>year: half</code> Which year</li>
+<li><code>month: byte</code> Always the last day of the month (0-11)</li>
+<li><code>delta: byte</code> Direction (either -1 or +1)</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="lang.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="langregion.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="langregion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="timedesignation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -197,11 +194,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="lang.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="langregion.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="langregion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="timedesignation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
