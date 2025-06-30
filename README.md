@@ -19,6 +19,13 @@ a program in an operation system (similar to WASI), and more!
  - Security-first
  - First-class multimedia portals (WASI compatible)
 
+## Compiling
+
+```shell
+RUSTFLAGS="--cfg daku" cargo build --target=wasm32-unknown-unknown
+RUSTDOCFLAGS="--cfg daku" cargo doc --target=wasm32-unknown-unknown
+```
+
 ## License
 
 Copyright © 2022-2025 The Daku Contributors.

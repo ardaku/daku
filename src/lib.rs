@@ -32,11 +32,12 @@
 
 // FIXME Don't require target os
 #[cfg(not(all(
+    daku,
     target_arch = "wasm32",
     target_endian = "little",
     target_env = "",
     target_family = "wasm",
-    target_os = "daku",
+    target_os = "unknown",
     target_pointer_width = "32",
     target_vendor = "unknown",
 )))]

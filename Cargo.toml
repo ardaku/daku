@@ -33,7 +33,7 @@ readme = "README.md"
 edition = "2021"
 
 [dependencies.log]
-version = "0.4"
+version = "0.4.27"
 optional = true
 default-features = false
 
@@ -45,4 +45,7 @@ prompt = []
 all-features = true
 default-target = "wasm32-unknown-unknown"
 targets = []
-rustdoc-args = ["--cfg", 'target_os="daku"']
+rustdoc-args = ["--cfg", 'daku']
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(daku)'] }
