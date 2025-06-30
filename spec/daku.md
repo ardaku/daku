@@ -8,7 +8,8 @@ order of conventional sections
  3. `target_features`
  4. `daku`
 
-The base section without extensions is just a WebAssembly vector of portal IDs.
+The base `daku` section without extensions is just a WebAssembly vector of
+portal IDs.
 
 For details on the experimental nucleide extension see
 <https://docs.rs/nucleide/latest/nucleide/#daku-daku>
