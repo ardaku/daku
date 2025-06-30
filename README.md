@@ -20,7 +20,8 @@ a program in an operation system (similar to WASI), and more!
  - First-class multimedia portals (WASI compatible)
 
 ## License
-Copyright © 2022-2024 The Daku Contributors.
+
+Copyright © 2022-2025 The Daku Contributors.
 
 Licensed under any of
  - Apache License, Version 2.0, ([LICENSE\_APACHE] or

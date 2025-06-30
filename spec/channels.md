@@ -5,8 +5,8 @@
 Portal channels represent a bus (and permission to talk to it) on the computer.
 Portal channels are opened before the program starts (based on the `daku` custom
 section).  Going in order of the portals, will allocate channels in ascending
-order starting from 1.  There may be more than one channel per portal.  They can
-not and will not be closed until the WASM module exits.  
+order starting from 1.  Each portal allocates one channel.  They can not and
+will not be closed until the WASM module exits.  
 
 ## Channel 0
 
