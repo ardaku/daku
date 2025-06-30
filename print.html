@@ -171,7 +171,7 @@
 <p>Daku is an asynchronous host interface abstraction API for WebAssembly plugins,
 drivers, applications, and more!  Daku is both an API and a file format.  Ardaku
 is an engine you can use for running Daku modules on different Wasm runtimes.</p>
-<h2 id="daku-specification-v100-pre0-draft-v14"><a class="header" href="#daku-specification-v100-pre0-draft-v14">Daku Specification v1.0.0-pre.0 (draft v14)</a></h2>
+<h2 id="daku-specification-v100-pre0-draft-v15"><a class="header" href="#daku-specification-v100-pre0-draft-v15">Daku Specification v1.0.0-pre.0 (draft v15)</a></h2>
 <p>The current version of Daku targets the full WebAssembly 2.0 spec without any
 non-standard or experimental features.</p>
 <h2 id="goals"><a class="header" href="#goals">Goals</a></h2>
@@ -298,8 +298,8 @@ either free or reüse the command structures</li>
 <p>Portal channels represent a bus (and permission to talk to it) on the computer.
 Portal channels are opened before the program starts (based on the <code>daku</code> custom
 section).  Going in order of the portals, will allocate channels in ascending
-order starting from 1.  There may be more than one channel per portal.  They can
-not and will not be closed until the WASM module exits.</p>
+order starting from 1.  Each portal allocates one channel.  They can not and
+will not be closed until the WASM module exits.</p>
 <h2 id="channel-0"><a class="header" href="#channel-0">Channel 0</a></h2>
 <p>Channel 0 is a special channel that allows you to send arbitrary bytes
 (<a href="./buffer.html"><code>Buffer</code></a>) to the host from the guest.  This is what a custom
@@ -615,25 +615,35 @@ most likely never be needed.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="0x00---log"><a class="header" href="#0x00---log">0x00 - Log</a></h1>
 <p>Log a message with an associated target and log level, usually to help with
 debugging.</p>
-<h2 id="portal-channels-1"><a class="header" href="#portal-channels-1">Portal Channels</a></h2>
-<ol start="0">
-<li>Error Log Level</li>
-<li>Warn Log Level</li>
-<li>Info Log Level</li>
-<li>Debug Log Level</li>
-<li>Trace Log Level</li>
-</ol>
 <h2 id="readiness"><a class="header" href="#readiness">Readiness</a></h2>
 <p>Becomes ready once logging has completed (stopping the process after ready
 wouldn't result in a partially-formed log message).</p>
 <h2 id="command-log"><a class="header" href="#command-log"><em>Command</em>: <code>Log</code></a></h2>
-<p>If no target is necessary, prefer empty target for traditional stdout/stderr
-compatibility.  Treat <code>I</code>/<code>D</code>/<code>T</code> as stdout, and <code>W</code>/<code>E</code>/<code>F</code> as stderr,
-preferring <code>I</code> and <code>W</code>.</p>
 <h3 id="fields-20"><a class="header" href="#fields-20">Fields</a></h3>
+<ul>
+<li><code>[_; _]</code>
+<ul>
+<li><code>level: int</code> Log level</li>
+</ul>
+<ol start="0">
+<li>Fatal</li>
+<li>Error</li>
+<li>Warn</li>
+<li>Info</li>
+<li>Debug</li>
+<li>Trace</li>
+<li>Stdout</li>
+<li>Stderr</li>
+</ol>
+<ul>
+<li><code>log: opt[_]</code> Log target and message
 <ul>
 <li><code>target: Text</code> Target name</li>
 <li><code>message: Text</code> Message to print</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="traps"><a class="header" href="#traps">Traps</a></h3>
 <ol start="0">
@@ -645,10 +655,6 @@ preferring <code>I</code> and <code>W</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="0x01---prompt"><a class="header" href="#0x01---prompt">0x01 - Prompt</a></h1>
 <p>Receive a line of textual user input from a debugging console.</p>
 <p>The text appended to the buffer won't contain the newline character.</p>
-<h2 id="portal-channels-2"><a class="header" href="#portal-channels-2">Portal Channels</a></h2>
-<ol start="0">
-<li>Developer prompt</li>
-</ol>
 <h2 id="readiness-1"><a class="header" href="#readiness-1">Readiness</a></h2>
 <p>Becomes ready once a line of text has been entered.  With either</p>
 <ol>
@@ -672,10 +678,6 @@ preferring <code>I</code> and <code>W</code>.</p>
 <p>Do an HTTPS request to specified URL.</p>
 <p>SSE is expected to be implemented as an abstraction over this API (rather than
 be provided as its own portal).</p>
-<h2 id="portal-channels-3"><a class="header" href="#portal-channels-3">Portal Channels</a></h2>
-<ol start="0">
-<li>Initiate HTTPS request</li>
-</ol>
 <h2 id="connection"><a class="header" href="#connection">Connection</a></h2>
 <p>Host device channel is opened upon readiness (allocated only if successful).
 The channel allocation should happen immediately upon return of <code>ar()</code>, and must
@@ -779,10 +781,6 @@ channel has been opened)
 <p>Serve resources over HTTPS.</p>
 <p>SSE is expected to be implemented as an abstraction over this API (rather than
 be provided as its own portal).</p>
-<h2 id="portal-channels-4"><a class="header" href="#portal-channels-4">Portal Channels</a></h2>
-<ol start="0">
-<li>Accept HTTPS clients</li>
-</ol>
 <h2 id="connection-1"><a class="header" href="#connection-1">Connection</a></h2>
 <p>Client device channel is opened upon readiness.  The channel allocation should
 happen immediately upon return of <code>ar()</code>, and must follow in the order of the

@@ -169,25 +169,35 @@
                         <h1 id="0x00---log"><a class="header" href="#0x00---log">0x00 - Log</a></h1>
 <p>Log a message with an associated target and log level, usually to help with
 debugging.</p>
-<h2 id="portal-channels"><a class="header" href="#portal-channels">Portal Channels</a></h2>
-<ol start="0">
-<li>Error Log Level</li>
-<li>Warn Log Level</li>
-<li>Info Log Level</li>
-<li>Debug Log Level</li>
-<li>Trace Log Level</li>
-</ol>
 <h2 id="readiness"><a class="header" href="#readiness">Readiness</a></h2>
 <p>Becomes ready once logging has completed (stopping the process after ready
 wouldn't result in a partially-formed log message).</p>
 <h2 id="command-log"><a class="header" href="#command-log"><em>Command</em>: <code>Log</code></a></h2>
-<p>If no target is necessary, prefer empty target for traditional stdout/stderr
-compatibility.  Treat <code>I</code>/<code>D</code>/<code>T</code> as stdout, and <code>W</code>/<code>E</code>/<code>F</code> as stderr,
-preferring <code>I</code> and <code>W</code>.</p>
 <h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
+<ul>
+<li><code>[_; _]</code>
+<ul>
+<li><code>level: int</code> Log level</li>
+</ul>
+<ol start="0">
+<li>Fatal</li>
+<li>Error</li>
+<li>Warn</li>
+<li>Info</li>
+<li>Debug</li>
+<li>Trace</li>
+<li>Stdout</li>
+<li>Stderr</li>
+</ol>
+<ul>
+<li><code>log: opt[_]</code> Log target and message
 <ul>
 <li><code>target: Text</code> Target name</li>
 <li><code>message: Text</code> Message to print</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="traps"><a class="header" href="#traps">Traps</a></h3>
 <ol start="0">

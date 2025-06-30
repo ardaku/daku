@@ -171,8 +171,8 @@
 <p>Portal channels represent a bus (and permission to talk to it) on the computer.
 Portal channels are opened before the program starts (based on the <code>daku</code> custom
 section).  Going in order of the portals, will allocate channels in ascending
-order starting from 1.  There may be more than one channel per portal.  They can
-not and will not be closed until the WASM module exits.</p>
+order starting from 1.  Each portal allocates one channel.  They can not and
+will not be closed until the WASM module exits.</p>
 <h2 id="channel-0"><a class="header" href="#channel-0">Channel 0</a></h2>
 <p>Channel 0 is a special channel that allows you to send arbitrary bytes
 (<a href="./buffer.html"><code>Buffer</code></a>) to the host from the guest.  This is what a custom
