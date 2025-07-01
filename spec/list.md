@@ -2,7 +2,7 @@
 
 ## *Type*: `List[T]`
 
-A list of elements of type `T`
+List of elements of type `T`
 
 ### Fields
 

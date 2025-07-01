@@ -2,7 +2,7 @@
 
 ## *Type*: `Buffer`
 
-A list of bytes
+List of bytes
 
 ### Fields
 
